@@ -16,6 +16,7 @@ id bottom_navigation
 id btnCapture
 id cameraPreview
 id cameraSection
+id controlBar
 id fragment_container
 id lidarSection
 id mlResultOverlay

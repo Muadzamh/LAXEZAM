@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.camera.view.PreviewView;
+import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.viewbinding.ViewBinding;
 import androidx.viewbinding.ViewBindings;
@@ -27,6 +28,9 @@ public final class FragmentDetectionBinding implements ViewBinding {
 
   @NonNull
   public final ConstraintLayout cameraSection;
+
+  @NonNull
+  public final CardView controlBar;
 
   @NonNull
   public final ConstraintLayout lidarSection;
@@ -53,7 +57,7 @@ public final class FragmentDetectionBinding implements ViewBinding {
   public final TextView tvEstimatedWeight;
 
   @NonNull
-  public final TextView tvLidarHeader;
+  public final LinearLayout tvLidarHeader;
 
   @NonNull
   public final TextView tvSignalStrength;
@@ -66,15 +70,17 @@ public final class FragmentDetectionBinding implements ViewBinding {
 
   private FragmentDetectionBinding(@NonNull ConstraintLayout rootView,
       @NonNull PreviewView cameraPreview, @NonNull ConstraintLayout cameraSection,
-      @NonNull ConstraintLayout lidarSection, @NonNull LinearLayout mlResultOverlay,
-      @NonNull SwitchCompat switchLidarMode, @NonNull TextView tvCameraStatus,
-      @NonNull TextView tvConfidence, @NonNull TextView tvConnectionStatus,
-      @NonNull TextView tvDistance, @NonNull TextView tvEstimatedWeight,
-      @NonNull TextView tvLidarHeader, @NonNull TextView tvSignalStrength,
-      @NonNull TextView tvTemperature, @NonNull TextView tvTimestamp) {
+      @NonNull CardView controlBar, @NonNull ConstraintLayout lidarSection,
+      @NonNull LinearLayout mlResultOverlay, @NonNull SwitchCompat switchLidarMode,
+      @NonNull TextView tvCameraStatus, @NonNull TextView tvConfidence,
+      @NonNull TextView tvConnectionStatus, @NonNull TextView tvDistance,
+      @NonNull TextView tvEstimatedWeight, @NonNull LinearLayout tvLidarHeader,
+      @NonNull TextView tvSignalStrength, @NonNull TextView tvTemperature,
+      @NonNull TextView tvTimestamp) {
     this.rootView = rootView;
     this.cameraPreview = cameraPreview;
     this.cameraSection = cameraSection;
+    this.controlBar = controlBar;
     this.lidarSection = lidarSection;
     this.mlResultOverlay = mlResultOverlay;
     this.switchLidarMode = switchLidarMode;
@@ -128,6 +134,12 @@ public final class FragmentDetectionBinding implements ViewBinding {
         break missingId;
       }
 
+      id = R.id.controlBar;
+      CardView controlBar = ViewBindings.findChildViewById(rootView, id);
+      if (controlBar == null) {
+        break missingId;
+      }
+
       id = R.id.lidarSection;
       ConstraintLayout lidarSection = ViewBindings.findChildViewById(rootView, id);
       if (lidarSection == null) {
@@ -177,7 +189,7 @@ public final class FragmentDetectionBinding implements ViewBinding {
       }
 
       id = R.id.tvLidarHeader;
-      TextView tvLidarHeader = ViewBindings.findChildViewById(rootView, id);
+      LinearLayout tvLidarHeader = ViewBindings.findChildViewById(rootView, id);
       if (tvLidarHeader == null) {
         break missingId;
       }
@@ -201,7 +213,7 @@ public final class FragmentDetectionBinding implements ViewBinding {
       }
 
       return new FragmentDetectionBinding((ConstraintLayout) rootView, cameraPreview, cameraSection,
-          lidarSection, mlResultOverlay, switchLidarMode, tvCameraStatus, tvConfidence,
+          controlBar, lidarSection, mlResultOverlay, switchLidarMode, tvCameraStatus, tvConfidence,
           tvConnectionStatus, tvDistance, tvEstimatedWeight, tvLidarHeader, tvSignalStrength,
           tvTemperature, tvTimestamp);
     }
