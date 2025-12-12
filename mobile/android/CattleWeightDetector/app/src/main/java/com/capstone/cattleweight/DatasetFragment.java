@@ -21,6 +21,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
+import androidx.appcompat.widget.SwitchCompat;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -57,6 +58,7 @@ public class DatasetFragment extends Fragment {
     // UI Components
     private PreviewView cameraPreview;
     private FloatingActionButton btnCapture;
+    private SwitchCompat switchLidarMode;
     private TextView tvCameraStatus, tvSaveStatus, tvDistance, tvSignalStrength, tvTemperature;
     private TextView tvConnectionStatus, tvTimestamp, tvDatasetCount;
     
@@ -65,9 +67,12 @@ public class DatasetFragment extends Fragment {
     private ImageCapture imageCapture;
     private ExecutorService cameraExecutor;
     
-    // LiDAR
+    // LiDAR - WiFi mode
     private LidarDataReceiver lidarReceiver;
+    // LiDAR - USB mode
+    private UsbSerialLidarReader usbLidarReader;
     private LidarData currentLidarData;
+    private boolean isUsbMode = false;
     
     // Database
     private CattleDatasetDatabase database;
@@ -104,6 +109,7 @@ public class DatasetFragment extends Fragment {
     private void initializeViews(View view) {
         cameraPreview = view.findViewById(R.id.cameraPreview);
         btnCapture = view.findViewById(R.id.btnCapture);
+        switchLidarMode = view.findViewById(R.id.switchLidarMode);
         tvCameraStatus = view.findViewById(R.id.tvCameraStatus);
         tvSaveStatus = view.findViewById(R.id.tvSaveStatus);
         tvDistance = view.findViewById(R.id.tvDistance);
@@ -112,6 +118,12 @@ public class DatasetFragment extends Fragment {
         tvConnectionStatus = view.findViewById(R.id.tvConnectionStatus);
         tvTimestamp = view.findViewById(R.id.tvTimestamp);
         tvDatasetCount = view.findViewById(R.id.tvDatasetCount);
+        
+        // Set switch listener
+        switchLidarMode.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            isUsbMode = isChecked;
+            switchLidarMode();
+        });
     }
     
     private boolean checkCameraPermission() {
@@ -153,6 +165,56 @@ public class DatasetFragment extends Fragment {
                 tvCameraStatus.setTextColor(0xFFF44336);
             }
         }, ContextCompat.getMainExecutor(requireContext()));
+    }
+    
+    private void switchLidarMode() {
+        // Stop current mode
+        if (lidarReceiver != null) {
+            lidarReceiver.stopReceiving();
+        }
+        if (usbLidarReader != null) {
+            usbLidarReader.stopReading();
+        }
+        
+        // Start new mode
+        if (isUsbMode) {
+            initializeUsbLidar();
+        } else {
+            initializeLidarReceiver();
+        }
+    }
+    
+    private void initializeUsbLidar() {
+        usbLidarReader = new UsbSerialLidarReader(requireContext(), new UsbSerialLidarReader.LidarDataCallback() {
+            @Override
+            public void onDataReceived(LidarData data) {
+                currentLidarData = data;
+                new Handler(Looper.getMainLooper()).post(() -> updateLidarUI(data));
+            }
+            
+            @Override
+            public void onConnectionStatusChanged(boolean connected) {
+                new Handler(Looper.getMainLooper()).post(() -> {
+                    if (connected) {
+                        tvConnectionStatus.setText("🟢 Connected via USB");
+                        tvConnectionStatus.setTextColor(0xFF4CAF50);
+                    } else {
+                        tvConnectionStatus.setText("🔴 USB Disconnected");
+                        tvConnectionStatus.setTextColor(0xFFF44336);
+                    }
+                });
+            }
+            
+            @Override
+            public void onError(String error) {
+                new Handler(Looper.getMainLooper()).post(() -> {
+                    tvConnectionStatus.setText("⚠️ USB Error: " + error);
+                    tvConnectionStatus.setTextColor(0xFFFF9800);
+                });
+            }
+        });
+        
+        usbLidarReader.startReading();
     }
     
     private void initializeLidarReceiver() {
@@ -355,6 +417,9 @@ public class DatasetFragment extends Fragment {
         super.onDestroyView();
         if (lidarReceiver != null) {
             lidarReceiver.stopReceiving();
+        }
+        if (usbLidarReader != null) {
+            usbLidarReader.stopReading();
         }
         if (cameraExecutor != null) {
             cameraExecutor.shutdown();
