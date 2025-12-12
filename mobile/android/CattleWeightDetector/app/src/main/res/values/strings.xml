@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Cattle Weight Detector</string>
+    <string name="camera_permission_required">Izin kamera diperlukan untuk deteksi bobot karkas</string>
+    <string name="lidar_connecting">Menghubungkan ke LiDAR...</string>
+    <string name="lidar_connected">LiDAR Terhubung</string>
+    <string name="lidar_disconnected">LiDAR Terputus</string>
+    <string name="server_url_hint">http://192.168.x.x:5000</string>
+</resources>

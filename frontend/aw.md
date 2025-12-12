@@ -1,2 +1,0 @@
-aw aw aw
-kimbab

@@ -1,0 +1,26 @@
+[
+    {
+        "merged": "com.capstone.cattleweight.app-debug-36:/layout_fragment_dataset.xml.flat",
+        "source": "com.capstone.cattleweight.app-main-38:/layout/fragment_dataset.xml"
+    },
+    {
+        "merged": "com.capstone.cattleweight.app-debug-36:/layout_fragment_detection.xml.flat",
+        "source": "com.capstone.cattleweight.app-main-38:/layout/fragment_detection.xml"
+    },
+    {
+        "merged": "com.capstone.cattleweight.app-debug-36:/color_bottom_nav_color.xml.flat",
+        "source": "com.capstone.cattleweight.app-main-38:/color/bottom_nav_color.xml"
+    },
+    {
+        "merged": "com.capstone.cattleweight.app-debug-36:/menu_bottom_nav_menu.xml.flat",
+        "source": "com.capstone.cattleweight.app-main-38:/menu/bottom_nav_menu.xml"
+    },
+    {
+        "merged": "com.capstone.cattleweight.app-debug-36:/layout_activity_main.xml.flat",
+        "source": "com.capstone.cattleweight.app-main-38:/layout/activity_main.xml"
+    },
+    {
+        "merged": "com.capstone.cattleweight.app-debug-36:/layout_activity_main_new.xml.flat",
+        "source": "com.capstone.cattleweight.app-main-38:/layout/activity_main_new.xml"
+    }
+]
