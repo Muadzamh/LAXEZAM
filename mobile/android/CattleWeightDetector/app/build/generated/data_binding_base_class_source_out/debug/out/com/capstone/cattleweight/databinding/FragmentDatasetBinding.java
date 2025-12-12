@@ -4,11 +4,13 @@ package com.capstone.cattleweight.databinding;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.camera.view.PreviewView;
+import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.viewbinding.ViewBinding;
 import androidx.viewbinding.ViewBindings;
@@ -32,6 +34,9 @@ public final class FragmentDatasetBinding implements ViewBinding {
   public final ConstraintLayout cameraSection;
 
   @NonNull
+  public final CardView controlBar;
+
+  @NonNull
   public final ConstraintLayout lidarSection;
 
   @NonNull
@@ -50,7 +55,7 @@ public final class FragmentDatasetBinding implements ViewBinding {
   public final TextView tvDistance;
 
   @NonNull
-  public final TextView tvLidarHeader;
+  public final LinearLayout tvLidarHeader;
 
   @NonNull
   public final TextView tvSaveStatus;
@@ -66,16 +71,18 @@ public final class FragmentDatasetBinding implements ViewBinding {
 
   private FragmentDatasetBinding(@NonNull ConstraintLayout rootView,
       @NonNull FloatingActionButton btnCapture, @NonNull PreviewView cameraPreview,
-      @NonNull ConstraintLayout cameraSection, @NonNull ConstraintLayout lidarSection,
-      @NonNull SwitchCompat switchLidarMode, @NonNull TextView tvCameraStatus,
-      @NonNull TextView tvConnectionStatus, @NonNull TextView tvDatasetCount,
-      @NonNull TextView tvDistance, @NonNull TextView tvLidarHeader, @NonNull TextView tvSaveStatus,
+      @NonNull ConstraintLayout cameraSection, @NonNull CardView controlBar,
+      @NonNull ConstraintLayout lidarSection, @NonNull SwitchCompat switchLidarMode,
+      @NonNull TextView tvCameraStatus, @NonNull TextView tvConnectionStatus,
+      @NonNull TextView tvDatasetCount, @NonNull TextView tvDistance,
+      @NonNull LinearLayout tvLidarHeader, @NonNull TextView tvSaveStatus,
       @NonNull TextView tvSignalStrength, @NonNull TextView tvTemperature,
       @NonNull TextView tvTimestamp) {
     this.rootView = rootView;
     this.btnCapture = btnCapture;
     this.cameraPreview = cameraPreview;
     this.cameraSection = cameraSection;
+    this.controlBar = controlBar;
     this.lidarSection = lidarSection;
     this.switchLidarMode = switchLidarMode;
     this.tvCameraStatus = tvCameraStatus;
@@ -134,6 +141,12 @@ public final class FragmentDatasetBinding implements ViewBinding {
         break missingId;
       }
 
+      id = R.id.controlBar;
+      CardView controlBar = ViewBindings.findChildViewById(rootView, id);
+      if (controlBar == null) {
+        break missingId;
+      }
+
       id = R.id.lidarSection;
       ConstraintLayout lidarSection = ViewBindings.findChildViewById(rootView, id);
       if (lidarSection == null) {
@@ -171,7 +184,7 @@ public final class FragmentDatasetBinding implements ViewBinding {
       }
 
       id = R.id.tvLidarHeader;
-      TextView tvLidarHeader = ViewBindings.findChildViewById(rootView, id);
+      LinearLayout tvLidarHeader = ViewBindings.findChildViewById(rootView, id);
       if (tvLidarHeader == null) {
         break missingId;
       }
@@ -201,9 +214,9 @@ public final class FragmentDatasetBinding implements ViewBinding {
       }
 
       return new FragmentDatasetBinding((ConstraintLayout) rootView, btnCapture, cameraPreview,
-          cameraSection, lidarSection, switchLidarMode, tvCameraStatus, tvConnectionStatus,
-          tvDatasetCount, tvDistance, tvLidarHeader, tvSaveStatus, tvSignalStrength, tvTemperature,
-          tvTimestamp);
+          cameraSection, controlBar, lidarSection, switchLidarMode, tvCameraStatus,
+          tvConnectionStatus, tvDatasetCount, tvDistance, tvLidarHeader, tvSaveStatus,
+          tvSignalStrength, tvTemperature, tvTimestamp);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

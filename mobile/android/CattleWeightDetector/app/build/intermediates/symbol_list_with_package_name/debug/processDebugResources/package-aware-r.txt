@@ -3185,6 +3185,7 @@ id content
 id contentPanel
 id contiguous
 id continuousVelocity
+id controlBar
 id coordinator
 id cos
 id counterclockwise
