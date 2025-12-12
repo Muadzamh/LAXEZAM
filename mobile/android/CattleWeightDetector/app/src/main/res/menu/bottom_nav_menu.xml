@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/navigation_detection"
+        android:icon="@android:drawable/ic_menu_view"
+        android:title="DETEKSI" />
+    
+    <item
+        android:id="@+id/navigation_dataset"
+        android:icon="@android:drawable/ic_menu_camera"
+        android:title="DATASET" />
+</menu>

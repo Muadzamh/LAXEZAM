@@ -1,0 +1,18 @@
+[
+    {
+        "merged": "com.capstone.cattleweight.app-mergeDebugResources-35:/layout/fragment_dataset.xml",
+        "source": "com.capstone.cattleweight.app-main-38:/layout/fragment_dataset.xml"
+    },
+    {
+        "merged": "com.capstone.cattleweight.app-mergeDebugResources-35:/layout/fragment_detection.xml",
+        "source": "com.capstone.cattleweight.app-main-38:/layout/fragment_detection.xml"
+    },
+    {
+        "merged": "com.capstone.cattleweight.app-mergeDebugResources-35:/layout/activity_main_new.xml",
+        "source": "com.capstone.cattleweight.app-main-38:/layout/activity_main_new.xml"
+    },
+    {
+        "merged": "com.capstone.cattleweight.app-mergeDebugResources-35:/layout/activity_main.xml",
+        "source": "com.capstone.cattleweight.app-main-38:/layout/activity_main.xml"
+    }
+]
