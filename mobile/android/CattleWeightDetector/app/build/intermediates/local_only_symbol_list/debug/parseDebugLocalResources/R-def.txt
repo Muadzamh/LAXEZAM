@@ -23,6 +23,7 @@ id mlResultOverlay
 id navigation_dataset
 id navigation_detection
 id switchLidarMode
+id topOverlay
 id tvCameraStatus
 id tvConfidence
 id tvConnectionStatus
