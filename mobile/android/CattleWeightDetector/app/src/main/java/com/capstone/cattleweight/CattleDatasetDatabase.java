@@ -15,7 +15,7 @@ import java.util.Locale;
 public class CattleDatasetDatabase extends SQLiteOpenHelper {
     
     private static final String DATABASE_NAME = "cattle_dataset.db";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
     
     // Table name
     private static final String TABLE_DATASET = "dataset";
@@ -36,7 +36,7 @@ public class CattleDatasetDatabase extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         String createTable = "CREATE TABLE " + TABLE_DATASET + " (" +
                 COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                COLUMN_IMAGE_PATH + " TEXT NOT NULL, " +
+                COLUMN_IMAGE_PATH + " TEXT, " +
                 COLUMN_DISTANCE + " INTEGER, " +
                 COLUMN_SIGNAL + " INTEGER, " +
                 COLUMN_TEMPERATURE + " REAL, " +
@@ -81,6 +81,15 @@ public class CattleDatasetDatabase extends SQLiteOpenHelper {
         cursor.close();
         db.close();
         return count;
+    }
+    
+    // Update image path after saving to gallery
+    public void updateImagePath(long id, String imagePath) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_IMAGE_PATH, imagePath);
+        db.update(TABLE_DATASET, values, COLUMN_ID + " = ?", new String[]{String.valueOf(id)});
+        db.close();
     }
     
     // Get all dataset (for export)

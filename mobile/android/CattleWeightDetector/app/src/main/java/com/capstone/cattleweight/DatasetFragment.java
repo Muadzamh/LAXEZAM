@@ -25,6 +25,7 @@ import androidx.appcompat.widget.SwitchCompat;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.camera.core.AspectRatio;
 import androidx.camera.core.Camera;
 import androidx.camera.core.CameraSelector;
 import androidx.camera.core.ImageCapture;
@@ -144,11 +145,14 @@ public class DatasetFragment extends Fragment {
             try {
                 ProcessCameraProvider cameraProvider = cameraProviderFuture.get();
                 
-                Preview preview = new Preview.Builder().build();
+                Preview preview = new Preview.Builder()
+                        .setTargetAspectRatio(AspectRatio.RATIO_4_3)
+                        .build();
                 preview.setSurfaceProvider(cameraPreview.getSurfaceProvider());
                 
                 imageCapture = new ImageCapture.Builder()
                         .setCaptureMode(ImageCapture.CAPTURE_MODE_MINIMIZE_LATENCY)
+                        .setTargetResolution(new android.util.Size(960, 1280))
                         .build();
                 
                 CameraSelector cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA;
@@ -292,10 +296,16 @@ public class DatasetFragment extends Fragment {
             // Convert ImageProxy to Bitmap
             Bitmap bitmap = imageProxyToBitmap(image);
             
-            // Create unique filename
-            String timestamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault())
-                    .format(new Date());
-            String filename = "cattle_" + timestamp + ".jpg";
+            // Save metadata to database first to get ID
+            long id = saveMetadataToDatabase(null, lidarData);
+            
+            if (id <= 0) {
+                throw new Exception("Failed to save metadata to database");
+            }
+            
+            // Create filename with format: id_cattle_[jarak]_[signalstrength]_
+            String filename = id + "_cattle_" + lidarData.getJarak() + "_" + 
+                            lidarData.getKekuatan() + "_.jpg";
             
             new Handler(Looper.getMainLooper()).post(() -> {
                 tvSaveStatus.setText("💾 Saving...");
@@ -331,8 +341,24 @@ public class DatasetFragment extends Fragment {
                         requireContext().getContentResolver().update(uri, values, null, null);
                     }
                     
-                    // Save metadata to SQLite
-                    saveMetadataToDatabase(uri.toString(), lidarData);
+                    // Update image path in database
+                    database.updateImagePath(id, uri.toString());
+                    
+                    // Show success message
+                    datasetCount++;
+                    new Handler(Looper.getMainLooper()).post(() -> {
+                        tvSaveStatus.setText("✅ Saved!");
+                        tvSaveStatus.setTextColor(0xFF4CAF50);
+                        tvDatasetCount.setText("📊 Total Data: " + datasetCount);
+                        btnCapture.setEnabled(true);
+                        Toast.makeText(requireContext(), "Data saved successfully!", 
+                                Toast.LENGTH_SHORT).show();
+                        
+                        // Hide status after 2 seconds
+                        new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                            tvSaveStatus.setVisibility(View.GONE);
+                        }, 2000);
+                    });
                 } else {
                     throw new Exception("Failed to open output stream");
                 }
@@ -352,38 +378,14 @@ public class DatasetFragment extends Fragment {
         }
     }
     
-    private void saveMetadataToDatabase(String imagePath, LidarData lidarData) {
+    private long saveMetadataToDatabase(String imagePath, LidarData lidarData) {
         long id = database.insertDataset(
                 imagePath,
                 lidarData.getJarak(),
                 lidarData.getKekuatan(),
                 lidarData.getSuhu()
         );
-        
-        if (id > 0) {
-            datasetCount++;
-            new Handler(Looper.getMainLooper()).post(() -> {
-                tvSaveStatus.setText("✅ Saved!");
-                tvSaveStatus.setTextColor(0xFF4CAF50);
-                tvDatasetCount.setText("📊 Total Data: " + datasetCount);
-                btnCapture.setEnabled(true);
-                Toast.makeText(requireContext(), "Data saved successfully!", 
-                        Toast.LENGTH_SHORT).show();
-                
-                // Hide status after 2 seconds
-                new Handler(Looper.getMainLooper()).postDelayed(() -> {
-                    tvSaveStatus.setVisibility(View.GONE);
-                }, 2000);
-            });
-        } else {
-            new Handler(Looper.getMainLooper()).post(() -> {
-                tvSaveStatus.setText("❌ Database Error");
-                tvSaveStatus.setTextColor(0xFFF44336);
-                btnCapture.setEnabled(true);
-                Toast.makeText(requireContext(), "Failed to save metadata", 
-                        Toast.LENGTH_SHORT).show();
-            });
-        }
+        return id;
     }
     
     private void loadDatasetCount() {

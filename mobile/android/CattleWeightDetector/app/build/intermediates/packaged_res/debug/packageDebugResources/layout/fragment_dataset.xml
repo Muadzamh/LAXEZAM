@@ -4,43 +4,32 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#000000">
+    android:layout_height="match_parent">
 
     <!-- ========================================== -->
-    <!-- CAMERA SECTION (45% - TOP) -->
+    <!-- CAMERA PREVIEW - FULL SCREEN BACKGROUND -->
+    <!-- ========================================== -->
+    <androidx.camera.view.PreviewView
+        android:id="@+id/cameraPreview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:scaleType="fillCenter"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- ========================================== -->
+    <!-- TOP OVERLAY (45%) -->
     <!-- ========================================== -->
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/cameraSection"
+        android:id="@+id/topOverlay"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:background="#212121"
+        android:background="#00000000"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/lidarSection"
         app:layout_constraintHeight_percent="0.45">
-
-        <!-- Camera Preview -->
-        <androidx.camera.view.PreviewView
-            android:id="@+id/cameraPreview"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
-
-        <!-- Capture Button Overlay -->
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/btnCapture"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="20dp"
-            android:src="@android:drawable/ic_menu_camera"
-            app:backgroundTint="#00BCD4"
-            app:tint="#FFFFFF"
-            app:elevation="6dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
 
         <!-- Status Camera -->
         <TextView
@@ -79,17 +68,30 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
+        <!-- Capture Button -->
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/btnCapture"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:src="@android:drawable/ic_menu_camera"
+            app:backgroundTint="#00BCD4"
+            app:tint="#FFFFFF"
+            app:elevation="6dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <!-- ========================================== -->
-    <!-- LIDAR SECTION (55% - BOTTOM) -->
+    <!-- LIDAR SECTION (55% - BOTTOM OVERLAY) -->
     <!-- ========================================== -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/lidarSection"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:background="#0D47A1"
-        app:layout_constraintTop_toBottomOf="@id/cameraSection"
+        android:background="#330D47A1"
+        app:layout_constraintTop_toBottomOf="@id/topOverlay"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHeight_percent="0.55">
 
@@ -98,7 +100,7 @@
             android:id="@+id/tvLidarHeader"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#0D47A1"
+            android:background="#330D47A1"
             android:orientation="vertical"
             android:paddingTop="8dp"
             android:paddingBottom="8dp"
@@ -123,7 +125,7 @@
             android:layout_marginStart="12dp"
             android:layout_marginEnd="12dp"
             android:layout_marginTop="8dp"
-            app:cardBackgroundColor="#1565C0"
+            app:cardBackgroundColor="#331565C0"
             app:cardCornerRadius="8dp"
             app:cardElevation="2dp"
             app:layout_constraintTop_toBottomOf="@id/tvLidarHeader">
@@ -152,7 +154,7 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:gravity="center_vertical"
-                    android:background="#1976D2"
+                    android:background="#331976D2"
                     android:paddingStart="12dp"
                     android:paddingEnd="8dp"
                     android:paddingTop="8dp"
@@ -200,7 +202,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="8dp"
-                    app:cardBackgroundColor="#1E88E5"
+                    app:cardBackgroundColor="#331E88E5"
                     app:cardCornerRadius="12dp"
                     app:cardElevation="3dp">
 
@@ -251,7 +253,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="8dp"
-                    app:cardBackgroundColor="#43A047"
+                    app:cardBackgroundColor="#3343A047"
                     app:cardCornerRadius="12dp"
                     app:cardElevation="3dp">
 
@@ -302,7 +304,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="12dp"
-                    app:cardBackgroundColor="#1976D2"
+                    app:cardBackgroundColor="#331976D2"
                     app:cardCornerRadius="8dp"
                     app:cardElevation="4dp">
 

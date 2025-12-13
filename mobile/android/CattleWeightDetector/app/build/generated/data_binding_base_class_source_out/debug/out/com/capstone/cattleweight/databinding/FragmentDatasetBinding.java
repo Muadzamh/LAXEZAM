@@ -31,9 +31,6 @@ public final class FragmentDatasetBinding implements ViewBinding {
   public final PreviewView cameraPreview;
 
   @NonNull
-  public final ConstraintLayout cameraSection;
-
-  @NonNull
   public final CardView controlBar;
 
   @NonNull
@@ -41,6 +38,9 @@ public final class FragmentDatasetBinding implements ViewBinding {
 
   @NonNull
   public final SwitchCompat switchLidarMode;
+
+  @NonNull
+  public final ConstraintLayout topOverlay;
 
   @NonNull
   public final TextView tvCameraStatus;
@@ -71,8 +71,8 @@ public final class FragmentDatasetBinding implements ViewBinding {
 
   private FragmentDatasetBinding(@NonNull ConstraintLayout rootView,
       @NonNull FloatingActionButton btnCapture, @NonNull PreviewView cameraPreview,
-      @NonNull ConstraintLayout cameraSection, @NonNull CardView controlBar,
-      @NonNull ConstraintLayout lidarSection, @NonNull SwitchCompat switchLidarMode,
+      @NonNull CardView controlBar, @NonNull ConstraintLayout lidarSection,
+      @NonNull SwitchCompat switchLidarMode, @NonNull ConstraintLayout topOverlay,
       @NonNull TextView tvCameraStatus, @NonNull TextView tvConnectionStatus,
       @NonNull TextView tvDatasetCount, @NonNull TextView tvDistance,
       @NonNull LinearLayout tvLidarHeader, @NonNull TextView tvSaveStatus,
@@ -81,10 +81,10 @@ public final class FragmentDatasetBinding implements ViewBinding {
     this.rootView = rootView;
     this.btnCapture = btnCapture;
     this.cameraPreview = cameraPreview;
-    this.cameraSection = cameraSection;
     this.controlBar = controlBar;
     this.lidarSection = lidarSection;
     this.switchLidarMode = switchLidarMode;
+    this.topOverlay = topOverlay;
     this.tvCameraStatus = tvCameraStatus;
     this.tvConnectionStatus = tvConnectionStatus;
     this.tvDatasetCount = tvDatasetCount;
@@ -135,12 +135,6 @@ public final class FragmentDatasetBinding implements ViewBinding {
         break missingId;
       }
 
-      id = R.id.cameraSection;
-      ConstraintLayout cameraSection = ViewBindings.findChildViewById(rootView, id);
-      if (cameraSection == null) {
-        break missingId;
-      }
-
       id = R.id.controlBar;
       CardView controlBar = ViewBindings.findChildViewById(rootView, id);
       if (controlBar == null) {
@@ -156,6 +150,12 @@ public final class FragmentDatasetBinding implements ViewBinding {
       id = R.id.switchLidarMode;
       SwitchCompat switchLidarMode = ViewBindings.findChildViewById(rootView, id);
       if (switchLidarMode == null) {
+        break missingId;
+      }
+
+      id = R.id.topOverlay;
+      ConstraintLayout topOverlay = ViewBindings.findChildViewById(rootView, id);
+      if (topOverlay == null) {
         break missingId;
       }
 
@@ -214,9 +214,9 @@ public final class FragmentDatasetBinding implements ViewBinding {
       }
 
       return new FragmentDatasetBinding((ConstraintLayout) rootView, btnCapture, cameraPreview,
-          cameraSection, controlBar, lidarSection, switchLidarMode, tvCameraStatus,
-          tvConnectionStatus, tvDatasetCount, tvDistance, tvLidarHeader, tvSaveStatus,
-          tvSignalStrength, tvTemperature, tvTimestamp);
+          controlBar, lidarSection, switchLidarMode, topOverlay, tvCameraStatus, tvConnectionStatus,
+          tvDatasetCount, tvDistance, tvLidarHeader, tvSaveStatus, tvSignalStrength, tvTemperature,
+          tvTimestamp);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));
