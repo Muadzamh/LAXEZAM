@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- USB device filter for TF Luna LiDAR -->
+    <!-- This allows the app to detect any USB serial device -->
+    <!-- TF Luna uses CH340/CH341 USB-to-Serial chip -->
+    
+    <!-- CH340/CH341 USB-Serial Converter -->
+    <usb-device vendor-id="6790" product-id="29987" />
+    
+    <!-- FTDI FT232 USB-Serial Converter (common alternative) -->
+    <usb-device vendor-id="1027" product-id="24577" />
+    
+    <!-- Generic USB CDC devices -->
+    <usb-device class="2" />
+</resources>

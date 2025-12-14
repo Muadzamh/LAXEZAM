@@ -1,0 +1,403 @@
+-- Merging decision tree log ---
+manifest
+ADDED from D:\My Project\Capstone\mobile\android\CattleWeightDetector\app\src\main\AndroidManifest.xml:2:1-41:12
+INJECTED from D:\My Project\Capstone\mobile\android\CattleWeightDetector\app\src\main\AndroidManifest.xml:2:1-41:12
+INJECTED from D:\My Project\Capstone\mobile\android\CattleWeightDetector\app\src\main\AndroidManifest.xml:2:1-41:12
+INJECTED from D:\My Project\Capstone\mobile\android\CattleWeightDetector\app\src\main\AndroidManifest.xml:2:1-41:12
+MERGED from [androidx.databinding:viewbinding:8.7.3] C:\Users\Dell\.gradle\caches\8.10.2\transforms\ce3d47300dcc5f81a1f988349b8c0b94\transformed\jetified-viewbinding-8.7.3\AndroidManifest.xml:2:1-7:12
+MERGED from [com.google.android.material:material:1.10.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\fd1ec12ea05f4748ca5992114e39448e\transformed\material-1.10.0\AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.constraintlayout:constraintlayout:2.1.4] C:\Users\Dell\.gradle\caches\8.10.2\transforms\594632abcafe11eff1d8a7253d12d966\transformed\constraintlayout-2.1.4\AndroidManifest.xml:2:1-11:12
+MERGED from [androidx.camera:camera-video:1.3.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\e5f6a50b577e54619a2deb37f25eb0e4\transformed\jetified-camera-video-1.3.0\AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.camera:camera-lifecycle:1.3.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\e7b7c8cb349b91d0211043a115540e05\transformed\jetified-camera-lifecycle-1.3.0\AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.camera:camera-camera2:1.3.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\64c126f4ef7765e691c05bf4eed05ca6\transformed\jetified-camera-camera2-1.3.0\AndroidManifest.xml:17:1-36:12
+MERGED from [androidx.camera:camera-core:1.3.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\e2603e0698a7f62b9f5c361ace1848cf\transformed\jetified-camera-core-1.3.0\AndroidManifest.xml:17:1-36:12
+MERGED from [androidx.camera:camera-view:1.3.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\7dfd3afec2f2a4d75888b7d44b5e0bca\transformed\jetified-camera-view-1.3.0\AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.appcompat:appcompat-resources:1.6.1] C:\Users\Dell\.gradle\caches\8.10.2\transforms\eefa8a92bba61de8a372a25e70b5547b\transformed\jetified-appcompat-resources-1.6.1\AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.appcompat:appcompat:1.6.1] C:\Users\Dell\.gradle\caches\8.10.2\transforms\afb163e599d9ac7edf990af203f1af39\transformed\appcompat-1.6.1\AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.cardview:cardview:1.0.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\0d86633ddd3fcf38ac9d4a844b12471c\transformed\cardview-1.0.0\AndroidManifest.xml:17:1-22:12
+MERGED from [com.github.mik3y:usb-serial-for-android:3.7.3] C:\Users\Dell\.gradle\caches\8.10.2\transforms\236fbfcb20f184a3071dd36c8dff6bc8\transformed\jetified-usb-serial-for-android-3.7.3\AndroidManifest.xml:2:1-7:12
+MERGED from [org.tensorflow:tensorflow-lite-support:0.4.4] C:\Users\Dell\.gradle\caches\8.10.2\transforms\1bd81630a8a7d05c3e3fd61e4de700d8\transformed\jetified-tensorflow-lite-support-0.4.4\AndroidManifest.xml:2:1-5:12
+MERGED from [org.tensorflow:tensorflow-lite:2.14.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\38dc3528ccafc2f0a4b0d4749a533f25\transformed\jetified-tensorflow-lite-2.14.0\AndroidManifest.xml:2:1-11:12
+MERGED from [androidx.emoji2:emoji2-views-helper:1.2.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\0958111b03d395d577e93385e3dd8016\transformed\jetified-emoji2-views-helper-1.2.0\AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.emoji2:emoji2:1.2.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\23146aa632cb48ca8cfc7c944d82b93e\transformed\jetified-emoji2-1.2.0\AndroidManifest.xml:17:1-35:12
+MERGED from [androidx.viewpager2:viewpager2:1.0.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\17c8e4de4137b9f00e464795fd4c7c9f\transformed\jetified-viewpager2-1.0.0\AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.fragment:fragment:1.3.6] C:\Users\Dell\.gradle\caches\8.10.2\transforms\8cb6cf8c61ec5a8b5818d89eb0879417\transformed\fragment-1.3.6\AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.activity:activity:1.8.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\ad5d608f158ee7d6e2574fc0078a2a10\transformed\jetified-activity-1.8.0\AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.drawerlayout:drawerlayout:1.1.1] C:\Users\Dell\.gradle\caches\8.10.2\transforms\0fd8639685d4eeca66b5cd7a0ad508a9\transformed\drawerlayout-1.1.1\AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.coordinatorlayout:coordinatorlayout:1.1.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\34cb538c3166e523c8910746b79e1684\transformed\coordinatorlayout-1.1.0\AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.dynamicanimation:dynamicanimation:1.0.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\42c8b93e532448f9020ae3307b86d34c\transformed\dynamicanimation-1.0.0\AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.transition:transition:1.2.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\62318d775059284dd99b4b768d1ba02d\transformed\transition-1.2.0\AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.vectordrawable:vectordrawable-animated:1.1.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\cc897d7d274c0a2fbf1c96a039af63e6\transformed\vectordrawable-animated-1.1.0\AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.vectordrawable:vectordrawable:1.1.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\7b61d13af8448bdfc90958bf1939df3b\transformed\vectordrawable-1.1.0\AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.legacy:legacy-support-core-utils:1.0.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\9802cb356f13284ae42e2421b30f7845\transformed\legacy-support-core-utils-1.0.0\AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.loader:loader:1.0.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\6e3b1336a27e434f73f782ce10dcc9e7\transformed\loader-1.0.0\AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.savedstate:savedstate:1.2.1] C:\Users\Dell\.gradle\caches\8.10.2\transforms\c444f7b8ef8e490f57824f758fe58df1\transformed\jetified-savedstate-1.2.1\AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.lifecycle:lifecycle-process:2.6.1] C:\Users\Dell\.gradle\caches\8.10.2\transforms\5c28cb961621e9375404e35c51e0ac87\transformed\jetified-lifecycle-process-2.6.1\AndroidManifest.xml:17:1-35:12
+MERGED from [androidx.lifecycle:lifecycle-livedata:2.6.1] C:\Users\Dell\.gradle\caches\8.10.2\transforms\b8f4411bf9deb57cb79e255114b73f57\transformed\lifecycle-livedata-2.6.1\AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.6.1] C:\Users\Dell\.gradle\caches\8.10.2\transforms\f811a9c02e8ebf20585ba619cc4c5196\transformed\lifecycle-livedata-core-2.6.1\AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.lifecycle:lifecycle-viewmodel:2.6.1] C:\Users\Dell\.gradle\caches\8.10.2\transforms\6d7d2f067b00824ba9b9faa34ca6a604\transformed\lifecycle-viewmodel-2.6.1\AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.lifecycle:lifecycle-runtime:2.6.1] C:\Users\Dell\.gradle\caches\8.10.2\transforms\6a570001cf853bffc380f2f62ae7567e\transformed\lifecycle-runtime-2.6.1\AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-savedstate:2.6.1] C:\Users\Dell\.gradle\caches\8.10.2\transforms\d7c701595026b2685da26012b1eae415\transformed\jetified-lifecycle-viewmodel-savedstate-2.6.1\AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.core:core-ktx:1.9.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\3483d8c38460275477150ca58d518c5e\transformed\jetified-core-ktx-1.9.0\AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.viewpager:viewpager:1.0.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\4be2f747f7120079ade775c7af6e8324\transformed\viewpager-1.0.0\AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.recyclerview:recyclerview:1.1.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\b316fd55f622dbd02717223584a3cb00\transformed\recyclerview-1.1.0\AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.customview:customview:1.1.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\f69f6609ddf34df60c39b27d64e288cf\transformed\customview-1.1.0\AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.core:core:1.9.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\7e7086c419c93c07d9ba425f4911a705\transformed\core-1.9.0\AndroidManifest.xml:17:1-30:12
+MERGED from [androidx.cursoradapter:cursoradapter:1.0.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\7d2c13b65d99b6812e56d214bb41a5c9\transformed\cursoradapter-1.0.0\AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.exifinterface:exifinterface:1.3.2] C:\Users\Dell\.gradle\caches\8.10.2\transforms\2ed2f320703f8d1f8d6e39754c1ae7e0\transformed\exifinterface-1.3.2\AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] C:\Users\Dell\.gradle\caches\8.10.2\transforms\674a4dbf70b94751004bd496b5bd3b19\transformed\versionedparcelable-1.1.1\AndroidManifest.xml:17:1-27:12
+MERGED from [androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\f73f17adf8b582d856806319bf1084db\transformed\jetified-profileinstaller-1.3.0\AndroidManifest.xml:17:1-55:12
+MERGED from [androidx.startup:startup-runtime:1.1.1] C:\Users\Dell\.gradle\caches\8.10.2\transforms\2d77aba8ad981030bca0e0e65b7eb01d\transformed\jetified-startup-runtime-1.1.1\AndroidManifest.xml:17:1-33:12
+MERGED from [androidx.tracing:tracing:1.0.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\1b716adb3cb32c757800891714e81e5f\transformed\jetified-tracing-1.0.0\AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.interpolator:interpolator:1.0.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\adcee894b3f823018bde6fb24b2d70bf\transformed\interpolator-1.0.0\AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.arch.core:core-runtime:2.2.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\5aa0aa1a5144f4be327e30812b076777\transformed\core-runtime-2.2.0\AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.documentfile:documentfile:1.0.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\6ef69e19f1decebaaf58f6f9dfa97e70\transformed\documentfile-1.0.0\AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.localbroadcastmanager:localbroadcastmanager:1.0.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\f959ec26066c8efdfdad365088c37ee4\transformed\localbroadcastmanager-1.0.0\AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.print:print:1.0.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\f63234b86b825993fbe0692e1f86170a\transformed\print-1.0.0\AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.annotation:annotation-experimental:1.3.1] C:\Users\Dell\.gradle\caches\8.10.2\transforms\4e74b91ec311e713c90b6af307cad4ef\transformed\jetified-annotation-experimental-1.3.1\AndroidManifest.xml:17:1-22:12
+MERGED from [org.tensorflow:tensorflow-lite-support-api:0.4.4] C:\Users\Dell\.gradle\caches\8.10.2\transforms\f5a6d7ff83e07792c520bb827a129d99\transformed\jetified-tensorflow-lite-support-api-0.4.4\AndroidManifest.xml:2:1-5:12
+MERGED from [org.tensorflow:tensorflow-lite-api:2.14.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\7ea407b0b3c18b745d53ca63886b1c56\transformed\jetified-tensorflow-lite-api-2.14.0\AndroidManifest.xml:2:1-11:12
+MERGED from [com.google.android.odml:image:1.0.0-beta1] C:\Users\Dell\.gradle\caches\8.10.2\transforms\2dfd5b63f7f93d7eab796cd07f09cad6\transformed\jetified-image-1.0.0-beta1\AndroidManifest.xml:2:1-9:12
+	package
+		INJECTED from D:\My Project\Capstone\mobile\android\CattleWeightDetector\app\src\main\AndroidManifest.xml
+	android:versionName
+		INJECTED from D:\My Project\Capstone\mobile\android\CattleWeightDetector\app\src\main\AndroidManifest.xml
+	xmlns:tools
+		ADDED from D:\My Project\Capstone\mobile\android\CattleWeightDetector\app\src\main\AndroidManifest.xml:3:5-51
+	android:versionCode
+		INJECTED from D:\My Project\Capstone\mobile\android\CattleWeightDetector\app\src\main\AndroidManifest.xml
+	xmlns:android
+		ADDED from D:\My Project\Capstone\mobile\android\CattleWeightDetector\app\src\main\AndroidManifest.xml:2:11-69
+uses-feature#android.hardware.camera
+ADDED from D:\My Project\Capstone\mobile\android\CattleWeightDetector\app\src\main\AndroidManifest.xml:6:5-84
+	android:required
+		ADDED from D:\My Project\Capstone\mobile\android\CattleWeightDetector\app\src\main\AndroidManifest.xml:6:58-81
+	android:name
+		ADDED from D:\My Project\Capstone\mobile\android\CattleWeightDetector\app\src\main\AndroidManifest.xml:6:19-57
+uses-feature#android.hardware.usb.host
+ADDED from D:\My Project\Capstone\mobile\android\CattleWeightDetector\app\src\main\AndroidManifest.xml:7:5-62
+	android:name
+		ADDED from D:\My Project\Capstone\mobile\android\CattleWeightDetector\app\src\main\AndroidManifest.xml:7:19-59
+uses-permission#android.permission.CAMERA
+ADDED from D:\My Project\Capstone\mobile\android\CattleWeightDetector\app\src\main\AndroidManifest.xml:8:5-65
+	android:name
+		ADDED from D:\My Project\Capstone\mobile\android\CattleWeightDetector\app\src\main\AndroidManifest.xml:8:22-62
+uses-permission#android.permission.INTERNET
+ADDED from D:\My Project\Capstone\mobile\android\CattleWeightDetector\app\src\main\AndroidManifest.xml:9:5-67
+	android:name
+		ADDED from D:\My Project\Capstone\mobile\android\CattleWeightDetector\app\src\main\AndroidManifest.xml:9:22-64
+uses-permission#android.permission.ACCESS_NETWORK_STATE
+ADDED from D:\My Project\Capstone\mobile\android\CattleWeightDetector\app\src\main\AndroidManifest.xml:10:5-79
+	android:name
+		ADDED from D:\My Project\Capstone\mobile\android\CattleWeightDetector\app\src\main\AndroidManifest.xml:10:22-76
+uses-permission#android.permission.WRITE_EXTERNAL_STORAGE
+ADDED from D:\My Project\Capstone\mobile\android\CattleWeightDetector\app\src\main\AndroidManifest.xml:11:5-12:38
+	android:maxSdkVersion
+		ADDED from D:\My Project\Capstone\mobile\android\CattleWeightDetector\app\src\main\AndroidManifest.xml:12:9-35
+	android:name
+		ADDED from D:\My Project\Capstone\mobile\android\CattleWeightDetector\app\src\main\AndroidManifest.xml:11:22-78
+application
+ADDED from D:\My Project\Capstone\mobile\android\CattleWeightDetector\app\src\main\AndroidManifest.xml:14:5-39:19
+INJECTED from D:\My Project\Capstone\mobile\android\CattleWeightDetector\app\src\main\AndroidManifest.xml:14:5-39:19
+MERGED from [com.google.android.material:material:1.10.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\fd1ec12ea05f4748ca5992114e39448e\transformed\material-1.10.0\AndroidManifest.xml:22:5-20
+MERGED from [com.google.android.material:material:1.10.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\fd1ec12ea05f4748ca5992114e39448e\transformed\material-1.10.0\AndroidManifest.xml:22:5-20
+MERGED from [androidx.constraintlayout:constraintlayout:2.1.4] C:\Users\Dell\.gradle\caches\8.10.2\transforms\594632abcafe11eff1d8a7253d12d966\transformed\constraintlayout-2.1.4\AndroidManifest.xml:9:5-20
+MERGED from [androidx.constraintlayout:constraintlayout:2.1.4] C:\Users\Dell\.gradle\caches\8.10.2\transforms\594632abcafe11eff1d8a7253d12d966\transformed\constraintlayout-2.1.4\AndroidManifest.xml:9:5-20
+MERGED from [androidx.camera:camera-camera2:1.3.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\64c126f4ef7765e691c05bf4eed05ca6\transformed\jetified-camera-camera2-1.3.0\AndroidManifest.xml:23:5-34:19
+MERGED from [androidx.camera:camera-camera2:1.3.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\64c126f4ef7765e691c05bf4eed05ca6\transformed\jetified-camera-camera2-1.3.0\AndroidManifest.xml:23:5-34:19
+MERGED from [androidx.camera:camera-core:1.3.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\e2603e0698a7f62b9f5c361ace1848cf\transformed\jetified-camera-core-1.3.0\AndroidManifest.xml:23:5-34:19
+MERGED from [androidx.camera:camera-core:1.3.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\e2603e0698a7f62b9f5c361ace1848cf\transformed\jetified-camera-core-1.3.0\AndroidManifest.xml:23:5-34:19
+MERGED from [org.tensorflow:tensorflow-lite:2.14.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\38dc3528ccafc2f0a4b0d4749a533f25\transformed\jetified-tensorflow-lite-2.14.0\AndroidManifest.xml:9:5-20
+MERGED from [org.tensorflow:tensorflow-lite:2.14.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\38dc3528ccafc2f0a4b0d4749a533f25\transformed\jetified-tensorflow-lite-2.14.0\AndroidManifest.xml:9:5-20
+MERGED from [androidx.emoji2:emoji2:1.2.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\23146aa632cb48ca8cfc7c944d82b93e\transformed\jetified-emoji2-1.2.0\AndroidManifest.xml:23:5-33:19
+MERGED from [androidx.emoji2:emoji2:1.2.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\23146aa632cb48ca8cfc7c944d82b93e\transformed\jetified-emoji2-1.2.0\AndroidManifest.xml:23:5-33:19
+MERGED from [androidx.lifecycle:lifecycle-process:2.6.1] C:\Users\Dell\.gradle\caches\8.10.2\transforms\5c28cb961621e9375404e35c51e0ac87\transformed\jetified-lifecycle-process-2.6.1\AndroidManifest.xml:23:5-33:19
+MERGED from [androidx.lifecycle:lifecycle-process:2.6.1] C:\Users\Dell\.gradle\caches\8.10.2\transforms\5c28cb961621e9375404e35c51e0ac87\transformed\jetified-lifecycle-process-2.6.1\AndroidManifest.xml:23:5-33:19
+MERGED from [androidx.core:core:1.9.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\7e7086c419c93c07d9ba425f4911a705\transformed\core-1.9.0\AndroidManifest.xml:28:5-89
+MERGED from [androidx.core:core:1.9.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\7e7086c419c93c07d9ba425f4911a705\transformed\core-1.9.0\AndroidManifest.xml:28:5-89
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] C:\Users\Dell\.gradle\caches\8.10.2\transforms\674a4dbf70b94751004bd496b5bd3b19\transformed\versionedparcelable-1.1.1\AndroidManifest.xml:24:5-25:19
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] C:\Users\Dell\.gradle\caches\8.10.2\transforms\674a4dbf70b94751004bd496b5bd3b19\transformed\versionedparcelable-1.1.1\AndroidManifest.xml:24:5-25:19
+MERGED from [androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\f73f17adf8b582d856806319bf1084db\transformed\jetified-profileinstaller-1.3.0\AndroidManifest.xml:23:5-53:19
+MERGED from [androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\f73f17adf8b582d856806319bf1084db\transformed\jetified-profileinstaller-1.3.0\AndroidManifest.xml:23:5-53:19
+MERGED from [androidx.startup:startup-runtime:1.1.1] C:\Users\Dell\.gradle\caches\8.10.2\transforms\2d77aba8ad981030bca0e0e65b7eb01d\transformed\jetified-startup-runtime-1.1.1\AndroidManifest.xml:25:5-31:19
+MERGED from [androidx.startup:startup-runtime:1.1.1] C:\Users\Dell\.gradle\caches\8.10.2\transforms\2d77aba8ad981030bca0e0e65b7eb01d\transformed\jetified-startup-runtime-1.1.1\AndroidManifest.xml:25:5-31:19
+MERGED from [org.tensorflow:tensorflow-lite-api:2.14.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\7ea407b0b3c18b745d53ca63886b1c56\transformed\jetified-tensorflow-lite-api-2.14.0\AndroidManifest.xml:9:5-20
+MERGED from [org.tensorflow:tensorflow-lite-api:2.14.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\7ea407b0b3c18b745d53ca63886b1c56\transformed\jetified-tensorflow-lite-api-2.14.0\AndroidManifest.xml:9:5-20
+MERGED from [com.google.android.odml:image:1.0.0-beta1] C:\Users\Dell\.gradle\caches\8.10.2\transforms\2dfd5b63f7f93d7eab796cd07f09cad6\transformed\jetified-image-1.0.0-beta1\AndroidManifest.xml:7:5-20
+MERGED from [com.google.android.odml:image:1.0.0-beta1] C:\Users\Dell\.gradle\caches\8.10.2\transforms\2dfd5b63f7f93d7eab796cd07f09cad6\transformed\jetified-image-1.0.0-beta1\AndroidManifest.xml:7:5-20
+	android:extractNativeLibs
+		INJECTED from D:\My Project\Capstone\mobile\android\CattleWeightDetector\app\src\main\AndroidManifest.xml
+	android:appComponentFactory
+		ADDED from [androidx.core:core:1.9.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\7e7086c419c93c07d9ba425f4911a705\transformed\core-1.9.0\AndroidManifest.xml:28:18-86
+	android:supportsRtl
+		ADDED from D:\My Project\Capstone\mobile\android\CattleWeightDetector\app\src\main\AndroidManifest.xml:19:9-35
+	android:label
+		ADDED from D:\My Project\Capstone\mobile\android\CattleWeightDetector\app\src\main\AndroidManifest.xml:17:9-41
+	android:roundIcon
+		ADDED from D:\My Project\Capstone\mobile\android\CattleWeightDetector\app\src\main\AndroidManifest.xml:18:9-61
+	tools:targetApi
+		ADDED from D:\My Project\Capstone\mobile\android\CattleWeightDetector\app\src\main\AndroidManifest.xml:22:9-29
+	android:icon
+		ADDED from D:\My Project\Capstone\mobile\android\CattleWeightDetector\app\src\main\AndroidManifest.xml:16:9-56
+	android:allowBackup
+		ADDED from D:\My Project\Capstone\mobile\android\CattleWeightDetector\app\src\main\AndroidManifest.xml:15:9-35
+	android:theme
+		ADDED from D:\My Project\Capstone\mobile\android\CattleWeightDetector\app\src\main\AndroidManifest.xml:20:9-58
+	android:usesCleartextTraffic
+		ADDED from D:\My Project\Capstone\mobile\android\CattleWeightDetector\app\src\main\AndroidManifest.xml:21:9-44
+activity#com.capstone.cattleweight.MainActivityNew
+ADDED from D:\My Project\Capstone\mobile\android\CattleWeightDetector\app\src\main\AndroidManifest.xml:24:9-38:20
+	android:screenOrientation
+		ADDED from D:\My Project\Capstone\mobile\android\CattleWeightDetector\app\src\main\AndroidManifest.xml:27:13-49
+	android:exported
+		ADDED from D:\My Project\Capstone\mobile\android\CattleWeightDetector\app\src\main\AndroidManifest.xml:26:13-36
+	android:name
+		ADDED from D:\My Project\Capstone\mobile\android\CattleWeightDetector\app\src\main\AndroidManifest.xml:25:13-44
+intent-filter#action:name:android.intent.action.MAIN+category:name:android.intent.category.LAUNCHER
+ADDED from D:\My Project\Capstone\mobile\android\CattleWeightDetector\app\src\main\AndroidManifest.xml:28:13-31:29
+action#android.intent.action.MAIN
+ADDED from D:\My Project\Capstone\mobile\android\CattleWeightDetector\app\src\main\AndroidManifest.xml:29:17-69
+	android:name
+		ADDED from D:\My Project\Capstone\mobile\android\CattleWeightDetector\app\src\main\AndroidManifest.xml:29:25-66
+category#android.intent.category.LAUNCHER
+ADDED from D:\My Project\Capstone\mobile\android\CattleWeightDetector\app\src\main\AndroidManifest.xml:30:17-77
+	android:name
+		ADDED from D:\My Project\Capstone\mobile\android\CattleWeightDetector\app\src\main\AndroidManifest.xml:30:27-74
+intent-filter#action:name:android.hardware.usb.action.USB_DEVICE_ATTACHED
+ADDED from D:\My Project\Capstone\mobile\android\CattleWeightDetector\app\src\main\AndroidManifest.xml:32:13-34:29
+action#android.hardware.usb.action.USB_DEVICE_ATTACHED
+ADDED from D:\My Project\Capstone\mobile\android\CattleWeightDetector\app\src\main\AndroidManifest.xml:33:17-90
+	android:name
+		ADDED from D:\My Project\Capstone\mobile\android\CattleWeightDetector\app\src\main\AndroidManifest.xml:33:25-87
+meta-data#android.hardware.usb.action.USB_DEVICE_ATTACHED
+ADDED from D:\My Project\Capstone\mobile\android\CattleWeightDetector\app\src\main\AndroidManifest.xml:35:13-37:57
+	android:resource
+		ADDED from D:\My Project\Capstone\mobile\android\CattleWeightDetector\app\src\main\AndroidManifest.xml:37:17-54
+	android:name
+		ADDED from D:\My Project\Capstone\mobile\android\CattleWeightDetector\app\src\main\AndroidManifest.xml:36:17-79
+uses-sdk
+INJECTED from D:\My Project\Capstone\mobile\android\CattleWeightDetector\app\src\main\AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from D:\My Project\Capstone\mobile\android\CattleWeightDetector\app\src\main\AndroidManifest.xml
+INJECTED from D:\My Project\Capstone\mobile\android\CattleWeightDetector\app\src\main\AndroidManifest.xml
+MERGED from [androidx.databinding:viewbinding:8.7.3] C:\Users\Dell\.gradle\caches\8.10.2\transforms\ce3d47300dcc5f81a1f988349b8c0b94\transformed\jetified-viewbinding-8.7.3\AndroidManifest.xml:5:5-44
+MERGED from [androidx.databinding:viewbinding:8.7.3] C:\Users\Dell\.gradle\caches\8.10.2\transforms\ce3d47300dcc5f81a1f988349b8c0b94\transformed\jetified-viewbinding-8.7.3\AndroidManifest.xml:5:5-44
+MERGED from [com.google.android.material:material:1.10.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\fd1ec12ea05f4748ca5992114e39448e\transformed\material-1.10.0\AndroidManifest.xml:20:5-44
+MERGED from [com.google.android.material:material:1.10.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\fd1ec12ea05f4748ca5992114e39448e\transformed\material-1.10.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.constraintlayout:constraintlayout:2.1.4] C:\Users\Dell\.gradle\caches\8.10.2\transforms\594632abcafe11eff1d8a7253d12d966\transformed\constraintlayout-2.1.4\AndroidManifest.xml:5:5-7:41
+MERGED from [androidx.constraintlayout:constraintlayout:2.1.4] C:\Users\Dell\.gradle\caches\8.10.2\transforms\594632abcafe11eff1d8a7253d12d966\transformed\constraintlayout-2.1.4\AndroidManifest.xml:5:5-7:41
+MERGED from [androidx.camera:camera-video:1.3.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\e5f6a50b577e54619a2deb37f25eb0e4\transformed\jetified-camera-video-1.3.0\AndroidManifest.xml:5:5-44
+MERGED from [androidx.camera:camera-video:1.3.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\e5f6a50b577e54619a2deb37f25eb0e4\transformed\jetified-camera-video-1.3.0\AndroidManifest.xml:5:5-44
+MERGED from [androidx.camera:camera-lifecycle:1.3.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\e7b7c8cb349b91d0211043a115540e05\transformed\jetified-camera-lifecycle-1.3.0\AndroidManifest.xml:5:5-44
+MERGED from [androidx.camera:camera-lifecycle:1.3.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\e7b7c8cb349b91d0211043a115540e05\transformed\jetified-camera-lifecycle-1.3.0\AndroidManifest.xml:5:5-44
+MERGED from [androidx.camera:camera-camera2:1.3.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\64c126f4ef7765e691c05bf4eed05ca6\transformed\jetified-camera-camera2-1.3.0\AndroidManifest.xml:21:5-44
+MERGED from [androidx.camera:camera-camera2:1.3.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\64c126f4ef7765e691c05bf4eed05ca6\transformed\jetified-camera-camera2-1.3.0\AndroidManifest.xml:21:5-44
+MERGED from [androidx.camera:camera-core:1.3.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\e2603e0698a7f62b9f5c361ace1848cf\transformed\jetified-camera-core-1.3.0\AndroidManifest.xml:21:5-44
+MERGED from [androidx.camera:camera-core:1.3.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\e2603e0698a7f62b9f5c361ace1848cf\transformed\jetified-camera-core-1.3.0\AndroidManifest.xml:21:5-44
+MERGED from [androidx.camera:camera-view:1.3.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\7dfd3afec2f2a4d75888b7d44b5e0bca\transformed\jetified-camera-view-1.3.0\AndroidManifest.xml:5:5-44
+MERGED from [androidx.camera:camera-view:1.3.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\7dfd3afec2f2a4d75888b7d44b5e0bca\transformed\jetified-camera-view-1.3.0\AndroidManifest.xml:5:5-44
+MERGED from [androidx.appcompat:appcompat-resources:1.6.1] C:\Users\Dell\.gradle\caches\8.10.2\transforms\eefa8a92bba61de8a372a25e70b5547b\transformed\jetified-appcompat-resources-1.6.1\AndroidManifest.xml:20:5-44
+MERGED from [androidx.appcompat:appcompat-resources:1.6.1] C:\Users\Dell\.gradle\caches\8.10.2\transforms\eefa8a92bba61de8a372a25e70b5547b\transformed\jetified-appcompat-resources-1.6.1\AndroidManifest.xml:20:5-44
+MERGED from [androidx.appcompat:appcompat:1.6.1] C:\Users\Dell\.gradle\caches\8.10.2\transforms\afb163e599d9ac7edf990af203f1af39\transformed\appcompat-1.6.1\AndroidManifest.xml:20:5-44
+MERGED from [androidx.appcompat:appcompat:1.6.1] C:\Users\Dell\.gradle\caches\8.10.2\transforms\afb163e599d9ac7edf990af203f1af39\transformed\appcompat-1.6.1\AndroidManifest.xml:20:5-44
+MERGED from [androidx.cardview:cardview:1.0.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\0d86633ddd3fcf38ac9d4a844b12471c\transformed\cardview-1.0.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.cardview:cardview:1.0.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\0d86633ddd3fcf38ac9d4a844b12471c\transformed\cardview-1.0.0\AndroidManifest.xml:20:5-44
+MERGED from [com.github.mik3y:usb-serial-for-android:3.7.3] C:\Users\Dell\.gradle\caches\8.10.2\transforms\236fbfcb20f184a3071dd36c8dff6bc8\transformed\jetified-usb-serial-for-android-3.7.3\AndroidManifest.xml:5:5-44
+MERGED from [com.github.mik3y:usb-serial-for-android:3.7.3] C:\Users\Dell\.gradle\caches\8.10.2\transforms\236fbfcb20f184a3071dd36c8dff6bc8\transformed\jetified-usb-serial-for-android-3.7.3\AndroidManifest.xml:5:5-44
+MERGED from [org.tensorflow:tensorflow-lite-support:0.4.4] C:\Users\Dell\.gradle\caches\8.10.2\transforms\1bd81630a8a7d05c3e3fd61e4de700d8\transformed\jetified-tensorflow-lite-support-0.4.4\AndroidManifest.xml:4:3-71
+MERGED from [org.tensorflow:tensorflow-lite-support:0.4.4] C:\Users\Dell\.gradle\caches\8.10.2\transforms\1bd81630a8a7d05c3e3fd61e4de700d8\transformed\jetified-tensorflow-lite-support-0.4.4\AndroidManifest.xml:4:3-71
+MERGED from [org.tensorflow:tensorflow-lite:2.14.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\38dc3528ccafc2f0a4b0d4749a533f25\transformed\jetified-tensorflow-lite-2.14.0\AndroidManifest.xml:6:5-7:38
+MERGED from [org.tensorflow:tensorflow-lite:2.14.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\38dc3528ccafc2f0a4b0d4749a533f25\transformed\jetified-tensorflow-lite-2.14.0\AndroidManifest.xml:6:5-7:38
+MERGED from [androidx.emoji2:emoji2-views-helper:1.2.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\0958111b03d395d577e93385e3dd8016\transformed\jetified-emoji2-views-helper-1.2.0\AndroidManifest.xml:5:5-44
+MERGED from [androidx.emoji2:emoji2-views-helper:1.2.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\0958111b03d395d577e93385e3dd8016\transformed\jetified-emoji2-views-helper-1.2.0\AndroidManifest.xml:5:5-44
+MERGED from [androidx.emoji2:emoji2:1.2.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\23146aa632cb48ca8cfc7c944d82b93e\transformed\jetified-emoji2-1.2.0\AndroidManifest.xml:21:5-44
+MERGED from [androidx.emoji2:emoji2:1.2.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\23146aa632cb48ca8cfc7c944d82b93e\transformed\jetified-emoji2-1.2.0\AndroidManifest.xml:21:5-44
+MERGED from [androidx.viewpager2:viewpager2:1.0.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\17c8e4de4137b9f00e464795fd4c7c9f\transformed\jetified-viewpager2-1.0.0\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.viewpager2:viewpager2:1.0.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\17c8e4de4137b9f00e464795fd4c7c9f\transformed\jetified-viewpager2-1.0.0\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.fragment:fragment:1.3.6] C:\Users\Dell\.gradle\caches\8.10.2\transforms\8cb6cf8c61ec5a8b5818d89eb0879417\transformed\fragment-1.3.6\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.fragment:fragment:1.3.6] C:\Users\Dell\.gradle\caches\8.10.2\transforms\8cb6cf8c61ec5a8b5818d89eb0879417\transformed\fragment-1.3.6\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.activity:activity:1.8.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\ad5d608f158ee7d6e2574fc0078a2a10\transformed\jetified-activity-1.8.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.activity:activity:1.8.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\ad5d608f158ee7d6e2574fc0078a2a10\transformed\jetified-activity-1.8.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.drawerlayout:drawerlayout:1.1.1] C:\Users\Dell\.gradle\caches\8.10.2\transforms\0fd8639685d4eeca66b5cd7a0ad508a9\transformed\drawerlayout-1.1.1\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.drawerlayout:drawerlayout:1.1.1] C:\Users\Dell\.gradle\caches\8.10.2\transforms\0fd8639685d4eeca66b5cd7a0ad508a9\transformed\drawerlayout-1.1.1\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.coordinatorlayout:coordinatorlayout:1.1.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\34cb538c3166e523c8910746b79e1684\transformed\coordinatorlayout-1.1.0\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.coordinatorlayout:coordinatorlayout:1.1.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\34cb538c3166e523c8910746b79e1684\transformed\coordinatorlayout-1.1.0\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.dynamicanimation:dynamicanimation:1.0.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\42c8b93e532448f9020ae3307b86d34c\transformed\dynamicanimation-1.0.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.dynamicanimation:dynamicanimation:1.0.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\42c8b93e532448f9020ae3307b86d34c\transformed\dynamicanimation-1.0.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.transition:transition:1.2.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\62318d775059284dd99b4b768d1ba02d\transformed\transition-1.2.0\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.transition:transition:1.2.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\62318d775059284dd99b4b768d1ba02d\transformed\transition-1.2.0\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.vectordrawable:vectordrawable-animated:1.1.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\cc897d7d274c0a2fbf1c96a039af63e6\transformed\vectordrawable-animated-1.1.0\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.vectordrawable:vectordrawable-animated:1.1.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\cc897d7d274c0a2fbf1c96a039af63e6\transformed\vectordrawable-animated-1.1.0\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.vectordrawable:vectordrawable:1.1.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\7b61d13af8448bdfc90958bf1939df3b\transformed\vectordrawable-1.1.0\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.vectordrawable:vectordrawable:1.1.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\7b61d13af8448bdfc90958bf1939df3b\transformed\vectordrawable-1.1.0\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.legacy:legacy-support-core-utils:1.0.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\9802cb356f13284ae42e2421b30f7845\transformed\legacy-support-core-utils-1.0.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.legacy:legacy-support-core-utils:1.0.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\9802cb356f13284ae42e2421b30f7845\transformed\legacy-support-core-utils-1.0.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.loader:loader:1.0.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\6e3b1336a27e434f73f782ce10dcc9e7\transformed\loader-1.0.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.loader:loader:1.0.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\6e3b1336a27e434f73f782ce10dcc9e7\transformed\loader-1.0.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.savedstate:savedstate:1.2.1] C:\Users\Dell\.gradle\caches\8.10.2\transforms\c444f7b8ef8e490f57824f758fe58df1\transformed\jetified-savedstate-1.2.1\AndroidManifest.xml:20:5-44
+MERGED from [androidx.savedstate:savedstate:1.2.1] C:\Users\Dell\.gradle\caches\8.10.2\transforms\c444f7b8ef8e490f57824f758fe58df1\transformed\jetified-savedstate-1.2.1\AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-process:2.6.1] C:\Users\Dell\.gradle\caches\8.10.2\transforms\5c28cb961621e9375404e35c51e0ac87\transformed\jetified-lifecycle-process-2.6.1\AndroidManifest.xml:21:5-44
+MERGED from [androidx.lifecycle:lifecycle-process:2.6.1] C:\Users\Dell\.gradle\caches\8.10.2\transforms\5c28cb961621e9375404e35c51e0ac87\transformed\jetified-lifecycle-process-2.6.1\AndroidManifest.xml:21:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata:2.6.1] C:\Users\Dell\.gradle\caches\8.10.2\transforms\b8f4411bf9deb57cb79e255114b73f57\transformed\lifecycle-livedata-2.6.1\AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata:2.6.1] C:\Users\Dell\.gradle\caches\8.10.2\transforms\b8f4411bf9deb57cb79e255114b73f57\transformed\lifecycle-livedata-2.6.1\AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.6.1] C:\Users\Dell\.gradle\caches\8.10.2\transforms\f811a9c02e8ebf20585ba619cc4c5196\transformed\lifecycle-livedata-core-2.6.1\AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.6.1] C:\Users\Dell\.gradle\caches\8.10.2\transforms\f811a9c02e8ebf20585ba619cc4c5196\transformed\lifecycle-livedata-core-2.6.1\AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel:2.6.1] C:\Users\Dell\.gradle\caches\8.10.2\transforms\6d7d2f067b00824ba9b9faa34ca6a604\transformed\lifecycle-viewmodel-2.6.1\AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel:2.6.1] C:\Users\Dell\.gradle\caches\8.10.2\transforms\6d7d2f067b00824ba9b9faa34ca6a604\transformed\lifecycle-viewmodel-2.6.1\AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-runtime:2.6.1] C:\Users\Dell\.gradle\caches\8.10.2\transforms\6a570001cf853bffc380f2f62ae7567e\transformed\lifecycle-runtime-2.6.1\AndroidManifest.xml:5:5-44
+MERGED from [androidx.lifecycle:lifecycle-runtime:2.6.1] C:\Users\Dell\.gradle\caches\8.10.2\transforms\6a570001cf853bffc380f2f62ae7567e\transformed\lifecycle-runtime-2.6.1\AndroidManifest.xml:5:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-savedstate:2.6.1] C:\Users\Dell\.gradle\caches\8.10.2\transforms\d7c701595026b2685da26012b1eae415\transformed\jetified-lifecycle-viewmodel-savedstate-2.6.1\AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-savedstate:2.6.1] C:\Users\Dell\.gradle\caches\8.10.2\transforms\d7c701595026b2685da26012b1eae415\transformed\jetified-lifecycle-viewmodel-savedstate-2.6.1\AndroidManifest.xml:20:5-44
+MERGED from [androidx.core:core-ktx:1.9.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\3483d8c38460275477150ca58d518c5e\transformed\jetified-core-ktx-1.9.0\AndroidManifest.xml:5:5-44
+MERGED from [androidx.core:core-ktx:1.9.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\3483d8c38460275477150ca58d518c5e\transformed\jetified-core-ktx-1.9.0\AndroidManifest.xml:5:5-44
+MERGED from [androidx.viewpager:viewpager:1.0.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\4be2f747f7120079ade775c7af6e8324\transformed\viewpager-1.0.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.viewpager:viewpager:1.0.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\4be2f747f7120079ade775c7af6e8324\transformed\viewpager-1.0.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.recyclerview:recyclerview:1.1.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\b316fd55f622dbd02717223584a3cb00\transformed\recyclerview-1.1.0\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.recyclerview:recyclerview:1.1.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\b316fd55f622dbd02717223584a3cb00\transformed\recyclerview-1.1.0\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.customview:customview:1.1.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\f69f6609ddf34df60c39b27d64e288cf\transformed\customview-1.1.0\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.customview:customview:1.1.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\f69f6609ddf34df60c39b27d64e288cf\transformed\customview-1.1.0\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.core:core:1.9.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\7e7086c419c93c07d9ba425f4911a705\transformed\core-1.9.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.core:core:1.9.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\7e7086c419c93c07d9ba425f4911a705\transformed\core-1.9.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.cursoradapter:cursoradapter:1.0.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\7d2c13b65d99b6812e56d214bb41a5c9\transformed\cursoradapter-1.0.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.cursoradapter:cursoradapter:1.0.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\7d2c13b65d99b6812e56d214bb41a5c9\transformed\cursoradapter-1.0.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.exifinterface:exifinterface:1.3.2] C:\Users\Dell\.gradle\caches\8.10.2\transforms\2ed2f320703f8d1f8d6e39754c1ae7e0\transformed\exifinterface-1.3.2\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.exifinterface:exifinterface:1.3.2] C:\Users\Dell\.gradle\caches\8.10.2\transforms\2ed2f320703f8d1f8d6e39754c1ae7e0\transformed\exifinterface-1.3.2\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] C:\Users\Dell\.gradle\caches\8.10.2\transforms\674a4dbf70b94751004bd496b5bd3b19\transformed\versionedparcelable-1.1.1\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] C:\Users\Dell\.gradle\caches\8.10.2\transforms\674a4dbf70b94751004bd496b5bd3b19\transformed\versionedparcelable-1.1.1\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\f73f17adf8b582d856806319bf1084db\transformed\jetified-profileinstaller-1.3.0\AndroidManifest.xml:21:5-44
+MERGED from [androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\f73f17adf8b582d856806319bf1084db\transformed\jetified-profileinstaller-1.3.0\AndroidManifest.xml:21:5-44
+MERGED from [androidx.startup:startup-runtime:1.1.1] C:\Users\Dell\.gradle\caches\8.10.2\transforms\2d77aba8ad981030bca0e0e65b7eb01d\transformed\jetified-startup-runtime-1.1.1\AndroidManifest.xml:21:5-23:41
+MERGED from [androidx.startup:startup-runtime:1.1.1] C:\Users\Dell\.gradle\caches\8.10.2\transforms\2d77aba8ad981030bca0e0e65b7eb01d\transformed\jetified-startup-runtime-1.1.1\AndroidManifest.xml:21:5-23:41
+MERGED from [androidx.tracing:tracing:1.0.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\1b716adb3cb32c757800891714e81e5f\transformed\jetified-tracing-1.0.0\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.tracing:tracing:1.0.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\1b716adb3cb32c757800891714e81e5f\transformed\jetified-tracing-1.0.0\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.interpolator:interpolator:1.0.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\adcee894b3f823018bde6fb24b2d70bf\transformed\interpolator-1.0.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.interpolator:interpolator:1.0.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\adcee894b3f823018bde6fb24b2d70bf\transformed\interpolator-1.0.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.arch.core:core-runtime:2.2.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\5aa0aa1a5144f4be327e30812b076777\transformed\core-runtime-2.2.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.arch.core:core-runtime:2.2.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\5aa0aa1a5144f4be327e30812b076777\transformed\core-runtime-2.2.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.documentfile:documentfile:1.0.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\6ef69e19f1decebaaf58f6f9dfa97e70\transformed\documentfile-1.0.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.documentfile:documentfile:1.0.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\6ef69e19f1decebaaf58f6f9dfa97e70\transformed\documentfile-1.0.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.localbroadcastmanager:localbroadcastmanager:1.0.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\f959ec26066c8efdfdad365088c37ee4\transformed\localbroadcastmanager-1.0.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.localbroadcastmanager:localbroadcastmanager:1.0.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\f959ec26066c8efdfdad365088c37ee4\transformed\localbroadcastmanager-1.0.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.print:print:1.0.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\f63234b86b825993fbe0692e1f86170a\transformed\print-1.0.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.print:print:1.0.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\f63234b86b825993fbe0692e1f86170a\transformed\print-1.0.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.annotation:annotation-experimental:1.3.1] C:\Users\Dell\.gradle\caches\8.10.2\transforms\4e74b91ec311e713c90b6af307cad4ef\transformed\jetified-annotation-experimental-1.3.1\AndroidManifest.xml:20:5-44
+MERGED from [androidx.annotation:annotation-experimental:1.3.1] C:\Users\Dell\.gradle\caches\8.10.2\transforms\4e74b91ec311e713c90b6af307cad4ef\transformed\jetified-annotation-experimental-1.3.1\AndroidManifest.xml:20:5-44
+MERGED from [org.tensorflow:tensorflow-lite-support-api:0.4.4] C:\Users\Dell\.gradle\caches\8.10.2\transforms\f5a6d7ff83e07792c520bb827a129d99\transformed\jetified-tensorflow-lite-support-api-0.4.4\AndroidManifest.xml:4:3-71
+MERGED from [org.tensorflow:tensorflow-lite-support-api:0.4.4] C:\Users\Dell\.gradle\caches\8.10.2\transforms\f5a6d7ff83e07792c520bb827a129d99\transformed\jetified-tensorflow-lite-support-api-0.4.4\AndroidManifest.xml:4:3-71
+MERGED from [org.tensorflow:tensorflow-lite-api:2.14.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\7ea407b0b3c18b745d53ca63886b1c56\transformed\jetified-tensorflow-lite-api-2.14.0\AndroidManifest.xml:6:5-7:38
+MERGED from [org.tensorflow:tensorflow-lite-api:2.14.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\7ea407b0b3c18b745d53ca63886b1c56\transformed\jetified-tensorflow-lite-api-2.14.0\AndroidManifest.xml:6:5-7:38
+MERGED from [com.google.android.odml:image:1.0.0-beta1] C:\Users\Dell\.gradle\caches\8.10.2\transforms\2dfd5b63f7f93d7eab796cd07f09cad6\transformed\jetified-image-1.0.0-beta1\AndroidManifest.xml:5:5-44
+MERGED from [com.google.android.odml:image:1.0.0-beta1] C:\Users\Dell\.gradle\caches\8.10.2\transforms\2dfd5b63f7f93d7eab796cd07f09cad6\transformed\jetified-image-1.0.0-beta1\AndroidManifest.xml:5:5-44
+	android:targetSdkVersion
+		INJECTED from D:\My Project\Capstone\mobile\android\CattleWeightDetector\app\src\main\AndroidManifest.xml
+	android:minSdkVersion
+		INJECTED from D:\My Project\Capstone\mobile\android\CattleWeightDetector\app\src\main\AndroidManifest.xml
+service#androidx.camera.core.impl.MetadataHolderService
+ADDED from [androidx.camera:camera-camera2:1.3.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\64c126f4ef7765e691c05bf4eed05ca6\transformed\jetified-camera-camera2-1.3.0\AndroidManifest.xml:24:9-33:19
+MERGED from [androidx.camera:camera-core:1.3.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\e2603e0698a7f62b9f5c361ace1848cf\transformed\jetified-camera-core-1.3.0\AndroidManifest.xml:29:9-33:78
+MERGED from [androidx.camera:camera-core:1.3.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\e2603e0698a7f62b9f5c361ace1848cf\transformed\jetified-camera-core-1.3.0\AndroidManifest.xml:29:9-33:78
+	tools:node
+		ADDED from [androidx.camera:camera-camera2:1.3.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\64c126f4ef7765e691c05bf4eed05ca6\transformed\jetified-camera-camera2-1.3.0\AndroidManifest.xml:29:13-31
+	android:enabled
+		ADDED from [androidx.camera:camera-camera2:1.3.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\64c126f4ef7765e691c05bf4eed05ca6\transformed\jetified-camera-camera2-1.3.0\AndroidManifest.xml:26:13-36
+	android:exported
+		ADDED from [androidx.camera:camera-camera2:1.3.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\64c126f4ef7765e691c05bf4eed05ca6\transformed\jetified-camera-camera2-1.3.0\AndroidManifest.xml:27:13-37
+	tools:ignore
+		ADDED from [androidx.camera:camera-camera2:1.3.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\64c126f4ef7765e691c05bf4eed05ca6\transformed\jetified-camera-camera2-1.3.0\AndroidManifest.xml:28:13-75
+	android:name
+		ADDED from [androidx.camera:camera-camera2:1.3.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\64c126f4ef7765e691c05bf4eed05ca6\transformed\jetified-camera-camera2-1.3.0\AndroidManifest.xml:25:13-75
+meta-data#androidx.camera.core.impl.MetadataHolderService.DEFAULT_CONFIG_PROVIDER
+ADDED from [androidx.camera:camera-camera2:1.3.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\64c126f4ef7765e691c05bf4eed05ca6\transformed\jetified-camera-camera2-1.3.0\AndroidManifest.xml:30:13-32:89
+	android:value
+		ADDED from [androidx.camera:camera-camera2:1.3.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\64c126f4ef7765e691c05bf4eed05ca6\transformed\jetified-camera-camera2-1.3.0\AndroidManifest.xml:32:17-86
+	android:name
+		ADDED from [androidx.camera:camera-camera2:1.3.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\64c126f4ef7765e691c05bf4eed05ca6\transformed\jetified-camera-camera2-1.3.0\AndroidManifest.xml:31:17-103
+provider#androidx.startup.InitializationProvider
+ADDED from [androidx.emoji2:emoji2:1.2.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\23146aa632cb48ca8cfc7c944d82b93e\transformed\jetified-emoji2-1.2.0\AndroidManifest.xml:24:9-32:20
+MERGED from [androidx.lifecycle:lifecycle-process:2.6.1] C:\Users\Dell\.gradle\caches\8.10.2\transforms\5c28cb961621e9375404e35c51e0ac87\transformed\jetified-lifecycle-process-2.6.1\AndroidManifest.xml:24:9-32:20
+MERGED from [androidx.lifecycle:lifecycle-process:2.6.1] C:\Users\Dell\.gradle\caches\8.10.2\transforms\5c28cb961621e9375404e35c51e0ac87\transformed\jetified-lifecycle-process-2.6.1\AndroidManifest.xml:24:9-32:20
+MERGED from [androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\f73f17adf8b582d856806319bf1084db\transformed\jetified-profileinstaller-1.3.0\AndroidManifest.xml:24:9-32:20
+MERGED from [androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\f73f17adf8b582d856806319bf1084db\transformed\jetified-profileinstaller-1.3.0\AndroidManifest.xml:24:9-32:20
+MERGED from [androidx.startup:startup-runtime:1.1.1] C:\Users\Dell\.gradle\caches\8.10.2\transforms\2d77aba8ad981030bca0e0e65b7eb01d\transformed\jetified-startup-runtime-1.1.1\AndroidManifest.xml:26:9-30:34
+MERGED from [androidx.startup:startup-runtime:1.1.1] C:\Users\Dell\.gradle\caches\8.10.2\transforms\2d77aba8ad981030bca0e0e65b7eb01d\transformed\jetified-startup-runtime-1.1.1\AndroidManifest.xml:26:9-30:34
+	tools:node
+		ADDED from [androidx.emoji2:emoji2:1.2.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\23146aa632cb48ca8cfc7c944d82b93e\transformed\jetified-emoji2-1.2.0\AndroidManifest.xml:28:13-31
+	android:authorities
+		ADDED from [androidx.emoji2:emoji2:1.2.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\23146aa632cb48ca8cfc7c944d82b93e\transformed\jetified-emoji2-1.2.0\AndroidManifest.xml:26:13-68
+	android:exported
+		ADDED from [androidx.emoji2:emoji2:1.2.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\23146aa632cb48ca8cfc7c944d82b93e\transformed\jetified-emoji2-1.2.0\AndroidManifest.xml:27:13-37
+	android:name
+		ADDED from [androidx.emoji2:emoji2:1.2.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\23146aa632cb48ca8cfc7c944d82b93e\transformed\jetified-emoji2-1.2.0\AndroidManifest.xml:25:13-67
+meta-data#androidx.emoji2.text.EmojiCompatInitializer
+ADDED from [androidx.emoji2:emoji2:1.2.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\23146aa632cb48ca8cfc7c944d82b93e\transformed\jetified-emoji2-1.2.0\AndroidManifest.xml:29:13-31:52
+	android:value
+		ADDED from [androidx.emoji2:emoji2:1.2.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\23146aa632cb48ca8cfc7c944d82b93e\transformed\jetified-emoji2-1.2.0\AndroidManifest.xml:31:17-49
+	android:name
+		ADDED from [androidx.emoji2:emoji2:1.2.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\23146aa632cb48ca8cfc7c944d82b93e\transformed\jetified-emoji2-1.2.0\AndroidManifest.xml:30:17-75
+meta-data#androidx.lifecycle.ProcessLifecycleInitializer
+ADDED from [androidx.lifecycle:lifecycle-process:2.6.1] C:\Users\Dell\.gradle\caches\8.10.2\transforms\5c28cb961621e9375404e35c51e0ac87\transformed\jetified-lifecycle-process-2.6.1\AndroidManifest.xml:29:13-31:52
+	android:value
+		ADDED from [androidx.lifecycle:lifecycle-process:2.6.1] C:\Users\Dell\.gradle\caches\8.10.2\transforms\5c28cb961621e9375404e35c51e0ac87\transformed\jetified-lifecycle-process-2.6.1\AndroidManifest.xml:31:17-49
+	android:name
+		ADDED from [androidx.lifecycle:lifecycle-process:2.6.1] C:\Users\Dell\.gradle\caches\8.10.2\transforms\5c28cb961621e9375404e35c51e0ac87\transformed\jetified-lifecycle-process-2.6.1\AndroidManifest.xml:30:17-78
+permission#${applicationId}.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION
+ADDED from [androidx.core:core:1.9.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\7e7086c419c93c07d9ba425f4911a705\transformed\core-1.9.0\AndroidManifest.xml:22:5-24:47
+	android:protectionLevel
+		ADDED from [androidx.core:core:1.9.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\7e7086c419c93c07d9ba425f4911a705\transformed\core-1.9.0\AndroidManifest.xml:24:9-44
+	android:name
+		ADDED from [androidx.core:core:1.9.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\7e7086c419c93c07d9ba425f4911a705\transformed\core-1.9.0\AndroidManifest.xml:23:9-81
+permission#com.capstone.cattleweight.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION
+ADDED from [androidx.core:core:1.9.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\7e7086c419c93c07d9ba425f4911a705\transformed\core-1.9.0\AndroidManifest.xml:22:5-24:47
+	android:protectionLevel
+		ADDED from [androidx.core:core:1.9.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\7e7086c419c93c07d9ba425f4911a705\transformed\core-1.9.0\AndroidManifest.xml:24:9-44
+	android:name
+		ADDED from [androidx.core:core:1.9.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\7e7086c419c93c07d9ba425f4911a705\transformed\core-1.9.0\AndroidManifest.xml:23:9-81
+uses-permission#${applicationId}.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION
+ADDED from [androidx.core:core:1.9.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\7e7086c419c93c07d9ba425f4911a705\transformed\core-1.9.0\AndroidManifest.xml:26:5-97
+	android:name
+		ADDED from [androidx.core:core:1.9.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\7e7086c419c93c07d9ba425f4911a705\transformed\core-1.9.0\AndroidManifest.xml:26:22-94
+uses-permission#com.capstone.cattleweight.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION
+ADDED from [androidx.core:core:1.9.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\7e7086c419c93c07d9ba425f4911a705\transformed\core-1.9.0\AndroidManifest.xml:26:5-97
+	android:name
+		ADDED from [androidx.core:core:1.9.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\7e7086c419c93c07d9ba425f4911a705\transformed\core-1.9.0\AndroidManifest.xml:26:22-94
+meta-data#androidx.profileinstaller.ProfileInstallerInitializer
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\f73f17adf8b582d856806319bf1084db\transformed\jetified-profileinstaller-1.3.0\AndroidManifest.xml:29:13-31:52
+	android:value
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\f73f17adf8b582d856806319bf1084db\transformed\jetified-profileinstaller-1.3.0\AndroidManifest.xml:31:17-49
+	android:name
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\f73f17adf8b582d856806319bf1084db\transformed\jetified-profileinstaller-1.3.0\AndroidManifest.xml:30:17-85
+receiver#androidx.profileinstaller.ProfileInstallReceiver
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\f73f17adf8b582d856806319bf1084db\transformed\jetified-profileinstaller-1.3.0\AndroidManifest.xml:34:9-52:20
+	android:enabled
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\f73f17adf8b582d856806319bf1084db\transformed\jetified-profileinstaller-1.3.0\AndroidManifest.xml:37:13-35
+	android:exported
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\f73f17adf8b582d856806319bf1084db\transformed\jetified-profileinstaller-1.3.0\AndroidManifest.xml:38:13-36
+	android:permission
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\f73f17adf8b582d856806319bf1084db\transformed\jetified-profileinstaller-1.3.0\AndroidManifest.xml:39:13-57
+	android:directBootAware
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\f73f17adf8b582d856806319bf1084db\transformed\jetified-profileinstaller-1.3.0\AndroidManifest.xml:36:13-44
+	android:name
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\f73f17adf8b582d856806319bf1084db\transformed\jetified-profileinstaller-1.3.0\AndroidManifest.xml:35:13-76
+intent-filter#action:name:androidx.profileinstaller.action.INSTALL_PROFILE
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\f73f17adf8b582d856806319bf1084db\transformed\jetified-profileinstaller-1.3.0\AndroidManifest.xml:40:13-42:29
+action#androidx.profileinstaller.action.INSTALL_PROFILE
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\f73f17adf8b582d856806319bf1084db\transformed\jetified-profileinstaller-1.3.0\AndroidManifest.xml:41:17-91
+	android:name
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\f73f17adf8b582d856806319bf1084db\transformed\jetified-profileinstaller-1.3.0\AndroidManifest.xml:41:25-88
+intent-filter#action:name:androidx.profileinstaller.action.SKIP_FILE
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\f73f17adf8b582d856806319bf1084db\transformed\jetified-profileinstaller-1.3.0\AndroidManifest.xml:43:13-45:29
+action#androidx.profileinstaller.action.SKIP_FILE
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\f73f17adf8b582d856806319bf1084db\transformed\jetified-profileinstaller-1.3.0\AndroidManifest.xml:44:17-85
+	android:name
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\f73f17adf8b582d856806319bf1084db\transformed\jetified-profileinstaller-1.3.0\AndroidManifest.xml:44:25-82
+intent-filter#action:name:androidx.profileinstaller.action.SAVE_PROFILE
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\f73f17adf8b582d856806319bf1084db\transformed\jetified-profileinstaller-1.3.0\AndroidManifest.xml:46:13-48:29
+action#androidx.profileinstaller.action.SAVE_PROFILE
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\f73f17adf8b582d856806319bf1084db\transformed\jetified-profileinstaller-1.3.0\AndroidManifest.xml:47:17-88
+	android:name
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\f73f17adf8b582d856806319bf1084db\transformed\jetified-profileinstaller-1.3.0\AndroidManifest.xml:47:25-85
+intent-filter#action:name:androidx.profileinstaller.action.BENCHMARK_OPERATION
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\f73f17adf8b582d856806319bf1084db\transformed\jetified-profileinstaller-1.3.0\AndroidManifest.xml:49:13-51:29
+action#androidx.profileinstaller.action.BENCHMARK_OPERATION
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\f73f17adf8b582d856806319bf1084db\transformed\jetified-profileinstaller-1.3.0\AndroidManifest.xml:50:17-95
+	android:name
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\f73f17adf8b582d856806319bf1084db\transformed\jetified-profileinstaller-1.3.0\AndroidManifest.xml:50:25-92
