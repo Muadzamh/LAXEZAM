@@ -36,6 +36,7 @@ public class UsbSerialLidarReader implements SerialInputOutputManager.Listener {
     private UsbSerialPort serialPort;
     private SerialInputOutputManager ioManager;
     private boolean isConnected = false;
+    private boolean receiverRegistered = false;
     
     private byte[] buffer = new byte[9];
     private int bufferIndex = 0;
@@ -74,12 +75,22 @@ public class UsbSerialLidarReader implements SerialInputOutputManager.Listener {
     }
     
     public void startReading() {
+        // Unregister previous receiver if exists
+        if (receiverRegistered) {
+            try {
+                context.unregisterReceiver(usbReceiver);
+            } catch (IllegalArgumentException e) {
+                // Ignore
+            }
+        }
+        
         // Register USB receiver
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             context.registerReceiver(usbReceiver, new IntentFilter(ACTION_USB_PERMISSION), Context.RECEIVER_NOT_EXPORTED);
         } else {
             context.registerReceiver(usbReceiver, new IntentFilter(ACTION_USB_PERMISSION));
         }
+        receiverRegistered = true;
         
         // Find USB serial devices
         List<UsbSerialDriver> availableDrivers = UsbSerialProber.getDefaultProber().findAllDrivers(usbManager);
@@ -203,10 +214,14 @@ public class UsbSerialLidarReader implements SerialInputOutputManager.Listener {
     
     public void stopReading() {
         disconnect();
-        try {
-            context.unregisterReceiver(usbReceiver);
-        } catch (IllegalArgumentException e) {
-            // Receiver not registered, ignore
+        if (receiverRegistered) {
+            try {
+                context.unregisterReceiver(usbReceiver);
+                receiverRegistered = false;
+            } catch (IllegalArgumentException e) {
+                // Receiver not registered, ignore
+                Log.w(TAG, "Receiver already unregistered");
+            }
         }
     }
     
