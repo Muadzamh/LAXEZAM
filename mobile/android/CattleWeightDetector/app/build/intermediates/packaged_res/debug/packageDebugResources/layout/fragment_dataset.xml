@@ -9,11 +9,23 @@
     <!-- ========================================== -->
     <!-- CAMERA PREVIEW - FULL SCREEN BACKGROUND -->
     <!-- ========================================== -->
+    <!-- CameraX Preview for built-in camera -->
     <androidx.camera.view.PreviewView
         android:id="@+id/cameraPreview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:scaleType="fillCenter"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+    
+    <!-- TextureView for USB camera (GroundChat) -->
+    <TextureView
+        android:id="@+id/uvcCameraView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -66,6 +78,29 @@
             android:fontFamily="sans-serif-medium"
             android:visibility="gone"
             app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <!-- Camera Switch Toggle -->
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/switchCameraMode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="12dp"
+            android:background="#DD000000"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            android:paddingTop="6dp"
+            android:paddingBottom="6dp"
+            android:text="📷 Cam"
+            android:textColor="#FFFFFF"
+            android:textSize="9sp"
+            android:fontFamily="sans-serif-medium"
+            android:visibility="gone"
+            android:scaleX="1.2"
+            android:scaleY="1.2"
+            app:thumbTint="#FFFFFF"
+            app:trackTint="#64B5F6"
+            app:layout_constraintTop_toBottomOf="@id/tvSaveStatus"
             app:layout_constraintEnd_toEndOf="parent" />
 
         <!-- Capture Button -->

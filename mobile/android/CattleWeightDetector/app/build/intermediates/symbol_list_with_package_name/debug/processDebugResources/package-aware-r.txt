@@ -3491,6 +3491,7 @@ id stretch
 id submenuarrow
 id submit_area
 id supportScrollUp
+id switchCameraMode
 id switchLidarMode
 id tabMode
 id tag_accessibility_actions
@@ -3555,6 +3556,7 @@ id uniform
 id unlabeled
 id up
 id useLogo
+id uvcCameraView
 id vertical_only
 id view_offset_helper
 id view_transition

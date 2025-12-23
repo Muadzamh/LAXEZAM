@@ -12,4 +12,11 @@
     
     <!-- Generic USB CDC devices -->
     <usb-device class="2" />
+    
+    <!-- USB Camera device filter (UVC - USB Video Class) -->
+    <!-- This allows any UVC-compliant USB camera like GroundChat -->
+    <usb-device class="239" subclass="2" protocol="1" />
+    
+    <!-- Alternative: Generic USB Video Class interface -->
+    <usb-device class="14" />
 </resources>
