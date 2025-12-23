@@ -16,3 +16,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "CattleWeightDetector"
 include ':app'
+include ':libuvc'

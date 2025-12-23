@@ -56,6 +56,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         
+        // ✅ CHECK USB DEVICES - Tambahkan untuk test
+        Log.d(TAG, "=== CHECKING USB DEVICES ===");
+        checkUsbDevices();
+        
         // Initialize UI Components
         initializeViews();
         
@@ -71,6 +75,20 @@ public class MainActivity extends AppCompatActivity {
         
         // Initialize LiDAR Data Receiver
         initializeLidarReceiver();
+    }
+    
+    /**
+     * Check and list all USB devices connected to phone
+     * Results will be shown in Logcat with tag "CattleWeightApp"
+     */
+    private void checkUsbDevices() {
+        try {
+            UvcCameraManager usbChecker = new UvcCameraManager(this);
+            usbChecker.listAllUsbDevices();
+            Log.d(TAG, "USB device check completed - See log above for details");
+        } catch (Exception e) {
+            Log.e(TAG, "Error checking USB devices: " + e.getMessage(), e);
+        }
     }
     
     private void initializeViews() {

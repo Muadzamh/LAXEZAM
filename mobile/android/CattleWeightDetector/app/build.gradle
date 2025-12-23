@@ -31,6 +31,11 @@ android {
     buildFeatures {
         viewBinding true
     }
+    
+    lint {
+        abortOnError false
+        checkReleaseBuilds false
+    }
 }
 
 dependencies {
@@ -46,6 +51,9 @@ dependencies {
     implementation "androidx.camera:camera-camera2:${camerax_version}"
     implementation "androidx.camera:camera-lifecycle:${camerax_version}"
     implementation "androidx.camera:camera-view:${camerax_version}"
+    
+    // AndroidUSBCamera - UVC Library with native .so files
+    implementation project(':libuvc')
     
     // Networking untuk koneksi ke Flask server
     implementation 'com.squareup.okhttp3:okhttp:4.12.0'

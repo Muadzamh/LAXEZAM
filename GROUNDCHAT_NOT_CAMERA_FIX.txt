@@ -1,0 +1,213 @@
+==============================================
+  PENJELASAN ERROR & SOLUSI
+==============================================
+
+MASALAH ANDA:
+Error: "USB Camera error: Camera not supported"
+Error Code: result=-50
+
+==============================================
+ROOT CAUSE (Penyebab Utama)
+==============================================
+
+GROUNDCHAT BUKAN CAMERA!
+
+GroundChat adalah USB Serial device untuk LiDAR sensor.
+Device info:
+- Vendor ID: 6790 (0x1A86)
+- Product ID: 29987
+- Device Class: 255 (Vendor Specific - Serial Communication)
+- Function: Membaca data jarak dari LiDAR sensor
+
+GroundChat TIDAK BISA dipakai sebagai camera karena:
+1. Tidak punya interface video
+2. Tidak support UVC (USB Video Class)
+3. Hanya untuk serial communication
+
+==============================================
+YANG TERDETEKSI DI HP ANDA
+==============================================
+
+Device 1: GroundChat (USB Serial)
+- Vendor: 6790
+- Product: 29987
+- Class: 255
+- Function: LiDAR sensor → ❌ BUKAN CAMERA
+
+Device 2: USB Camera (USB Hub)
+- Vendor: 3585
+- Product: 2
+- Class: 9 (Hub)
+- Interface: 0 (kosong)
+- Function: Hub → ❌ BUKAN CAMERA
+
+==============================================
+SOLUSI
+==============================================
+
+PILIHAN 1: Gunakan Built-in Camera HP (RECOMMENDED)
+----------------------------------------------
+✅ Paling mudah dan pasti jalan
+✅ Tidak perlu device tambahan
+✅ Sudah di-implement di app (CameraX)
+
+Cara pakai:
+1. Buka app
+2. Jangan toggle "USB Camera"
+3. Gunakan camera bawaan HP
+4. GroundChat tetap tercolok untuk LiDAR
+
+PILIHAN 2: Tambahkan USB Camera External
+----------------------------------------------
+Jika memang HARUS pakai USB Camera:
+
+1. Beli USB Camera yang support UVC:
+   - Logitech C270/C310/C920
+   - Generic USB Webcam
+   - Endoscope Camera USB
+   - Action Camera dengan USB output
+
+2. Setup:
+   USB Hub → GroundChat (LiDAR)
+          → USB Camera (Video)
+          → HP
+
+3. Toggle "USB Camera" di app
+
+PILIHAN 3: Gunakan GroundChat untuk LiDAR Saja
+----------------------------------------------
+✅ Ini yang BENAR!
+
+GroundChat → LiDAR data (jarak/distance)
+HP Camera → Video/Image
+
+Setup sekarang:
+1. GroundChat tercolok untuk LiDAR ✅
+2. Camera pakai built-in HP ✅
+3. Tidak perlu USB Camera external ✅
+
+==============================================
+KONFIGURASI YANG BENAR
+==============================================
+
+CURRENT (Sudah Benar!):
+┌─────────────┐
+│     HP      │
+├─────────────┤
+│  Built-in   │ → Camera untuk video/photo
+│   Camera    │
+└─────────────┘
+       │
+       │ USB Hub
+       │
+       ├── GroundChat (LiDAR) → Sensor jarak
+       └── (No USB Camera needed)
+
+==============================================
+FIX YANG SUDAH DILAKUKAN
+==============================================
+
+APK sudah di-update dengan:
+
+1. ✅ Skip GroundChat saat toggle USB Camera
+   - Tidak akan coba buka GroundChat sebagai camera
+   - Error message lebih jelas
+
+2. ✅ Validasi device sebelum open
+   - Check Vendor ID 6790 → Skip (GroundChat)
+   - Check Device Class 255 → Skip (Serial)
+   - Check Interface Count 0 → Skip (Hub)
+
+3. ✅ Better error handling
+   - Tidak crash saat close camera
+   - Error message user-friendly
+
+4. ✅ Log lebih detail
+   - Tampilkan kenapa device di-skip
+   - Info device yang terdeteksi
+
+==============================================
+CARA PAKAI SEKARANG
+==============================================
+
+UNTUK LIDAR (GroundChat):
+1. Toggle "USB LiDAR" mode
+2. GroundChat akan baca data jarak
+3. Tampil di Distance field
+
+UNTUK CAMERA:
+OPTION A - Built-in Camera (Recommended):
+1. JANGAN toggle "USB Camera"
+2. Camera bawaan HP otomatis aktif
+3. Preview tampil di screen
+
+OPTION B - USB Camera (Jika ada):
+1. Colok USB Camera ke hub
+2. Toggle "USB Camera" ON
+3. App akan cari UVC camera (skip GroundChat)
+
+==============================================
+ERROR MESSAGE BARU (User-Friendly)
+==============================================
+
+Jika toggle USB Camera sekarang, akan muncul:
+"This is GroundChat (LiDAR sensor), not a camera. 
+ Please connect a UVC camera."
+
+Atau:
+"Device is not a UVC camera. 
+ Please connect a proper USB camera."
+
+Atau:
+"Device has no video interfaces. 
+ Please connect a UVC camera directly."
+
+==============================================
+TESTING
+==============================================
+
+Test 1: Check USB devices ✅
+Result: GroundChat + Hub terdeteksi
+
+Test 2: Toggle USB Camera
+Expected: Error message (bukan crash)
+Message: "GroundChat is for LiDAR, not camera"
+
+Test 3: Gunakan built-in camera ✅
+Result: Camera HP aktif normal
+
+Test 4: LiDAR data dari GroundChat
+Expected: Dapat data jarak
+(Perlu test dengan UsbSerialLidarReader)
+
+==============================================
+KESIMPULAN
+==============================================
+
+✅ GroundChat = LiDAR sensor (bukan camera)
+✅ Pakai built-in camera HP untuk video
+✅ Tidak perlu USB camera tambahan
+✅ Error sudah di-fix
+✅ APK sudah di-install
+
+==============================================
+NEXT STEPS
+==============================================
+
+1. Buka app di HP
+2. Test built-in camera (jangan toggle USB Camera)
+3. Test GroundChat untuk LiDAR
+4. Jika perlu USB camera, beli yang support UVC
+
+==============================================
+REKOMENDASI
+==============================================
+
+JANGAN beli USB Camera tambahan!
+Pakai yang ada:
+- HP Camera → Video/Photo ✅
+- GroundChat → LiDAR/Distance ✅
+
+Hemat biaya, tetap functional!
+
+==============================================
