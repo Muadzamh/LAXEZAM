@@ -50,12 +50,24 @@ public class UsbSerialLidarReader implements SerialInputOutputManager.Listener {
                     UsbDevice device = intent.getParcelableExtra(UsbManager.EXTRA_DEVICE);
                     if (intent.getBooleanExtra(UsbManager.EXTRA_PERMISSION_GRANTED, false)) {
                         if (device != null) {
-                            connectToDevice(device);
+                            // Only connect to USB Serial devices (LiDAR)
+                            // Ignore UVC cameras (GroundChat)
+                            String productName = device.getProductName();
+                            if (productName != null && productName.toLowerCase().contains("serial")) {
+                                connectToDevice(device);
+                            } else {
+                                Log.d(TAG, "Ignoring non-serial USB device: " + productName);
+                            }
                         }
                     } else {
-                        Log.e(TAG, "USB permission denied");
-                        callback.onConnectionStatusChanged(false);
-                        callback.onError("USB permission denied");
+                        UsbDevice device2 = intent.getParcelableExtra(UsbManager.EXTRA_DEVICE);
+                        String deviceName = device2 != null ? device2.getProductName() : "unknown";
+                        // Only log error for serial devices
+                        if (deviceName != null && deviceName.toLowerCase().contains("serial")) {
+                            Log.e(TAG, "USB permission denied for: " + deviceName);
+                            callback.onConnectionStatusChanged(false);
+                            callback.onError("USB permission denied");
+                        }
                     }
                 }
             }
@@ -115,17 +127,27 @@ public class UsbSerialLidarReader implements SerialInputOutputManager.Listener {
     }
     
     private void connectToDevice(UsbDevice device) {
+        // Find driver for THIS specific device
         List<UsbSerialDriver> availableDrivers = UsbSerialProber.getDefaultProber().findAllDrivers(usbManager);
         
-        if (availableDrivers.isEmpty()) {
+        UsbSerialDriver driver = null;
+        for (UsbSerialDriver d : availableDrivers) {
+            if (d.getDevice().getDeviceId() == device.getDeviceId()) {
+                driver = d;
+                break;
+            }
+        }
+        
+        if (driver == null) {
+            Log.e(TAG, "No USB Serial driver found for device: " + device.getProductName());
             callback.onError("USB driver not found");
             return;
         }
         
-        UsbSerialDriver driver = availableDrivers.get(0);
         UsbDeviceConnection connection = usbManager.openDevice(device);
         
         if (connection == null) {
+            Log.e(TAG, "Failed to open USB connection for: " + device.getProductName());
             callback.onError("Failed to open USB connection");
             return;
         }

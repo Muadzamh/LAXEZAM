@@ -302,16 +302,21 @@ public class DatasetFragment extends Fragment {
     private void initializeUvcCamera() {
         if (uvcCameraManager == null) {
             uvcCameraManager = new UvcCameraManager(requireContext());
-            uvcCameraManager.initialize(uvcCameraView, new UvcCameraManager.UvcCameraCallback() {
+            
+            // Initialize USB monitor with callback
+            uvcCameraManager.initialize(new UvcCameraManager.UvcCameraCallback() {
                 @Override
                 public void onCameraConnected() {
                     Log.d(TAG, "USB Camera connected");
                     new Handler(Looper.getMainLooper()).post(() -> {
+                        // Update status only (UI already switched)
+                        tvCameraStatus.setText("📷 USB Camera Connected");
+                        tvCameraStatus.setTextColor(0xFF4CAF50); // Green
+                        
                         // Show switch if USB camera is available
                         if (switchCameraMode != null) {
                             switchCameraMode.setVisibility(View.VISIBLE);
                         }
-                        Toast.makeText(requireContext(), "GroundChat camera detected", Toast.LENGTH_SHORT).show();
                     });
                 }
 
@@ -334,7 +339,11 @@ public class DatasetFragment extends Fragment {
                 public void onCameraError(String error) {
                     Log.e(TAG, "USB Camera error: " + error);
                     new Handler(Looper.getMainLooper()).post(() -> {
-                        Toast.makeText(requireContext(), "USB Camera error: " + error, Toast.LENGTH_SHORT).show();
+                        // Switch back to built-in camera on error
+                        if (isUsingUsbCamera && switchCameraMode != null) {
+                            switchCameraMode.setChecked(false);
+                        }
+                        Toast.makeText(requireContext(), "USB Camera Error:\n" + error, Toast.LENGTH_LONG).show();
                     });
                 }
 
@@ -342,11 +351,16 @@ public class DatasetFragment extends Fragment {
                 public void onPreviewStarted() {
                     Log.d(TAG, "USB Camera preview started");
                     new Handler(Looper.getMainLooper()).post(() -> {
-                        tvCameraStatus.setText("📷 GroundChat Camera");
-                        tvCameraStatus.setTextColor(0xFF4CAF50);
+                        // Update status (UI already switched in switchCameraSource)
+                        tvCameraStatus.setText("📷 USB Camera (Live)");
+                        tvCameraStatus.setTextColor(0xFF4CAF50); // Green
+                        Toast.makeText(requireContext(), "✅ USB Camera preview started", Toast.LENGTH_SHORT).show();
                     });
                 }
             });
+            
+            // Set preview texture
+            uvcCameraManager.setPreviewTexture(uvcCameraView);
         }
     }
     
@@ -356,41 +370,47 @@ public class DatasetFragment extends Fragment {
     private void switchCameraSource() {
         if (isUsingUsbCamera) {
             // Switch to USB camera
-            if (uvcCameraManager != null && uvcCameraManager.isConnected()) {
-                // Hide CameraX preview
-                cameraPreview.setVisibility(View.GONE);
-                uvcCameraView.setVisibility(View.VISIBLE);
-                
-                // Stop CameraX
-                if (camera != null) {
-                    ListenableFuture<ProcessCameraProvider> cameraProviderFuture = 
-                            ProcessCameraProvider.getInstance(requireContext());
-                    cameraProviderFuture.addListener(() -> {
-                        try {
-                            ProcessCameraProvider cameraProvider = cameraProviderFuture.get();
-                            cameraProvider.unbindAll();
-                        } catch (Exception e) {
-                            Log.e(TAG, "Error unbinding CameraX", e);
-                        }
-                    }, ContextCompat.getMainExecutor(requireContext()));
+            Log.d(TAG, "Switching to USB camera...");
+            
+            // CRITICAL FIX: Switch UI FIRST before requesting permission
+            // This ensures TextureView is ready when camera opens
+            cameraPreview.setVisibility(View.GONE);
+            uvcCameraView.setVisibility(View.VISIBLE);
+            tvCameraStatus.setText("📷 Connecting to USB Camera...");
+            tvCameraStatus.setTextColor(0xFFFFC107); // Orange color for loading
+            
+            // Stop built-in camera first
+            if (camera != null) {
+                try {
+                    ProcessCameraProvider cameraProvider = ProcessCameraProvider.getInstance(requireContext()).get();
+                    cameraProvider.unbindAll();
+                    Log.d(TAG, "Built-in camera stopped");
+                } catch (Exception e) {
+                    Log.e(TAG, "Error stopping built-in camera", e);
                 }
-                
-                // Start UVC preview
-                uvcCameraManager.startPreview();
-                tvCameraStatus.setText("📷 GroundChat Camera");
+            }
+            
+            if (uvcCameraManager != null) {
+                // Request permission (will trigger onConnect callback)
+                uvcCameraManager.requestCameraPermission();
             } else {
-                // No USB camera connected, switch back
+                // No manager, switch back
                 switchCameraMode.setChecked(false);
-                Toast.makeText(requireContext(), "GroundChat camera not connected", Toast.LENGTH_SHORT).show();
+                cameraPreview.setVisibility(View.VISIBLE);
+                uvcCameraView.setVisibility(View.GONE);
+                Toast.makeText(requireContext(), "Camera manager not initialized", Toast.LENGTH_SHORT).show();
             }
         } else {
             // Switch to built-in camera
+            Log.d(TAG, "Switching to built-in camera...");
+            
             cameraPreview.setVisibility(View.VISIBLE);
             uvcCameraView.setVisibility(View.GONE);
             
-            // Stop UVC
+            // CRITICAL FIX: Close USB camera completely (not just stop preview)
             if (uvcCameraManager != null) {
-                uvcCameraManager.stopPreview();
+                uvcCameraManager.closeCamera();
+                Log.d(TAG, "USB camera closed");
             }
             
             // Restart CameraX
@@ -541,24 +561,42 @@ public class DatasetFragment extends Fragment {
      * Capture photo from USB camera (GroundChat)
      */
     private void captureFromUsbCamera() {
-        uvcCameraManager.captureImage(new UvcCameraManager.OnImageCapturedListener() {
-            @Override
-            public void onImageCaptured(Bitmap bitmap) {
+        if (uvcCameraManager == null || !uvcCameraManager.isConnected()) {
+            Log.e(TAG, "USB camera not connected");
+            new Handler(Looper.getMainLooper()).post(() -> {
+                tvSaveStatus.setText("❌ USB Camera Not Ready");
+                tvSaveStatus.setTextColor(0xFFF44336);
+                btnCapture.setEnabled(true);
+                Toast.makeText(requireContext(), "USB camera not connected", Toast.LENGTH_SHORT).show();
+            });
+            return;
+        }
+        
+        try {
+            // Capture still image from UVC camera
+            Bitmap bitmap = uvcCameraManager.captureStillImage();
+            
+            if (bitmap != null) {
                 Log.d(TAG, "USB camera image captured");
                 saveUsbCameraToGallery(bitmap, currentLidarData);
-            }
-
-            @Override
-            public void onError(String error) {
-                Log.e(TAG, "USB camera capture failed: " + error);
+            } else {
+                Log.e(TAG, "Failed to capture image from USB camera");
                 new Handler(Looper.getMainLooper()).post(() -> {
                     tvSaveStatus.setText("❌ USB Capture Failed");
                     tvSaveStatus.setTextColor(0xFFF44336);
                     btnCapture.setEnabled(true);
-                    Toast.makeText(requireContext(), "Failed: " + error, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(requireContext(), "Failed to capture image", Toast.LENGTH_SHORT).show();
                 });
             }
-        });
+        } catch (Exception e) {
+            Log.e(TAG, "USB camera capture error", e);
+            new Handler(Looper.getMainLooper()).post(() -> {
+                tvSaveStatus.setText("❌ USB Capture Error");
+                tvSaveStatus.setTextColor(0xFFF44336);
+                btnCapture.setEnabled(true);
+                Toast.makeText(requireContext(), "Capture error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            });
+        }
     }
     
     private void saveToGallery(ImageProxy image, LidarData lidarData) {
@@ -774,18 +812,16 @@ public class DatasetFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        // Register USB monitor when fragment resumes
-        if (uvcCameraManager != null) {
-            uvcCameraManager.registerUSB();
-        }
+        // USB monitor auto-registers in initialize()
+        // No need to call registerUSB() manually
     }
     
     @Override
     public void onPause() {
         super.onPause();
-        // Unregister USB monitor when fragment pauses
-        if (uvcCameraManager != null) {
-            uvcCameraManager.unregisterUSB();
+        // Stop preview when paused
+        if (uvcCameraManager != null && uvcCameraManager.isPreviewing()) {
+            uvcCameraManager.stopPreview();
         }
     }
     

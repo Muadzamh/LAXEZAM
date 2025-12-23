@@ -4,7 +4,7 @@
             "outputFile": "com.capstone.cattleweight.app-mergeDebugResources-34:/values-h320dp-port-v13/values-h320dp-port-v13.xml",
             "map": [
                 {
-                    "source": "C:\\Users\\Dell\\.gradle\\caches\\8.10.2\\transforms\\fd1ec12ea05f4748ca5992114e39448e\\transformed\\material-1.10.0\\res\\values-h320dp-port-v13\\values-h320dp-port-v13.xml",
+                    "source": "C:\\Users\\Dell\\.gradle\\caches\\8.10.2\\transforms\\a5c573ade9915ad0f6b7845b34c0859a\\transformed\\material-1.10.0\\res\\values-h320dp-port-v13\\values-h320dp-port-v13.xml",
                     "from": {
                         "startLines": "2",
                         "startColumns": "4",

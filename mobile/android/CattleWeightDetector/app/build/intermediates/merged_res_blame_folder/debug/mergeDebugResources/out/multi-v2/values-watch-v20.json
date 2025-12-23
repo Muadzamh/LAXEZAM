@@ -4,7 +4,7 @@
             "outputFile": "com.capstone.cattleweight.app-mergeDebugResources-34:/values-watch-v20/values-watch-v20.xml",
             "map": [
                 {
-                    "source": "C:\\Users\\Dell\\.gradle\\caches\\8.10.2\\transforms\\afb163e599d9ac7edf990af203f1af39\\transformed\\appcompat-1.6.1\\res\\values-watch-v20\\values-watch-v20.xml",
+                    "source": "C:\\Users\\Dell\\.gradle\\caches\\8.10.2\\transforms\\ac948e7b7fe2cea9e1d64f1409a45c04\\transformed\\appcompat-1.6.1\\res\\values-watch-v20\\values-watch-v20.xml",
                     "from": {
                         "startLines": "2,5,8",
                         "startColumns": "4,4,4",
