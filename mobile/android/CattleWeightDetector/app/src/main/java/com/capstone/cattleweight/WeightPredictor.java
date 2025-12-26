@@ -86,7 +86,9 @@ public class WeightPredictor {
             
             // 4. Run inference
             Object[] inputs = {imageInput, sizeFeatureInput};
-            interpreter.runForMultipleInputsOutputs(inputs, new Object[]{output});
+            Map<Integer, Object> outputs = new HashMap<>();
+            outputs.put(0, output);
+            interpreter.runForMultipleInputsOutputs(inputs, outputs);
             
             float predictedWeight = output[0][0];
             

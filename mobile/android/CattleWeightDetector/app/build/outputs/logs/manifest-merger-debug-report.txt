@@ -12,6 +12,7 @@ MERGED from [androidx.camera:camera-lifecycle:1.3.0] C:\Users\Dell\.gradle\cache
 MERGED from [androidx.camera:camera-camera2:1.3.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\64c126f4ef7765e691c05bf4eed05ca6\transformed\jetified-camera-camera2-1.3.0\AndroidManifest.xml:17:1-36:12
 MERGED from [androidx.camera:camera-core:1.3.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\e2603e0698a7f62b9f5c361ace1848cf\transformed\jetified-camera-core-1.3.0\AndroidManifest.xml:17:1-36:12
 MERGED from [androidx.camera:camera-view:1.3.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\7dfd3afec2f2a4d75888b7d44b5e0bca\transformed\jetified-camera-view-1.3.0\AndroidManifest.xml:2:1-7:12
+MERGED from [:libuvc] D:\My Project\Capstone\mobile\android\CattleWeightDetector\libuvc\build\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:24:1-28:12
 MERGED from [androidx.appcompat:appcompat-resources:1.6.1] C:\Users\Dell\.gradle\caches\8.10.2\transforms\eefa8a92bba61de8a372a25e70b5547b\transformed\jetified-appcompat-resources-1.6.1\AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.appcompat:appcompat:1.6.1] C:\Users\Dell\.gradle\caches\8.10.2\transforms\afb163e599d9ac7edf990af203f1af39\transformed\appcompat-1.6.1\AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.cardview:cardview:1.0.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\0d86633ddd3fcf38ac9d4a844b12471c\transformed\cardview-1.0.0\AndroidManifest.xml:17:1-22:12
@@ -55,6 +56,7 @@ MERGED from [androidx.documentfile:documentfile:1.0.0] C:\Users\Dell\.gradle\cac
 MERGED from [androidx.localbroadcastmanager:localbroadcastmanager:1.0.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\f959ec26066c8efdfdad365088c37ee4\transformed\localbroadcastmanager-1.0.0\AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.print:print:1.0.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\f63234b86b825993fbe0692e1f86170a\transformed\print-1.0.0\AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.annotation:annotation-experimental:1.3.1] C:\Users\Dell\.gradle\caches\8.10.2\transforms\4e74b91ec311e713c90b6af307cad4ef\transformed\jetified-annotation-experimental-1.3.1\AndroidManifest.xml:17:1-22:12
+MERGED from [com.elvishew:xlog:1.11.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\b99a1919a2e8c78298b5626297c75f3f\transformed\jetified-xlog-1.11.0\AndroidManifest.xml:2:1-9:12
 MERGED from [org.tensorflow:tensorflow-lite-support-api:0.4.4] C:\Users\Dell\.gradle\caches\8.10.2\transforms\f5a6d7ff83e07792c520bb827a129d99\transformed\jetified-tensorflow-lite-support-api-0.4.4\AndroidManifest.xml:2:1-5:12
 MERGED from [org.tensorflow:tensorflow-lite-api:2.14.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\7ea407b0b3c18b745d53ca63886b1c56\transformed\jetified-tensorflow-lite-api-2.14.0\AndroidManifest.xml:2:1-11:12
 MERGED from [com.google.android.odml:image:1.0.0-beta1] C:\Users\Dell\.gradle\caches\8.10.2\transforms\2dfd5b63f7f93d7eab796cd07f09cad6\transformed\jetified-image-1.0.0-beta1\AndroidManifest.xml:2:1-9:12
@@ -195,6 +197,8 @@ MERGED from [androidx.camera:camera-core:1.3.0] C:\Users\Dell\.gradle\caches\8.1
 MERGED from [androidx.camera:camera-core:1.3.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\e2603e0698a7f62b9f5c361ace1848cf\transformed\jetified-camera-core-1.3.0\AndroidManifest.xml:21:5-44
 MERGED from [androidx.camera:camera-view:1.3.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\7dfd3afec2f2a4d75888b7d44b5e0bca\transformed\jetified-camera-view-1.3.0\AndroidManifest.xml:5:5-44
 MERGED from [androidx.camera:camera-view:1.3.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\7dfd3afec2f2a4d75888b7d44b5e0bca\transformed\jetified-camera-view-1.3.0\AndroidManifest.xml:5:5-44
+MERGED from [:libuvc] D:\My Project\Capstone\mobile\android\CattleWeightDetector\libuvc\build\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:26:5-44
+MERGED from [:libuvc] D:\My Project\Capstone\mobile\android\CattleWeightDetector\libuvc\build\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:26:5-44
 MERGED from [androidx.appcompat:appcompat-resources:1.6.1] C:\Users\Dell\.gradle\caches\8.10.2\transforms\eefa8a92bba61de8a372a25e70b5547b\transformed\jetified-appcompat-resources-1.6.1\AndroidManifest.xml:20:5-44
 MERGED from [androidx.appcompat:appcompat-resources:1.6.1] C:\Users\Dell\.gradle\caches\8.10.2\transforms\eefa8a92bba61de8a372a25e70b5547b\transformed\jetified-appcompat-resources-1.6.1\AndroidManifest.xml:20:5-44
 MERGED from [androidx.appcompat:appcompat:1.6.1] C:\Users\Dell\.gradle\caches\8.10.2\transforms\afb163e599d9ac7edf990af203f1af39\transformed\appcompat-1.6.1\AndroidManifest.xml:20:5-44
@@ -281,6 +285,8 @@ MERGED from [androidx.print:print:1.0.0] C:\Users\Dell\.gradle\caches\8.10.2\tra
 MERGED from [androidx.print:print:1.0.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\f63234b86b825993fbe0692e1f86170a\transformed\print-1.0.0\AndroidManifest.xml:20:5-44
 MERGED from [androidx.annotation:annotation-experimental:1.3.1] C:\Users\Dell\.gradle\caches\8.10.2\transforms\4e74b91ec311e713c90b6af307cad4ef\transformed\jetified-annotation-experimental-1.3.1\AndroidManifest.xml:20:5-44
 MERGED from [androidx.annotation:annotation-experimental:1.3.1] C:\Users\Dell\.gradle\caches\8.10.2\transforms\4e74b91ec311e713c90b6af307cad4ef\transformed\jetified-annotation-experimental-1.3.1\AndroidManifest.xml:20:5-44
+MERGED from [com.elvishew:xlog:1.11.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\b99a1919a2e8c78298b5626297c75f3f\transformed\jetified-xlog-1.11.0\AndroidManifest.xml:5:5-7:41
+MERGED from [com.elvishew:xlog:1.11.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\b99a1919a2e8c78298b5626297c75f3f\transformed\jetified-xlog-1.11.0\AndroidManifest.xml:5:5-7:41
 MERGED from [org.tensorflow:tensorflow-lite-support-api:0.4.4] C:\Users\Dell\.gradle\caches\8.10.2\transforms\f5a6d7ff83e07792c520bb827a129d99\transformed\jetified-tensorflow-lite-support-api-0.4.4\AndroidManifest.xml:4:3-71
 MERGED from [org.tensorflow:tensorflow-lite-support-api:0.4.4] C:\Users\Dell\.gradle\caches\8.10.2\transforms\f5a6d7ff83e07792c520bb827a129d99\transformed\jetified-tensorflow-lite-support-api-0.4.4\AndroidManifest.xml:4:3-71
 MERGED from [org.tensorflow:tensorflow-lite-api:2.14.0] C:\Users\Dell\.gradle\caches\8.10.2\transforms\7ea407b0b3c18b745d53ca63886b1c56\transformed\jetified-tensorflow-lite-api-2.14.0\AndroidManifest.xml:6:5-7:38

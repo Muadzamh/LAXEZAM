@@ -37,3 +37,4 @@ com.capstone.cattleweight.app-packageDebugResources-35 D:\My Project\Capstone\mo
 com.capstone.cattleweight.app-debug-36 D:\My Project\Capstone\mobile\android\CattleWeightDetector\app\build\intermediates\merged_res\debug\mergeDebugResources
 com.capstone.cattleweight.app-debug-37 D:\My Project\Capstone\mobile\android\CattleWeightDetector\app\src\debug\res
 com.capstone.cattleweight.app-main-38 D:\My Project\Capstone\mobile\android\CattleWeightDetector\app\src\main\res
+com.capstone.cattleweight.app-debug-39 D:\My Project\Capstone\mobile\android\CattleWeightDetector\libuvc\build\intermediates\packaged_res\debug\packageDebugResources

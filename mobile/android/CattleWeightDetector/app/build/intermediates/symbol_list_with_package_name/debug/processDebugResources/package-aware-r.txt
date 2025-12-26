@@ -2157,6 +2157,7 @@ dimen abc_text_size_subtitle_material_toolbar
 dimen abc_text_size_title_material
 dimen abc_text_size_title_material_toolbar
 dimen appcompat_dialog_background_inset
+dimen button_size
 dimen cardview_compat_inset_shadow
 dimen cardview_default_elevation
 dimen cardview_default_radius
@@ -2229,9 +2230,12 @@ dimen hint_alpha_material_dark
 dimen hint_alpha_material_light
 dimen hint_pressed_alpha_material_dark
 dimen hint_pressed_alpha_material_light
+dimen horizontal_margin
 dimen item_touch_helper_max_drag_scroll_per_frame
 dimen item_touch_helper_swipe_escape_max_velocity
 dimen item_touch_helper_swipe_escape_velocity
+dimen list_font_size
+dimen list_height_min
 dimen m3_alert_dialog_action_bottom_padding
 dimen m3_alert_dialog_action_top_padding
 dimen m3_alert_dialog_corner_size
@@ -2870,6 +2874,7 @@ dimen tooltip_precise_anchor_threshold
 dimen tooltip_vertical_padding
 dimen tooltip_y_offset_non_touch
 dimen tooltip_y_offset_touch
+dimen vertical_margin
 drawable abc_ab_share_pack_mtrl_alpha
 drawable abc_action_bar_item_background_material
 drawable abc_btn_borderless_material
@@ -3056,6 +3061,7 @@ id BOTTOM_END
 id BOTTOM_START
 id CTRL
 id FUNCTION
+id LinearLayout1
 id META
 id NO_DEBUG
 id SHIFT
@@ -3363,6 +3369,7 @@ id mtrl_picker_text_input_range_start
 id mtrl_picker_title_text
 id mtrl_view_tag_bottom_padding
 id multiply
+id name_text
 id navigation_bar_item_active_indicator_view
 id navigation_bar_item_icon_container
 id navigation_bar_item_icon_view
@@ -3472,6 +3479,7 @@ id snapMargins
 id south
 id spacer
 id special_effects_controller_view_tag
+id spinner1
 id spline
 id split_action_bar
 id spread
@@ -3493,7 +3501,6 @@ id stretch
 id submenuarrow
 id submit_area
 id supportScrollUp
-id switchCameraMode
 id switchLidarMode
 id tabMode
 id tag_accessibility_actions
@@ -3516,6 +3523,7 @@ id textSpacerNoButtons
 id textSpacerNoTitle
 id textStart
 id textTop
+id textView1
 id text_input_end_icon
 id text_input_error_icon
 id text_input_start_icon
@@ -3558,7 +3566,6 @@ id uniform
 id unlabeled
 id up
 id useLogo
-id uvcCameraView
 id vertical_only
 id view_offset_helper
 id view_transition
@@ -3709,8 +3716,10 @@ layout design_navigation_menu
 layout design_navigation_menu_item
 layout design_text_input_end_icon
 layout design_text_input_start_icon
+layout dialog_camera
 layout fragment_dataset
 layout fragment_detection
+layout listitem_device
 layout m3_alert_dialog
 layout m3_alert_dialog_actions
 layout m3_alert_dialog_title
@@ -3810,6 +3819,7 @@ string bottomsheet_action_expand
 string bottomsheet_action_expand_halfway
 string bottomsheet_drag_handle_clicked
 string bottomsheet_drag_handle_content_description
+string camera
 string camera_permission_required
 string character_counter_content_description
 string character_counter_overflowed_content_description
@@ -3926,15 +3936,18 @@ string mtrl_switch_track_decoration_path
 string mtrl_switch_track_path
 string mtrl_timepicker_cancel
 string mtrl_timepicker_confirm
+string no_device
 string password_toggle_content_description
 string path_password_eye
 string path_password_eye_mask_strike_through
 string path_password_eye_mask_visible
 string path_password_strike_through
+string refresh
 string search_menu_title
 string searchbar_scrolling_view_behavior
 string searchview_clear_text_content_description
 string searchview_navigation_content_description
+string select
 string server_url_hint
 string side_sheet_accessibility_pane_title
 string side_sheet_behavior

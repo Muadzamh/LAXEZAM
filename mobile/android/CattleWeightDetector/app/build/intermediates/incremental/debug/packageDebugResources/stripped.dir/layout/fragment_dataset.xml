@@ -19,17 +19,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- USB CAMERA VIEW (GroundChat) -->
-    <TextureView
-        android:id="@+id/uvcCameraView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
     <!-- ========================================== -->
     <!-- TOP OVERLAY (45%) -->
     <!-- ========================================== -->
@@ -158,40 +147,6 @@
                     android:textColor="#F44336"
                     android:textSize="10sp"
                     android:fontFamily="sans-serif-medium" />
-
-                <!-- USB CAMERA TOGGLE (GroundChat) -->
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:background="#3300BCD4"
-                    android:paddingStart="12dp"
-                    android:paddingEnd="8dp"
-                    android:paddingTop="8dp"
-                    android:paddingBottom="8dp"
-                    android:layout_marginEnd="8dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="📷 USB Cam"
-                        android:textColor="#B2EBF2"
-                        android:textSize="10sp"
-                        android:fontFamily="sans-serif"
-                        android:layout_marginEnd="8dp" />
-
-                    <androidx.appcompat.widget.SwitchCompat
-                        android:id="@+id/switchCameraMode"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:minWidth="56dp"
-                        android:minHeight="40dp"
-                        android:scaleX="1.3"
-                        android:scaleY="1.3"
-                        app:thumbTint="#FFFFFF"
-                        app:trackTint="#00BCD4" />
-                </LinearLayout>
 
                 <!-- LiDAR Mode Switch - BIGGER SIZE -->
                 <LinearLayout

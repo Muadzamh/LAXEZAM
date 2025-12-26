@@ -1,22 +1,23 @@
 apply plugin: 'com.android.library'
 
-import org.apache.tools.ant.taskdefs.condition.Os
+// Import removed - not needed (NDK build disabled)
 
 android {
-	compileSdkVersion rootProject.ext.versionCompiler
-	buildToolsVersion rootProject.ext.versionBuildTool
+	namespace 'com.jiangdg.uvc'
+	compileSdk 34
+	buildToolsVersion "34.0.0"
 
 	compileOptions {
-		sourceCompatibility rootProject.ext.javaSourceCompatibility
-		targetCompatibility rootProject.ext.javaTargetCompatibility
+		sourceCompatibility JavaVersion.VERSION_11
+		targetCompatibility JavaVersion.VERSION_11
 	}
 
     defaultConfig {
-        minSdkVersion rootProject.ext.minSdkVersion
-		targetSdkVersion rootProject.ext.versionTarget
+        minSdk 24
+		targetSdk 34
     }
 
-	lintOptions {
+	lint {
 		checkReleaseBuilds false
 		// Or, if you prefer, you can continue to check for errors in release builds,
 		// but continue the build even when errors are found:
@@ -33,6 +34,8 @@ android {
     }
 }
 
+// NDK build tasks commented out - using pre-compiled .so files from jniLibs/
+/*
 tasks.withType(JavaCompile) {
 	compileTask -> compileTask.dependsOn ndkBuild
 }
@@ -66,10 +69,11 @@ task ndkClean(type: Exec, description: 'clean JNI libraries') {
 }
 
 clean.dependsOn 'ndkClean'
+*/
 
 dependencies {
     implementation fileTree(dir: new File(buildDir, 'libs'), include: '*.jar')
-	implementation "androidx.appcompat:appcompat:${androidXVersion}"
+	implementation "androidx.appcompat:appcompat:1.6.1"
 	implementation 'com.elvishew:xlog:1.11.0'
 //	implementation project(path: ':libuvccommon')
 }

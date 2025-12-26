@@ -24,7 +24,6 @@ id lidarSection
 id mlResultOverlay
 id navigation_dataset
 id navigation_detection
-id switchCameraMode
 id switchLidarMode
 id topOverlay
 id tvCameraStatus
@@ -38,7 +37,6 @@ id tvSaveStatus
 id tvSignalStrength
 id tvTemperature
 id tvTimestamp
-id uvcCameraView
 layout activity_main
 layout activity_main_new
 layout fragment_dataset
