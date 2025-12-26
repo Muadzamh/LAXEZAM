@@ -23,7 +23,7 @@ if (Test-Path $configFile) {
 }
 
 if ([string]::IsNullOrWhiteSpace($PhoneIP)) {
-    $PhoneIP = "192.168.0.103"  # Default
+    $PhoneIP = "192.168.1.46"  # Default
 }
 
 $target = "$PhoneIP`:5555"
