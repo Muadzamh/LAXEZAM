@@ -421,20 +421,90 @@ public class UvcCameraManager {
             mUVCCamera.setPreviewDisplay(mPreviewSurface);
             Log.d(TAG, "Preview display set");
             
-            // Set preview size (try MJPEG format first, fallback to YUYV)
-            mUVCCamera.setPreviewSize(PREVIEW_WIDTH, PREVIEW_HEIGHT, UVCCamera.FRAME_FORMAT_MJPEG);
-            Log.d(TAG, "Preview size set: " + PREVIEW_WIDTH + "x" + PREVIEW_HEIGHT);
+            // Try different formats and resolutions for better compatibility
+            boolean previewStarted = false;
             
-            // Start preview
-            mUVCCamera.startPreview();
+            // CRITICAL FIX: ONLY use MJPEG (YUYV causes green tint issue)
+            // MJPEG = compressed, full color, better for GroundChat
+            int[] formats = {UVCCamera.FRAME_FORMAT_MJPEG}; // Removed YUYV!
+            int[][] resolutions = {
+                {640, 480},   // VGA - most compatible
+                {320, 240},   // QVGA - lower bandwidth
+                {1280, 720},  // HD - if supported
+                {1920, 1080}  // Full HD - if supported
+            };
             
-            mIsPreviewing = true;
-            Log.i(TAG, "Preview started successfully");
+            for (int format : formats) {
+                if (previewStarted) break;
+                
+                for (int[] res : resolutions) {
+                    try {
+                        Log.d(TAG, "Trying " + res[0] + "x" + res[1] + " format=MJPEG");
+                        
+                        mUVCCamera.setPreviewSize(res[0], res[1], format);
+                        
+                        // Camera settings for better image quality
+                        try {
+                            // MAXIMUM BRIGHTNESS FIX for very dark camera
+                            // Range: 0-255 (255 = BRIGHTEST possible)
+                            mUVCCamera.setBrightness(255); // MAXIMUM!
+                            
+                            // Maximum contrast for better visibility
+                            mUVCCamera.setContrast(200);   // Very high contrast
+                            
+                            // Saturation (color intensity)
+                            try {
+                                mUVCCamera.setSaturation(150); // Boost colors
+                            } catch (Exception se) {
+                                Log.w(TAG, "Saturation not supported");
+                            }
+                            
+                            // Sharpness
+                            try {
+                                mUVCCamera.setSharpness(150); // Sharper image
+                            } catch (Exception se) {
+                                Log.w(TAG, "Sharpness not supported");
+                            }
+                            
+                            // Gain (amplify signal - makes brighter but may add noise)
+                            try {
+                                mUVCCamera.setGain(200); // High gain for brightness
+                            } catch (Exception se) {
+                                Log.w(TAG, "Gain not supported");
+                            }
+                            
+                            // Auto settings
+                            mUVCCamera.setAutoWhiteBlance(true);
+                            mUVCCamera.setAutoFocus(true);
+                            
+                            Log.i(TAG, "✅ Camera settings applied: MAXIMUM BRIGHTNESS (255), Contrast=200, Gain=200");
+                        } catch (Exception e) {
+                            Log.w(TAG, "Some camera settings not supported: " + e.getMessage());
+                        }
+                        
+                        // Start preview
+                        mUVCCamera.startPreview();
+                        
+                        previewStarted = true;
+                        mIsPreviewing = true;
+                        Log.i(TAG, "✅ Preview started: " + res[0] + "x" + res[1] + " format=MJPEG");
+                        
+                        if (mCallback != null) {
+                            new Handler(Looper.getMainLooper()).post(() -> 
+                                mCallback.onPreviewStarted()
+                            );
+                        }
+                        break;
+                        
+                    } catch (Exception e) {
+                        Log.w(TAG, "Failed with " + res[0] + "x" + res[1] + ": " + e.getMessage());
+                        // Try next resolution
+                    }
+                }
+            }
             
-            if (mCallback != null) {
-                new Handler(Looper.getMainLooper()).post(() -> 
-                    mCallback.onPreviewStarted()
-                );
+            if (!previewStarted) {
+                throw new Exception("All preview formats and resolutions failed");
             }
             
         } catch (Exception e) {
@@ -512,6 +582,60 @@ public class UvcCameraManager {
         
         mCallback = null;
         Log.i(TAG, "Released");
+    }
+    
+    /**
+     * Adjust brightness (0-255, default 128)
+     */
+    public void setBrightness(int brightness) {
+        if (mUVCCamera != null) {
+            try {
+                mUVCCamera.setBrightness(brightness);
+                Log.d(TAG, "Brightness set to: " + brightness);
+            } catch (Exception e) {
+                Log.e(TAG, "Failed to set brightness", e);
+            }
+        }
+    }
+    
+    /**
+     * Adjust contrast (0-255, default 128)
+     */
+    public void setContrast(int contrast) {
+        if (mUVCCamera != null) {
+            try {
+                mUVCCamera.setContrast(contrast);
+                Log.d(TAG, "Contrast set to: " + contrast);
+            } catch (Exception e) {
+                Log.e(TAG, "Failed to set contrast", e);
+            }
+        }
+    }
+    
+    /**
+     * Reset camera to auto settings with MAXIMUM brightness
+     */
+    public void resetToAuto() {
+        if (mUVCCamera != null) {
+            try {
+                mUVCCamera.setAutoWhiteBlance(true);
+                mUVCCamera.setAutoFocus(true);
+                mUVCCamera.setBrightness(255); // MAXIMUM brightness!
+                mUVCCamera.setContrast(200);   // Very high contrast
+                
+                try {
+                    mUVCCamera.setSaturation(150);
+                    mUVCCamera.setSharpness(150);
+                    mUVCCamera.setGain(200);
+                } catch (Exception e) {
+                    // Some settings may not be supported
+                }
+                
+                Log.d(TAG, "Camera reset to MAXIMUM brightness settings");
+            } catch (Exception e) {
+                Log.e(TAG, "Failed to reset camera settings", e);
+            }
+        }
     }
     
     /**
