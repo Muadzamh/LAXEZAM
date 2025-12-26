@@ -21,6 +21,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.view.TextureView;
 import androidx.appcompat.widget.SwitchCompat;
 
 import androidx.annotation.NonNull;
@@ -58,15 +59,24 @@ public class DatasetFragment extends Fragment {
     
     // UI Components
     private PreviewView cameraPreview;
+    private TextureView uvcCameraView;
     private FloatingActionButton btnCapture;
     private SwitchCompat switchLidarMode;
+    private SwitchCompat switchCameraMode;
     private TextView tvCameraStatus, tvSaveStatus, tvDistance, tvSignalStrength, tvTemperature;
     private TextView tvConnectionStatus, tvTimestamp, tvDatasetCount;
     
-    // Camera
+    // Camera - Built-in (CameraX)
     private Camera camera;
     private ImageCapture imageCapture;
     private ExecutorService cameraExecutor;
+    private CameraSelector currentCameraSelector;
+    private int currentCameraIndex = 0;
+    private java.util.List<androidx.camera.core.CameraInfo> availableCameras;
+    
+    // Camera - USB (UVC)
+    private UvcCameraManager uvcCameraManager;
+    private boolean isUsingUsbCamera = false;
     
     // LiDAR - WiFi mode
     private LidarDataReceiver lidarReceiver;
@@ -105,12 +115,18 @@ public class DatasetFragment extends Fragment {
         loadDatasetCount();
         
         btnCapture.setOnClickListener(v -> captureAndSaveData());
+        
+        // Initialize UVC camera here instead of in initializeViews
+        // This gives USB system time to enumerate devices
+        initializeUvcCamera();
     }
     
     private void initializeViews(View view) {
         cameraPreview = view.findViewById(R.id.cameraPreview);
+        uvcCameraView = view.findViewById(R.id.uvcCameraView);
         btnCapture = view.findViewById(R.id.btnCapture);
         switchLidarMode = view.findViewById(R.id.switchLidarMode);
+        switchCameraMode = view.findViewById(R.id.switchCameraMode);
         tvCameraStatus = view.findViewById(R.id.tvCameraStatus);
         tvSaveStatus = view.findViewById(R.id.tvSaveStatus);
         tvDistance = view.findViewById(R.id.tvDistance);
@@ -125,6 +141,14 @@ public class DatasetFragment extends Fragment {
             isUsbMode = isChecked;
             switchLidarMode();
         });
+        
+        // Camera switch listener - switch between built-in and USB camera
+        if (switchCameraMode != null) {
+            switchCameraMode.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                isUsingUsbCamera = isChecked;
+                switchCameraSource();
+            });
+        }
     }
     
     private boolean checkCameraPermission() {
@@ -145,23 +169,23 @@ public class DatasetFragment extends Fragment {
             try {
                 ProcessCameraProvider cameraProvider = cameraProviderFuture.get();
                 
-                Preview preview = new Preview.Builder()
-                        .setTargetAspectRatio(AspectRatio.RATIO_4_3)
-                        .build();
-                preview.setSurfaceProvider(cameraPreview.getSurfaceProvider());
+                // Enumerate all available cameras
+                availableCameras = cameraProvider.getAvailableCameraInfos();
+                Log.d(TAG, "Available cameras: " + availableCameras.size());
                 
-                imageCapture = new ImageCapture.Builder()
-                        .setCaptureMode(ImageCapture.CAPTURE_MODE_MINIMIZE_LATENCY)
-                        .setTargetResolution(new android.util.Size(960, 1280))
-                        .build();
+                // Update camera status to show number of cameras
+                if (availableCameras.size() > 1 && switchCameraMode != null) {
+                    new Handler(Looper.getMainLooper()).post(() -> {
+                        switchCameraMode.setVisibility(View.VISIBLE);
+                        tvCameraStatus.setText("📷 Cameras: " + availableCameras.size());
+                    });
+                }
                 
-                CameraSelector cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA;
-                cameraProvider.unbindAll();
-                camera = cameraProvider.bindToLifecycle(
-                        getViewLifecycleOwner(), cameraSelector, preview, imageCapture);
+                // Use default back camera initially
+                currentCameraSelector = CameraSelector.DEFAULT_BACK_CAMERA;
+                currentCameraIndex = 0;
                 
-                tvCameraStatus.setText("📷 Camera Active");
-                tvCameraStatus.setTextColor(0xFF4CAF50);
+                bindCamera(cameraProvider);
                 
             } catch (Exception e) {
                 Log.e(TAG, "Camera initialization failed", e);
@@ -171,13 +195,238 @@ public class DatasetFragment extends Fragment {
         }, ContextCompat.getMainExecutor(requireContext()));
     }
     
+    private void bindCamera(ProcessCameraProvider cameraProvider) {
+        try {
+            Preview preview = new Preview.Builder()
+                    .setTargetAspectRatio(AspectRatio.RATIO_4_3)
+                    .build();
+            preview.setSurfaceProvider(cameraPreview.getSurfaceProvider());
+            
+            imageCapture = new ImageCapture.Builder()
+                    .setCaptureMode(ImageCapture.CAPTURE_MODE_MINIMIZE_LATENCY)
+                    .setTargetResolution(new android.util.Size(960, 1280))
+                    .build();
+            
+            cameraProvider.unbindAll();
+            camera = cameraProvider.bindToLifecycle(
+                    getViewLifecycleOwner(), currentCameraSelector, preview, imageCapture);
+            
+            tvCameraStatus.setText("📷 Camera Active");
+            tvCameraStatus.setTextColor(0xFF4CAF50);
+            
+        } catch (Exception e) {
+            Log.e(TAG, "Camera binding failed", e);
+            tvCameraStatus.setText("📷 Camera Error");
+            tvCameraStatus.setTextColor(0xFFF44336);
+        }
+    }
+    
+    private void switchCamera() {
+        ListenableFuture<ProcessCameraProvider> cameraProviderFuture = 
+                ProcessCameraProvider.getInstance(requireContext());
+        
+        cameraProviderFuture.addListener(() -> {
+            try {
+                ProcessCameraProvider cameraProvider = cameraProviderFuture.get();
+                
+                // Cycle through available cameras
+                if (availableCameras != null && availableCameras.size() > 1) {
+                    currentCameraIndex = (currentCameraIndex + 1) % availableCameras.size();
+                    
+                    // Get camera selector for the selected camera
+                    androidx.camera.core.CameraInfo selectedCamera = availableCameras.get(currentCameraIndex);
+                    
+                    // Try to create selector from available cameras
+                    // First check if it's front or back camera
+                    try {
+                        Integer lensFacing = selectedCamera.getLensFacing();
+                        if (lensFacing != null) {
+                            if (lensFacing == CameraSelector.LENS_FACING_FRONT) {
+                                currentCameraSelector = CameraSelector.DEFAULT_FRONT_CAMERA;
+                            } else if (lensFacing == CameraSelector.LENS_FACING_BACK) {
+                                currentCameraSelector = CameraSelector.DEFAULT_BACK_CAMERA;
+                            } else {
+                                // External camera (USB) - use camera filter
+                                currentCameraSelector = new CameraSelector.Builder()
+                                        .addCameraFilter(cameraInfos -> {
+                                            java.util.List<androidx.camera.core.CameraInfo> filtered = new java.util.ArrayList<>();
+                                            for (androidx.camera.core.CameraInfo info : cameraInfos) {
+                                                if (info == selectedCamera) {
+                                                    filtered.add(info);
+                                                }
+                                            }
+                                            return filtered;
+                                        })
+                                        .build();
+                            }
+                        }
+                    } catch (Exception e) {
+                        Log.e(TAG, "Error getting lens facing", e);
+                    }
+                    
+                    // Rebind camera
+                    bindCamera(cameraProvider);
+                    
+                    String cameraType = getCameraName(selectedCamera);
+                    tvCameraStatus.setText("📷 " + cameraType + " (" + (currentCameraIndex + 1) + "/" + availableCameras.size() + ")");
+                }
+                
+            } catch (Exception e) {
+                Log.e(TAG, "Camera switch failed", e);
+                Toast.makeText(requireContext(), "Failed to switch camera", Toast.LENGTH_SHORT).show();
+            }
+        }, ContextCompat.getMainExecutor(requireContext()));
+    }
+    
+    private String getCameraName(androidx.camera.core.CameraInfo cameraInfo) {
+        try {
+            Integer lensFacing = cameraInfo.getLensFacing();
+            if (lensFacing != null) {
+                if (lensFacing == CameraSelector.LENS_FACING_FRONT) {
+                    return "Front Camera";
+                } else if (lensFacing == CameraSelector.LENS_FACING_BACK) {
+                    return "Back Camera";
+                } else {
+                    return "External Camera";
+                }
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error getting camera name", e);
+        }
+        return "Camera " + (currentCameraIndex + 1);
+    }
+    
+    /**
+     * Initialize UVC camera for USB camera (GroundChat)
+     */
+    private void initializeUvcCamera() {
+        if (uvcCameraManager == null) {
+            uvcCameraManager = new UvcCameraManager(requireContext());
+            
+            // Initialize USB monitor with callback
+            uvcCameraManager.initialize(new UvcCameraManager.UvcCameraCallback() {
+                @Override
+                public void onCameraConnected() {
+                    Log.d(TAG, "USB Camera connected");
+                    new Handler(Looper.getMainLooper()).post(() -> {
+                        // Update status only (UI already switched)
+                        tvCameraStatus.setText("📷 USB Camera Connected");
+                        tvCameraStatus.setTextColor(0xFF4CAF50); // Green
+                        
+                        // Show switch if USB camera is available
+                        if (switchCameraMode != null) {
+                            switchCameraMode.setVisibility(View.VISIBLE);
+                        }
+                    });
+                }
+
+                @Override
+                public void onCameraDisconnected() {
+                    Log.d(TAG, "USB Camera disconnected");
+                    new Handler(Looper.getMainLooper()).post(() -> {
+                        // Switch back to built-in camera if disconnected
+                        if (isUsingUsbCamera) {
+                            switchCameraMode.setChecked(false);
+                        }
+                        // Hide switch if no USB camera
+                        if (switchCameraMode != null && uvcCameraManager != null && !uvcCameraManager.isConnected()) {
+                            switchCameraMode.setVisibility(View.GONE);
+                        }
+                    });
+                }
+
+                @Override
+                public void onCameraError(String error) {
+                    Log.e(TAG, "USB Camera error: " + error);
+                    new Handler(Looper.getMainLooper()).post(() -> {
+                        // Switch back to built-in camera on error
+                        if (isUsingUsbCamera && switchCameraMode != null) {
+                            switchCameraMode.setChecked(false);
+                        }
+                        Toast.makeText(requireContext(), "USB Camera Error:\n" + error, Toast.LENGTH_LONG).show();
+                    });
+                }
+
+                @Override
+                public void onPreviewStarted() {
+                    Log.d(TAG, "USB Camera preview started");
+                    new Handler(Looper.getMainLooper()).post(() -> {
+                        // Update status (UI already switched in switchCameraSource)
+                        tvCameraStatus.setText("📷 USB Camera (Live)");
+                        tvCameraStatus.setTextColor(0xFF4CAF50); // Green
+                        Toast.makeText(requireContext(), "✅ USB Camera preview started", Toast.LENGTH_SHORT).show();
+                    });
+                }
+            });
+            
+            // Set preview texture
+            uvcCameraManager.setPreviewTexture(uvcCameraView);
+        }
+    }
+    
+    /**
+     * Switch between built-in camera (CameraX) and USB camera (UVC)
+     */
+    private void switchCameraSource() {
+        if (isUsingUsbCamera) {
+            // Switch to USB camera
+            Log.d(TAG, "Switching to USB camera...");
+            
+            // CRITICAL FIX: Switch UI FIRST before requesting permission
+            // This ensures TextureView is ready when camera opens
+            cameraPreview.setVisibility(View.GONE);
+            uvcCameraView.setVisibility(View.VISIBLE);
+            tvCameraStatus.setText("📷 Connecting to USB Camera...");
+            tvCameraStatus.setTextColor(0xFFFFC107); // Orange color for loading
+            
+            // Stop built-in camera first
+            if (camera != null) {
+                try {
+                    ProcessCameraProvider cameraProvider = ProcessCameraProvider.getInstance(requireContext()).get();
+                    cameraProvider.unbindAll();
+                    Log.d(TAG, "Built-in camera stopped");
+                } catch (Exception e) {
+                    Log.e(TAG, "Error stopping built-in camera", e);
+                }
+            }
+            
+            if (uvcCameraManager != null) {
+                // Request permission (will trigger onConnect callback)
+                uvcCameraManager.requestCameraPermission();
+            } else {
+                // No manager, switch back
+                switchCameraMode.setChecked(false);
+                cameraPreview.setVisibility(View.VISIBLE);
+                uvcCameraView.setVisibility(View.GONE);
+                Toast.makeText(requireContext(), "Camera manager not initialized", Toast.LENGTH_SHORT).show();
+            }
+        } else {
+            // Switch to built-in camera
+            Log.d(TAG, "Switching to built-in camera...");
+            
+            cameraPreview.setVisibility(View.VISIBLE);
+            uvcCameraView.setVisibility(View.GONE);
+            
+            // CRITICAL FIX: Close USB camera completely (not just stop preview)
+            if (uvcCameraManager != null) {
+                uvcCameraManager.closeCamera();
+                Log.d(TAG, "USB camera closed");
+            }
+            
+            // Restart CameraX
+            startCamera();
+        }
+    }
+    
     private void switchLidarMode() {
         // Stop current mode
         if (lidarReceiver != null) {
             lidarReceiver.stopReceiving();
+            lidarReceiver = null;
         }
         if (usbLidarReader != null) {
             usbLidarReader.stopReading();
+            usbLidarReader = null;
         }
         
         // Start new mode
@@ -262,8 +511,8 @@ public class DatasetFragment extends Fragment {
     }
     
     private void captureAndSaveData() {
-        if (imageCapture == null || currentLidarData == null) {
-            Toast.makeText(requireContext(), "Camera or LiDAR not ready!", Toast.LENGTH_SHORT).show();
+        if (currentLidarData == null) {
+            Toast.makeText(requireContext(), "LiDAR not ready!", Toast.LENGTH_SHORT).show();
             return;
         }
         
@@ -272,6 +521,23 @@ public class DatasetFragment extends Fragment {
         tvSaveStatus.setTextColor(0xFFFFC107);
         btnCapture.setEnabled(false);
         
+        // Check which camera is being used
+        if (isUsingUsbCamera && uvcCameraManager != null && uvcCameraManager.isPreviewing()) {
+            // Capture from USB camera
+            captureFromUsbCamera();
+        } else if (imageCapture != null) {
+            // Capture from built-in camera
+            captureFromBuiltInCamera();
+        } else {
+            Toast.makeText(requireContext(), "Camera not ready!", Toast.LENGTH_SHORT).show();
+            btnCapture.setEnabled(true);
+        }
+    }
+    
+    /**
+     * Capture photo from built-in camera (CameraX)
+     */
+    private void captureFromBuiltInCamera() {
         imageCapture.takePicture(cameraExecutor, new ImageCapture.OnImageCapturedCallback() {
             @Override
             public void onCaptureSuccess(@NonNull ImageProxy image) {
@@ -289,6 +555,48 @@ public class DatasetFragment extends Fragment {
                 });
             }
         });
+    }
+    
+    /**
+     * Capture photo from USB camera (GroundChat)
+     */
+    private void captureFromUsbCamera() {
+        if (uvcCameraManager == null || !uvcCameraManager.isConnected()) {
+            Log.e(TAG, "USB camera not connected");
+            new Handler(Looper.getMainLooper()).post(() -> {
+                tvSaveStatus.setText("❌ USB Camera Not Ready");
+                tvSaveStatus.setTextColor(0xFFF44336);
+                btnCapture.setEnabled(true);
+                Toast.makeText(requireContext(), "USB camera not connected", Toast.LENGTH_SHORT).show();
+            });
+            return;
+        }
+        
+        try {
+            // Capture still image from UVC camera
+            Bitmap bitmap = uvcCameraManager.captureStillImage();
+            
+            if (bitmap != null) {
+                Log.d(TAG, "USB camera image captured");
+                saveUsbCameraToGallery(bitmap, currentLidarData);
+            } else {
+                Log.e(TAG, "Failed to capture image from USB camera");
+                new Handler(Looper.getMainLooper()).post(() -> {
+                    tvSaveStatus.setText("❌ USB Capture Failed");
+                    tvSaveStatus.setTextColor(0xFFF44336);
+                    btnCapture.setEnabled(true);
+                    Toast.makeText(requireContext(), "Failed to capture image", Toast.LENGTH_SHORT).show();
+                });
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "USB camera capture error", e);
+            new Handler(Looper.getMainLooper()).post(() -> {
+                tvSaveStatus.setText("❌ USB Capture Error");
+                tvSaveStatus.setTextColor(0xFFF44336);
+                btnCapture.setEnabled(true);
+                Toast.makeText(requireContext(), "Capture error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            });
+        }
     }
     
     private void saveToGallery(ImageProxy image, LidarData lidarData) {
@@ -378,6 +686,93 @@ public class DatasetFragment extends Fragment {
         }
     }
     
+    /**
+     * Save USB camera bitmap to gallery
+     */
+    private void saveUsbCameraToGallery(Bitmap bitmap, LidarData lidarData) {
+        try {
+            // Save metadata first to get ID
+            long id = saveMetadataToDatabase(null, lidarData);
+            
+            if (id <= 0) {
+                throw new Exception("Failed to save metadata to database");
+            }
+            
+            // Create filename with database ID
+            String filename = id + "_cattle_" + lidarData.getJarak() + "_" + 
+                             lidarData.getKekuatan() + "_.jpg";
+            
+            new Handler(Looper.getMainLooper()).post(() -> {
+                tvSaveStatus.setText("💾 Saving...");
+            });
+            
+            // Convert bitmap to JPEG bytes
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 90, out);
+            byte[] imageBytes = out.toByteArray();
+            
+            // Save to MediaStore
+            ContentValues values = new ContentValues();
+            values.put(MediaStore.Images.Media.DISPLAY_NAME, filename);
+            values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg");
+            
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                values.put(MediaStore.Images.Media.RELATIVE_PATH, "Pictures/CattleDataset");
+                values.put(MediaStore.Images.Media.IS_PENDING, 1);
+            }
+            
+            Uri collection = MediaStore.Images.Media.getContentUri(
+                    MediaStore.VOLUME_EXTERNAL_PRIMARY);
+            Uri uri = requireContext().getContentResolver().insert(collection, values);
+            
+            if (uri != null) {
+                OutputStream outputStream = requireContext().getContentResolver().openOutputStream(uri);
+                if (outputStream != null) {
+                    outputStream.write(imageBytes);
+                    outputStream.close();
+                    
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                        values.clear();
+                        values.put(MediaStore.Images.Media.IS_PENDING, 0);
+                        requireContext().getContentResolver().update(uri, values, null, null);
+                    }
+                    
+                    // Update database with image path
+                    database.updateImagePath(id, uri.toString());
+                    
+                    datasetCount++;
+                    new Handler(Looper.getMainLooper()).post(() -> {
+                        tvSaveStatus.setText("✅ USB Camera Saved!");
+                        tvSaveStatus.setTextColor(0xFF4CAF50);
+                        tvDatasetCount.setText("📊 Total Data: " + datasetCount);
+                        btnCapture.setEnabled(true);
+                        Toast.makeText(requireContext(), "GroundChat photo saved!", 
+                                Toast.LENGTH_SHORT).show();
+                        
+                        // Hide status after 2 seconds
+                        new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                            tvSaveStatus.setVisibility(View.GONE);
+                        }, 2000);
+                    });
+                } else {
+                    throw new Exception("Failed to open output stream");
+                }
+            } else {
+                throw new Exception("Failed to create MediaStore entry");
+            }
+            
+        } catch (Exception e) {
+            Log.e(TAG, "USB camera save failed", e);
+            new Handler(Looper.getMainLooper()).post(() -> {
+                tvSaveStatus.setText("❌ USB Save Failed");
+                tvSaveStatus.setTextColor(0xFFF44336);
+                btnCapture.setEnabled(true);
+                Toast.makeText(requireContext(), "Save failed: " + e.getMessage(), 
+                        Toast.LENGTH_SHORT).show();
+            });
+        }
+    }
+    
     private long saveMetadataToDatabase(String imagePath, LidarData lidarData) {
         long id = database.insertDataset(
                 imagePath,
@@ -415,16 +810,41 @@ public class DatasetFragment extends Fragment {
     }
     
     @Override
+    public void onResume() {
+        super.onResume();
+        // USB monitor auto-registers in initialize()
+        // No need to call registerUSB() manually
+    }
+    
+    @Override
+    public void onPause() {
+        super.onPause();
+        // Stop preview when paused
+        if (uvcCameraManager != null && uvcCameraManager.isPreviewing()) {
+            uvcCameraManager.stopPreview();
+        }
+    }
+    
+    @Override
     public void onDestroyView() {
         super.onDestroyView();
+        // Stop LiDAR receivers FIRST before cleaning up resources
         if (lidarReceiver != null) {
             lidarReceiver.stopReceiving();
+            lidarReceiver = null;
         }
         if (usbLidarReader != null) {
             usbLidarReader.stopReading();
+            usbLidarReader = null;
+        }
+        // Clean up camera resources
+        if (uvcCameraManager != null) {
+            uvcCameraManager.release();
+            uvcCameraManager = null;
         }
         if (cameraExecutor != null) {
             cameraExecutor.shutdown();
+            cameraExecutor = null;
         }
     }
 }
