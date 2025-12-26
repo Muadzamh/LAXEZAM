@@ -1,6 +1,14 @@
 """
-Script untuk download dan convert YOLOv8 ke TensorFlow Lite
+Script untuk download dan convert YOLOv8 ke TensorFlow Lite/ONNX
 untuk deployment di Android
+
+IMPORTANT: 
+- ONNX export selalu berhasil dan recommended untuk Android
+- TFLite export mungkin gagal karena onnx2tf tidak kompatibel dengan Python 3.13
+- Gunakan ONNX Runtime untuk Android (lebih ringan dan reliable)
+
+Dependencies:
+    pip install ultralytics onnx
 """
 
 from ultralytics import YOLO
@@ -8,7 +16,7 @@ import os
 
 def download_and_convert_yolo():
     """
-    Download YOLOv8n dan convert ke TFLite
+    Download YOLOv8n dan convert ke TFLite menggunakan ONNX
     """
     print("=" * 60)
     print("YOLOv8 to TensorFlow Lite Conversion")
@@ -19,41 +27,80 @@ def download_and_convert_yolo():
     model = YOLO('yolov8n.pt')
     print("✓ Model loaded successfully")
     
-    # Export ke TFLite
-    print("\n2. Exporting to TensorFlow Lite format...")
-    print("   This may take a few minutes...")
+    # Export ke ONNX dulu (lebih reliable)
+    print("\n2. Exporting to ONNX format first...")
     
     try:
-        # Export dengan berbagai format
-        success = model.export(
-            format='tflite',
-            imgsz=640,  # Input size
-            int8=False,  # Use float32 (lebih akurat)
+        # Export ke ONNX
+        onnx_path = model.export(
+            format='onnx',
+            imgsz=640,
+            simplify=True,
         )
+        print(f"✓ ONNX export successful: {onnx_path}")
         
-        print(f"✓ Export successful!")
-        print(f"   Output: {success}")
+        if os.path.exists('yolov8n.onnx'):
+            size = os.path.getsize('yolov8n.onnx') / (1024 * 1024)
+            print(f"   File size: {size:.2f} MB")
         
-        # Check file
-        if os.path.exists('yolov8n_float32.tflite'):
-            size = os.path.getsize('yolov8n_float32.tflite') / (1024 * 1024)
-            print(f"\n✓ TFLite model created: yolov8n_float32.tflite ({size:.2f} MB)")
+        # Coba export TFLite (optional, karena ONNX sudah cukup untuk Android)
+        print("\n3. Attempting TFLite export...")
+        print("   Note: This may fail due to onnx2tf compatibility issues")
+        print("   If it fails, you can use ONNX model directly with ONNX Runtime")
+        
+        try:
+            tflite_path = model.export(
+                format='tflite',
+                imgsz=640,
+                int8=False,
+            )
+            print(f"✓ TFLite export successful: {tflite_path}")
+            
+            if os.path.exists('yolov8n_float32.tflite'):
+                size = os.path.getsize('yolov8n_float32.tflite') / (1024 * 1024)
+                print(f"   File size: {size:.2f} MB")
+                
+        except Exception as tflite_error:
+            print(f"⚠ TFLite export failed: {tflite_error}")
+            print("\n   No problem! You can use ONNX model instead.")
         
         # Info
         print("\n" + "=" * 60)
-        print("NEXT STEPS:")
+        print("EXPORT SUMMARY:")
         print("=" * 60)
-        print("1. Copy model ke Android assets:")
-        print("   cp yolov8n_float32.tflite ../mobile/android/CattleWeightDetector/app/src/main/assets/")
-        print("\n2. Pastikan nama model di YoloDetector.java sesuai:")
-        print("   private static final String MODEL_FILE = \"yolov8n_float32.tflite\";")
+        
+        if os.path.exists('yolov8n.onnx'):
+            print("✓ ONNX Model: yolov8n.onnx")
+            print("  - Can be used with ONNX Runtime for Android")
+            print("  - Lightweight and efficient")
+            
+        if os.path.exists('yolov8n_float32.tflite'):
+            print("✓ TFLite Model: yolov8n_float32.tflite")
+            print("  - Can be used with TensorFlow Lite")
+        
+        print("\n" + "=" * 60)
+        print("NEXT STEPS FOR ANDROID:")
+        print("=" * 60)
+        print("\nOption 1: Using ONNX Runtime (Recommended)")
+        print("1. Add dependency to build.gradle:")
+        print("   implementation 'com.microsoft.onnxruntime:onnxruntime-android:latest'")
+        print("2. Copy ONNX model to assets:")
+        print("   cp yolov8n.onnx ../mobile/android/.../assets/")
+        
+        if os.path.exists('yolov8n_float32.tflite'):
+            print("\nOption 2: Using TensorFlow Lite")
+            print("1. Copy TFLite model to assets:")
+            print("   cp yolov8n_float32.tflite ../mobile/android/.../assets/")
+            print("2. Use TFLite interpreter in your app")
+        
         print("=" * 60)
         
     except Exception as e:
         print(f"✗ Export failed: {e}")
         print("\nTroubleshooting:")
-        print("1. Install dependencies: pip install ultralytics tensorflow")
+        print("1. Install dependencies: pip install ultralytics onnx")
         print("2. Update ultralytics: pip install -U ultralytics")
+        print("3. For TFLite: pip install tensorflow (optional)")
 
 
 def test_yolo_detection():

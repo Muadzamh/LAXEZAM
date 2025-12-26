@@ -3151,6 +3151,7 @@ id bounceBoth
 id bounceEnd
 id bounceStart
 id btnCapture
+id btnPredictWeight
 id buttonPanel
 id cache_measures
 id callMeasure
@@ -3206,6 +3207,7 @@ id design_menu_item_action_area
 id design_menu_item_action_area_stub
 id design_menu_item_text
 id design_navigation_view
+id detectionOverlay
 id dialog_button
 id dimensions
 id direct
@@ -3491,6 +3493,7 @@ id stretch
 id submenuarrow
 id submit_area
 id supportScrollUp
+id switchCameraMode
 id switchLidarMode
 id tabMode
 id tag_accessibility_actions
@@ -3555,6 +3558,7 @@ id uniform
 id unlabeled
 id up
 id useLogo
+id uvcCameraView
 id vertical_only
 id view_offset_helper
 id view_transition

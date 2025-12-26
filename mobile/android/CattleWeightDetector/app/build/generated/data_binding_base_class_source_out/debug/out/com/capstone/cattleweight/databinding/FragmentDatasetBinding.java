@@ -2,6 +2,7 @@
 package com.capstone.cattleweight.databinding;
 
 import android.view.LayoutInflater;
+import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -37,6 +38,9 @@ public final class FragmentDatasetBinding implements ViewBinding {
   public final ConstraintLayout lidarSection;
 
   @NonNull
+  public final SwitchCompat switchCameraMode;
+
+  @NonNull
   public final SwitchCompat switchLidarMode;
 
   @NonNull
@@ -69,20 +73,25 @@ public final class FragmentDatasetBinding implements ViewBinding {
   @NonNull
   public final TextView tvTimestamp;
 
+  @NonNull
+  public final TextureView uvcCameraView;
+
   private FragmentDatasetBinding(@NonNull ConstraintLayout rootView,
       @NonNull FloatingActionButton btnCapture, @NonNull PreviewView cameraPreview,
       @NonNull CardView controlBar, @NonNull ConstraintLayout lidarSection,
-      @NonNull SwitchCompat switchLidarMode, @NonNull ConstraintLayout topOverlay,
-      @NonNull TextView tvCameraStatus, @NonNull TextView tvConnectionStatus,
-      @NonNull TextView tvDatasetCount, @NonNull TextView tvDistance,
-      @NonNull LinearLayout tvLidarHeader, @NonNull TextView tvSaveStatus,
-      @NonNull TextView tvSignalStrength, @NonNull TextView tvTemperature,
-      @NonNull TextView tvTimestamp) {
+      @NonNull SwitchCompat switchCameraMode, @NonNull SwitchCompat switchLidarMode,
+      @NonNull ConstraintLayout topOverlay, @NonNull TextView tvCameraStatus,
+      @NonNull TextView tvConnectionStatus, @NonNull TextView tvDatasetCount,
+      @NonNull TextView tvDistance, @NonNull LinearLayout tvLidarHeader,
+      @NonNull TextView tvSaveStatus, @NonNull TextView tvSignalStrength,
+      @NonNull TextView tvTemperature, @NonNull TextView tvTimestamp,
+      @NonNull TextureView uvcCameraView) {
     this.rootView = rootView;
     this.btnCapture = btnCapture;
     this.cameraPreview = cameraPreview;
     this.controlBar = controlBar;
     this.lidarSection = lidarSection;
+    this.switchCameraMode = switchCameraMode;
     this.switchLidarMode = switchLidarMode;
     this.topOverlay = topOverlay;
     this.tvCameraStatus = tvCameraStatus;
@@ -94,6 +103,7 @@ public final class FragmentDatasetBinding implements ViewBinding {
     this.tvSignalStrength = tvSignalStrength;
     this.tvTemperature = tvTemperature;
     this.tvTimestamp = tvTimestamp;
+    this.uvcCameraView = uvcCameraView;
   }
 
   @Override
@@ -144,6 +154,12 @@ public final class FragmentDatasetBinding implements ViewBinding {
       id = R.id.lidarSection;
       ConstraintLayout lidarSection = ViewBindings.findChildViewById(rootView, id);
       if (lidarSection == null) {
+        break missingId;
+      }
+
+      id = R.id.switchCameraMode;
+      SwitchCompat switchCameraMode = ViewBindings.findChildViewById(rootView, id);
+      if (switchCameraMode == null) {
         break missingId;
       }
 
@@ -213,10 +229,16 @@ public final class FragmentDatasetBinding implements ViewBinding {
         break missingId;
       }
 
+      id = R.id.uvcCameraView;
+      TextureView uvcCameraView = ViewBindings.findChildViewById(rootView, id);
+      if (uvcCameraView == null) {
+        break missingId;
+      }
+
       return new FragmentDatasetBinding((ConstraintLayout) rootView, btnCapture, cameraPreview,
-          controlBar, lidarSection, switchLidarMode, topOverlay, tvCameraStatus, tvConnectionStatus,
-          tvDatasetCount, tvDistance, tvLidarHeader, tvSaveStatus, tvSignalStrength, tvTemperature,
-          tvTimestamp);
+          controlBar, lidarSection, switchCameraMode, switchLidarMode, topOverlay, tvCameraStatus,
+          tvConnectionStatus, tvDatasetCount, tvDistance, tvLidarHeader, tvSaveStatus,
+          tvSignalStrength, tvTemperature, tvTimestamp, uvcCameraView);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

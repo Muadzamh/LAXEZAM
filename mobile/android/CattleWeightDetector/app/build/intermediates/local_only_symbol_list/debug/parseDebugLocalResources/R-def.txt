@@ -14,14 +14,17 @@ color teal_700
 color white
 id bottom_navigation
 id btnCapture
+id btnPredictWeight
 id cameraPreview
 id cameraSection
 id controlBar
+id detectionOverlay
 id fragment_container
 id lidarSection
 id mlResultOverlay
 id navigation_dataset
 id navigation_detection
+id switchCameraMode
 id switchLidarMode
 id topOverlay
 id tvCameraStatus
@@ -35,6 +38,7 @@ id tvSaveStatus
 id tvSignalStrength
 id tvTemperature
 id tvTimestamp
+id uvcCameraView
 layout activity_main
 layout activity_main_new
 layout fragment_dataset

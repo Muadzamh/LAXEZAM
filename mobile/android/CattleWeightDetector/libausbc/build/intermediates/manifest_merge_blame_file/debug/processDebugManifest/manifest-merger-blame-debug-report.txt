@@ -1,0 +1,15 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+3    package="com.jiangdg.ausbc" >
+4
+5    <uses-sdk android:minSdkVersion="24" />
+6
+7    <uses-feature android:name="android.hardware.usb.host" />
+7-->D:\My Project\Capstone\mobile\android\CattleWeightDetector\libausbc\src\main\AndroidManifest.xml:4:5-61
+7-->D:\My Project\Capstone\mobile\android\CattleWeightDetector\libausbc\src\main\AndroidManifest.xml:4:19-59
+8
+9    <uses-permission android:name="android.permission.CAMERA" />
+9-->D:\My Project\Capstone\mobile\android\CattleWeightDetector\libausbc\src\main\AndroidManifest.xml:5:5-65
+9-->D:\My Project\Capstone\mobile\android\CattleWeightDetector\libausbc\src\main\AndroidManifest.xml:5:22-62
+10
+11</manifest>
