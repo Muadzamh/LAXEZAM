@@ -3158,6 +3158,7 @@ id bounceEnd
 id bounceStart
 id btnCapture
 id btnCheckUsb
+id btnDetect
 id buttonPanel
 id cache_measures
 id callMeasure
@@ -3213,6 +3214,7 @@ id design_menu_item_action_area
 id design_menu_item_action_area_stub
 id design_menu_item_text
 id design_navigation_view
+id detectionOverlay
 id dialog_button
 id dimensions
 id direct

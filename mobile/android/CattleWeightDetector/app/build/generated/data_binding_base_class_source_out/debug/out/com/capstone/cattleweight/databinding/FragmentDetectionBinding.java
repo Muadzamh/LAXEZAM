@@ -4,6 +4,7 @@ package com.capstone.cattleweight.databinding;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
@@ -14,6 +15,7 @@ import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.viewbinding.ViewBinding;
 import androidx.viewbinding.ViewBindings;
+import com.capstone.cattleweight.DetectionOverlayView;
 import com.capstone.cattleweight.R;
 import java.lang.NullPointerException;
 import java.lang.Override;
@@ -24,6 +26,9 @@ public final class FragmentDetectionBinding implements ViewBinding {
   private final ConstraintLayout rootView;
 
   @NonNull
+  public final Button btnDetect;
+
+  @NonNull
   public final PreviewView cameraPreview;
 
   @NonNull
@@ -31,6 +36,9 @@ public final class FragmentDetectionBinding implements ViewBinding {
 
   @NonNull
   public final CardView controlBar;
+
+  @NonNull
+  public final DetectionOverlayView detectionOverlay;
 
   @NonNull
   public final ConstraintLayout lidarSection;
@@ -68,19 +76,21 @@ public final class FragmentDetectionBinding implements ViewBinding {
   @NonNull
   public final TextView tvTimestamp;
 
-  private FragmentDetectionBinding(@NonNull ConstraintLayout rootView,
+  private FragmentDetectionBinding(@NonNull ConstraintLayout rootView, @NonNull Button btnDetect,
       @NonNull PreviewView cameraPreview, @NonNull ConstraintLayout cameraSection,
-      @NonNull CardView controlBar, @NonNull ConstraintLayout lidarSection,
-      @NonNull LinearLayout mlResultOverlay, @NonNull SwitchCompat switchLidarMode,
-      @NonNull TextView tvCameraStatus, @NonNull TextView tvConfidence,
-      @NonNull TextView tvConnectionStatus, @NonNull TextView tvDistance,
-      @NonNull TextView tvEstimatedWeight, @NonNull LinearLayout tvLidarHeader,
-      @NonNull TextView tvSignalStrength, @NonNull TextView tvTemperature,
-      @NonNull TextView tvTimestamp) {
+      @NonNull CardView controlBar, @NonNull DetectionOverlayView detectionOverlay,
+      @NonNull ConstraintLayout lidarSection, @NonNull LinearLayout mlResultOverlay,
+      @NonNull SwitchCompat switchLidarMode, @NonNull TextView tvCameraStatus,
+      @NonNull TextView tvConfidence, @NonNull TextView tvConnectionStatus,
+      @NonNull TextView tvDistance, @NonNull TextView tvEstimatedWeight,
+      @NonNull LinearLayout tvLidarHeader, @NonNull TextView tvSignalStrength,
+      @NonNull TextView tvTemperature, @NonNull TextView tvTimestamp) {
     this.rootView = rootView;
+    this.btnDetect = btnDetect;
     this.cameraPreview = cameraPreview;
     this.cameraSection = cameraSection;
     this.controlBar = controlBar;
+    this.detectionOverlay = detectionOverlay;
     this.lidarSection = lidarSection;
     this.mlResultOverlay = mlResultOverlay;
     this.switchLidarMode = switchLidarMode;
@@ -122,6 +132,12 @@ public final class FragmentDetectionBinding implements ViewBinding {
     // This is done to optimize the compiled bytecode for size and performance.
     int id;
     missingId: {
+      id = R.id.btnDetect;
+      Button btnDetect = ViewBindings.findChildViewById(rootView, id);
+      if (btnDetect == null) {
+        break missingId;
+      }
+
       id = R.id.cameraPreview;
       PreviewView cameraPreview = ViewBindings.findChildViewById(rootView, id);
       if (cameraPreview == null) {
@@ -137,6 +153,12 @@ public final class FragmentDetectionBinding implements ViewBinding {
       id = R.id.controlBar;
       CardView controlBar = ViewBindings.findChildViewById(rootView, id);
       if (controlBar == null) {
+        break missingId;
+      }
+
+      id = R.id.detectionOverlay;
+      DetectionOverlayView detectionOverlay = ViewBindings.findChildViewById(rootView, id);
+      if (detectionOverlay == null) {
         break missingId;
       }
 
@@ -212,10 +234,10 @@ public final class FragmentDetectionBinding implements ViewBinding {
         break missingId;
       }
 
-      return new FragmentDetectionBinding((ConstraintLayout) rootView, cameraPreview, cameraSection,
-          controlBar, lidarSection, mlResultOverlay, switchLidarMode, tvCameraStatus, tvConfidence,
-          tvConnectionStatus, tvDistance, tvEstimatedWeight, tvLidarHeader, tvSignalStrength,
-          tvTemperature, tvTimestamp);
+      return new FragmentDetectionBinding((ConstraintLayout) rootView, btnDetect, cameraPreview,
+          cameraSection, controlBar, detectionOverlay, lidarSection, mlResultOverlay,
+          switchLidarMode, tvCameraStatus, tvConfidence, tvConnectionStatus, tvDistance,
+          tvEstimatedWeight, tvLidarHeader, tvSignalStrength, tvTemperature, tvTimestamp);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

@@ -15,9 +15,11 @@ color white
 id bottom_navigation
 id btnCapture
 id btnCheckUsb
+id btnDetect
 id cameraPreview
 id cameraSection
 id controlBar
+id detectionOverlay
 id fragment_container
 id lidarSection
 id mlResultOverlay

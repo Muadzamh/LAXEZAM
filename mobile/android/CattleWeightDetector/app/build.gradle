@@ -62,7 +62,11 @@ dependencies {
     // USB Serial untuk LiDAR via USB OTG
     implementation 'com.github.mik3y:usb-serial-for-android:3.7.3'
     
-    // TensorFlow Lite (untuk future ML model integration)
+    // ONNX Runtime for ML model inference (YOLO + Weight Predictor)
+    // Updated to 1.19.2 for ONNX IR version 10 support
+    implementation 'com.microsoft.onnxruntime:onnxruntime-android:1.19.2'
+    
+    // TensorFlow Lite (backup option)
     implementation 'org.tensorflow:tensorflow-lite:2.14.0'
     implementation 'org.tensorflow:tensorflow-lite-support:0.4.4'
     
