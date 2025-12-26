@@ -30,6 +30,16 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
+        <!-- Detection Overlay untuk YOLO bounding boxes -->
+        <com.capstone.cattleweight.DetectionOverlay
+            android:id="@+id/detectionOverlay"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
         <!-- Overlay untuk Hasil Deteksi ML Model -->
         <LinearLayout
             android:id="@+id/mlResultOverlay"
@@ -46,9 +56,9 @@
                 android:id="@+id/tvEstimatedWeight"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Bobot Karkas: -- kg"
+                android:text="Bobot: -- kg"
                 android:textColor="#FFFFFF"
-                android:textSize="12sp"
+                android:textSize="14sp"
                 android:fontFamily="sans-serif-medium"
                 android:drawableStart="@android:drawable/ic_menu_info_details"
                 android:drawablePadding="6dp" />
@@ -60,10 +70,26 @@
                 android:layout_marginTop="2dp"
                 android:text="Confidence: --%"
                 android:textColor="#B0BEC5"
-                android:textSize="9sp"
+                android:textSize="10sp"
                 android:fontFamily="sans-serif" />
 
         </LinearLayout>
+
+        <!-- Button Prediksi Berat -->
+        <Button
+            android:id="@+id/btnPredictWeight"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="🎯 PREDIKSI BERAT"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:layout_margin="12dp"
+            android:backgroundTint="#FF5722"
+            android:enabled="false"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
 
         <!-- Status Camera -->
         <TextView
