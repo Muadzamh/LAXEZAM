@@ -1,0 +1,38 @@
+# Android build outputs
+**/build/
+*.apk
+*.aab
+*.ap_
+*.dex
+
+# Gradle files
+.gradle/
+local.properties
+
+# IDE files
+.idea/
+*.iml
+.DS_Store
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+*.egg-info/
+
+# Model files (large)
+*.pt
+*.onnx
+*.tflite
+*.h5
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
