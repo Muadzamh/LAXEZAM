@@ -2,6 +2,12 @@ package com.capstone.cattleweight;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.ImageFormat;
+import android.graphics.Paint;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -9,6 +15,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,7 +34,16 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import android.graphics.YuvImage;
+
 import com.google.common.util.concurrent.ListenableFuture;
+
+import java.io.ByteArrayOutputStream;
+import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -48,11 +64,11 @@ public class DetectionFragment extends Fragment {
     private static final String TAG = "DetectionFragment";
     private static final int CAMERA_PERMISSION_CODE = 100;
     private static final int STORAGE_PERMISSION_CODE = 101;
-    private static final String SERVER_URL = "http://192.168.1.100:5000";
+    private static final String SERVER_URL = "http://192.168.0.100:5000"; // IP WiFi Server (unused in USB mode)
     
     // UI Components
     private PreviewView cameraPreview;
-    private TextView tvCameraStatus, tvDistance, tvSignalStrength, tvTemperature;
+    private TextView tvCameraStatus, tvModelStatus, tvDistance, tvSignalStrength, tvTemperature;
     private TextView tvConnectionStatus, tvTimestamp, tvEstimatedWeight, tvConfidence;
     private Button btnDetect;
     private DetectionOverlayView detectionOverlay;
@@ -118,6 +134,7 @@ public class DetectionFragment extends Fragment {
             detectionOverlay = view.findViewById(R.id.detectionOverlay);
             btnDetect = view.findViewById(R.id.btnDetect);
             tvCameraStatus = view.findViewById(R.id.tvCameraStatus);
+            tvModelStatus = view.findViewById(R.id.tvModelStatus);
             tvDistance = view.findViewById(R.id.tvDistance);
             tvSignalStrength = view.findViewById(R.id.tvSignalStrength);
             tvTemperature = view.findViewById(R.id.tvTemperature);
@@ -171,7 +188,11 @@ public class DetectionFragment extends Fragment {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
             permissions = new String[]{android.Manifest.permission.READ_MEDIA_IMAGES};
         } else {
-            permissions = new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE};
+            // Android 12 and below - need WRITE for saving photos
+            permissions = new String[]{
+                android.Manifest.permission.READ_EXTERNAL_STORAGE,
+                android.Manifest.permission.WRITE_EXTERNAL_STORAGE
+            };
         }
         ActivityCompat.requestPermissions(requireActivity(), permissions, STORAGE_PERMISSION_CODE);
     }
@@ -314,6 +335,15 @@ public class DetectionFragment extends Fragment {
         Log.d(TAG, "=== initializeMLModels() CALLED ===");
         Log.d(TAG, "cameraExecutor: " + cameraExecutor);
         
+        // Show loading indicator
+        new Handler(Looper.getMainLooper()).post(() -> {
+            if (tvModelStatus != null) {
+                tvModelStatus.setVisibility(View.VISIBLE);
+                tvModelStatus.setText("⏳ Loading YOLO model...");
+                tvModelStatus.setBackgroundColor(0xDDFF9800); // Orange
+            }
+        });
+        
         // Initialize in background thread
         cameraExecutor.execute(() -> {
             Log.d(TAG, "=== Background thread STARTED ===");
@@ -325,8 +355,23 @@ public class DetectionFragment extends Fragment {
                 Log.d(TAG, "Creating CowDetector...");
                 cowDetector = new CowDetector(requireContext());
                 Log.d(TAG, "CowDetector created, initializing from: " + yoloPath);
+                
+                // Update UI: Loading YOLO
+                new Handler(Looper.getMainLooper()).post(() -> {
+                    if (tvModelStatus != null) {
+                        tvModelStatus.setText("⏳ Loading YOLO (1/2)...");
+                    }
+                });
+                
                 boolean yoloLoaded = cowDetector.initialize(yoloPath);
                 Log.d(TAG, "YOLO loaded: " + yoloLoaded);
+                
+                // Update UI: Loading Weight Model
+                new Handler(Looper.getMainLooper()).post(() -> {
+                    if (tvModelStatus != null) {
+                        tvModelStatus.setText("⏳ Loading Weight Model (2/2)...");
+                    }
+                });
                 
                 Log.d(TAG, "Creating CattleWeightPredictor...");
                 weightPredictor = new CattleWeightPredictor(requireContext());
@@ -340,9 +385,23 @@ public class DetectionFragment extends Fragment {
                 new Handler(Looper.getMainLooper()).post(() -> {
                     if (modelsInitialized) {
                         Log.i(TAG, "✅ ML Models loaded successfully");
-                        Toast.makeText(requireContext(), "✅ Models loaded", Toast.LENGTH_SHORT).show();
+                        if (tvModelStatus != null) {
+                            tvModelStatus.setText("✅ Models Ready");
+                            tvModelStatus.setBackgroundColor(0xDD4CAF50); // Green
+                            // Hide after 3 seconds
+                            new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                                if (tvModelStatus != null) {
+                                    tvModelStatus.setVisibility(View.GONE);
+                                }
+                            }, 3000);
+                        }
+                        Toast.makeText(requireContext(), "✅ Models loaded successfully", Toast.LENGTH_SHORT).show();
                     } else {
                         Log.e(TAG, "❌ Failed to load models");
+                        if (tvModelStatus != null) {
+                            tvModelStatus.setText("❌ Model Failed");
+                            tvModelStatus.setBackgroundColor(0xDDF44336); // Red
+                        }
                         btnDetect.setText("❌ Model Error");
                         btnDetect.setEnabled(false);
                         tvCameraStatus.setText("❌ Model Loading Failed");
@@ -353,6 +412,10 @@ public class DetectionFragment extends Fragment {
             } catch (Exception e) {
                 Log.e(TAG, "=== EXCEPTION in model initialization ===", e);
                 new Handler(Looper.getMainLooper()).post(() -> {
+                    if (tvModelStatus != null) {
+                        tvModelStatus.setText("❌ Error: " + e.getMessage());
+                        tvModelStatus.setBackgroundColor(0xDDF44336); // Red
+                    }
                     btnDetect.setText("❌ Model Error");
                     btnDetect.setEnabled(false);
                     Toast.makeText(requireContext(), "Model error: " + e.getMessage(), Toast.LENGTH_LONG).show();
@@ -445,11 +508,14 @@ public class DetectionFragment extends Fragment {
         }
         
         // Check if cow is detected
+        final List<CowDetector.Detection> detectionsToPredict;
         synchronized (detectionLock) {
             if (latestDetections.isEmpty()) {
                 showError("No cow detected");
                 return;
             }
+            // Copy current detections to use for prediction
+            detectionsToPredict = new ArrayList<>(latestDetections);
         }
         
         // Prevent concurrent predictions
@@ -473,26 +539,29 @@ public class DetectionFragment extends Fragment {
                         return;
                     }
                     
-                    // Re-run detection on captured image (for accuracy)
-                    List<CowDetector.Detection> capturedDetections = cowDetector.detectCows(bitmap);
-                    if (capturedDetections.isEmpty()) {
-                        showError("Cow not found in captured image");
-                        resetDetectionState();
-                        return;
-                    }
+                    Log.d(TAG, String.format("Captured image: %dx%d, using %d detections from preview", 
+                        bitmap.getWidth(), bitmap.getHeight(), detectionsToPredict.size()));
                     
-                    // Predict weight for each detected cow
+                    // Predict weight for each detected cow (from preview detections)
                     List<DetectionOverlayView.DetectionResult> results = new ArrayList<>();
-                    for (CowDetector.Detection detection : capturedDetections) {
+                    for (CowDetector.Detection detection : detectionsToPredict) {
                         try {
+                            // Pass preview dimensions untuk bbox scaling
+                            int previewWidth = detectionOverlay.getImageWidth();
+                            int previewHeight = detectionOverlay.getImageHeight();
+                            
                             CattleWeightPredictor.WeightResult weightResult = 
-                                    weightPredictor.predictWeight(bitmap, detection, distanceMeters);
+                                    weightPredictor.predictWeight(bitmap, detection, 
+                                            previewWidth, previewHeight, distanceMeters);
                             
                             DetectionOverlayView.DetectionResult result = 
                                     new DetectionOverlayView.DetectionResult();
-                            result.bbox = detection.bbox;
+                            result.bbox = weightResult.scaledBbox;  // Use scaled bbox for accurate drawing
                             result.confidence = detection.confidence;
                             result.weight = weightResult.weight;
+                            result.normalizedWidth = weightResult.normalizedWidth;
+                            result.normalizedHeight = weightResult.normalizedHeight;
+                            result.normalizedArea = weightResult.normalizedArea;
                             results.add(result);
                             
                         } catch (Exception e) {
@@ -508,6 +577,9 @@ public class DetectionFragment extends Fragment {
                             DetectionOverlayView.DetectionResult firstResult = results.get(0);
                             tvEstimatedWeight.setText(String.format("%.1f kg", firstResult.weight));
                             tvConfidence.setText(String.format("%.0f%%", firstResult.confidence * 100));
+                            
+                            // Save photo with detection overlay and metadata
+                            saveDetectionPhoto(bitmap, firstResult, distanceMeters);
                         }
                         
                         resetDetectionState();
@@ -533,11 +605,45 @@ public class DetectionFragment extends Fragment {
     
     private Bitmap imageProxyToBitmap(@NonNull ImageProxy imageProxy) {
         try {
-            // CameraX default format is YUV_420_888
-            // Convert to NV21 format for processing
-            ByteBuffer yBuffer = imageProxy.getPlanes()[0].getBuffer();
-            ByteBuffer uBuffer = imageProxy.getPlanes()[1].getBuffer();
-            ByteBuffer vBuffer = imageProxy.getPlanes()[2].getBuffer();
+            // Handle different ImageProxy formats
+            ImageProxy.PlaneProxy[] planes = imageProxy.getPlanes();
+            
+            Log.d(TAG, String.format("ImageProxy format: %d, planes: %d, size: %dx%d", 
+                imageProxy.getFormat(), planes.length, imageProxy.getWidth(), imageProxy.getHeight()));
+            
+            if (planes.length == 0) {
+                Log.e(TAG, "No planes in ImageProxy");
+                return null;
+            }
+            
+            // For single plane (already in compressed format like JPEG)
+            if (planes.length == 1) {
+                ByteBuffer buffer = planes[0].getBuffer();
+                byte[] bytes = new byte[buffer.remaining()];
+                buffer.get(bytes);
+                return BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+            }
+            
+            // For YUV format (3 planes)
+            if (planes.length >= 3) {
+                return yuv420ToBitmap(imageProxy);
+            }
+            
+            Log.e(TAG, "Unsupported plane count: " + planes.length);
+            return null;
+            
+        } catch (Exception e) {
+            Log.e(TAG, "Error converting ImageProxy to Bitmap", e);
+            return null;
+        }
+    }
+    
+    private Bitmap yuv420ToBitmap(ImageProxy imageProxy) {
+        try {
+            ImageProxy.PlaneProxy[] planes = imageProxy.getPlanes();
+            ByteBuffer yBuffer = planes[0].getBuffer();
+            ByteBuffer uBuffer = planes[1].getBuffer();
+            ByteBuffer vBuffer = planes[2].getBuffer();
             
             int ySize = yBuffer.remaining();
             int uSize = uBuffer.remaining();
@@ -545,15 +651,40 @@ public class DetectionFragment extends Fragment {
             
             byte[] nv21 = new byte[ySize + uSize + vSize];
             
-            // Y plane
+            // Copy Y plane
             yBuffer.get(nv21, 0, ySize);
             
-            // U and V are swapped for NV21 format
-            vBuffer.get(nv21, ySize, vSize);
-            uBuffer.get(nv21, ySize + vSize, uSize);
+            // Handle U and V planes based on pixel stride
+            int uvPixelStride = planes[1].getPixelStride();
+            
+            if (uvPixelStride == 1) {
+                // Tightly packed - simple copy
+                vBuffer.get(nv21, ySize, vSize);
+                uBuffer.get(nv21, ySize + vSize, uSize);
+            } else if (uvPixelStride == 2) {
+                // Interleaved UV - de-interleave for NV21
+                int uvRowStride = planes[1].getRowStride();
+                int uvWidth = imageProxy.getWidth() / 2;
+                int uvHeight = imageProxy.getHeight() / 2;
+                
+                int idxNv21 = ySize;
+                for (int row = 0; row < uvHeight; row++) {
+                    for (int col = 0; col < uvWidth; col++) {
+                        int uvIndex = row * uvRowStride + col * uvPixelStride;
+                        // NV21 format: VUVUVU...
+                        nv21[idxNv21++] = vBuffer.get(uvIndex);
+                        nv21[idxNv21++] = uBuffer.get(uvIndex);
+                    }
+                }
+            } else {
+                Log.w(TAG, "Unexpected UV pixel stride: " + uvPixelStride + ", attempting simple copy");
+                // Fallback: try simple copy
+                vBuffer.get(nv21, ySize, vSize);
+                uBuffer.get(nv21, ySize + vSize, uSize);
+            }
             
             YuvImage yuvImage = new YuvImage(nv21, 
-                    ImageFormat.NV21,  // Use NV21 explicitly
+                    ImageFormat.NV21,
                     imageProxy.getWidth(), 
                     imageProxy.getHeight(), 
                     null);
@@ -643,6 +774,112 @@ public class DetectionFragment extends Fragment {
                         Toast.LENGTH_LONG).show();
                 btnDetect.setText("❌ Storage Permission Denied");
             }
+        }
+    }
+    
+    private void saveDetectionPhoto(Bitmap originalBitmap, DetectionOverlayView.DetectionResult result, float distance) {
+        try {
+            // Create copy to draw on
+            Bitmap bitmapWithOverlay = originalBitmap.copy(Bitmap.Config.ARGB_8888, true);
+            Canvas canvas = new Canvas(bitmapWithOverlay);
+            
+            // result.bbox is already in captured image coordinates (scaled by predictWeight)
+            // No need to scale again!
+            
+            Log.d(TAG, String.format("📐 Drawing bbox on captured image %dx%d",
+                originalBitmap.getWidth(), originalBitmap.getHeight()));
+            Log.d(TAG, String.format("   Bbox: [%.0f,%.0f,%.0f,%.0f] (%.0fx%.0f)",
+                result.bbox.left, result.bbox.top, result.bbox.right, result.bbox.bottom,
+                result.bbox.width(), result.bbox.height()));
+            
+            // Draw bounding box
+            Paint boxPaint = new Paint();
+            boxPaint.setColor(0xFF4CAF50); // Green
+            boxPaint.setStyle(Paint.Style.STROKE);
+            boxPaint.setStrokeWidth(12);
+            canvas.drawRect(result.bbox, boxPaint);
+            
+            // Draw label background
+            Paint textBgPaint = new Paint();
+            textBgPaint.setColor(0xDD4CAF50);
+            textBgPaint.setStyle(Paint.Style.FILL);
+            
+            // Draw text with size proportional to image resolution
+            Paint textPaint = new Paint();
+            textPaint.setColor(0xFFFFFFFF);
+            // Scale text size based on image width (40px for 1080p, proportionally larger for 4K)
+            float baseTextSize = 40f;
+            float scaledTextSize = baseTextSize * (originalBitmap.getWidth() / 1080f);
+            textPaint.setTextSize(scaledTextSize);
+            textPaint.setAntiAlias(true);
+            textPaint.setFakeBoldText(true);
+            
+            String label = String.format("%.1f kg (%.0f%%)", result.weight, result.confidence * 100);
+            float textWidth = textPaint.measureText(label);
+            float textX = result.bbox.left + 10;
+            float textY = result.bbox.top - 10;
+            
+            canvas.drawRect(textX - 5, textY - 35, textX + textWidth + 5, textY + 5, textBgPaint);
+            canvas.drawText(label, textX, textY, textPaint);
+            
+            // Save to app-specific Pictures directory (no permission needed)
+            String timeStamp = new java.text.SimpleDateFormat("yyyyMMdd_HHmmss", java.util.Locale.getDefault()).format(new java.util.Date());
+            String fileName = "COW_" + timeStamp + ".jpg";
+            
+            // Use app-specific directory: /storage/emulated/0/Android/data/com.capstone.cattleweight/files/Pictures/CattleWeight
+            java.io.File picturesDir = new java.io.File(
+                requireContext().getExternalFilesDir(android.os.Environment.DIRECTORY_PICTURES),
+                "CattleWeight"
+            );
+            if (!picturesDir.exists()) {
+                boolean created = picturesDir.mkdirs();
+                Log.d(TAG, "📁 Created directory: " + picturesDir.getAbsolutePath() + " - Success: " + created);
+            }
+            
+            java.io.File imageFile = new java.io.File(picturesDir, fileName);
+            java.io.FileOutputStream fos = new java.io.FileOutputStream(imageFile);
+            bitmapWithOverlay.compress(Bitmap.CompressFormat.JPEG, 95, fos);
+            fos.flush();
+            fos.close();
+            
+            // Save metadata to text file
+            String metadataFileName = "COW_" + timeStamp + "_metadata.txt";
+            java.io.File metadataFile = new java.io.File(picturesDir, metadataFileName);
+            java.io.FileWriter writer = new java.io.FileWriter(metadataFile);
+            writer.write("=== CATTLE WEIGHT DETECTION RESULT ===\\n");
+            writer.write("Timestamp: " + new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss", java.util.Locale.getDefault()).format(new java.util.Date()) + "\\n");
+            writer.write("\\n--- DETECTION INFO ---\\n");
+            writer.write(String.format("Predicted Weight: %.2f kg\\n", result.weight));
+            writer.write(String.format("Confidence: %.1f%%\\n", result.confidence * 100));
+            writer.write(String.format("Distance (LiDAR): %.2f meters (%.0f cm)\\n", distance, distance * 100));
+            writer.write("\\n--- BOUNDING BOX (in saved image) ---\\n");
+            writer.write(String.format("Left: %.0f px\\n", result.bbox.left));
+            writer.write(String.format("Top: %.0f px\\n", result.bbox.top));
+            writer.write(String.format("Right: %.0f px\\n", result.bbox.right));
+            writer.write(String.format("Bottom: %.0f px\\n", result.bbox.bottom));
+            writer.write(String.format("Width: %.0f px\\n", result.bbox.width()));
+            writer.write(String.format("Height: %.0f px\\n", result.bbox.height()));
+            writer.write(String.format("Area: %.0f px²\\n", result.bbox.width() * result.bbox.height()));
+            writer.write("\\n--- NORMALIZED BBOX (for model input) ---\\n");
+            writer.write(String.format("Normalized Width: %.2f px (at training resolution)\\n", result.normalizedWidth));
+            writer.write(String.format("Normalized Height: %.2f px (at training resolution)\\n", result.normalizedHeight));
+            writer.write(String.format("Normalized Area: %.0f px² (at training resolution)\\n", result.normalizedArea));
+            writer.write(String.format("Size Feature: %.2f (area × distance²)\\n", result.normalizedArea * distance * distance));
+            writer.write("\\n--- IMAGE INFO ---\\n");
+            writer.write(String.format("Image Resolution: %dx%d\\n", originalBitmap.getWidth(), originalBitmap.getHeight()));
+            writer.write(String.format("Saved File: %s\\n", fileName));
+            writer.write(String.format("Saved Path: %s\\n", imageFile.getAbsolutePath()));
+            writer.close();
+            
+            bitmapWithOverlay.recycle();
+            
+            Log.i(TAG, "✅ Photo saved: " + imageFile.getAbsolutePath());
+            new Handler(Looper.getMainLooper()).post(() -> {
+                Toast.makeText(requireContext(), "📸 Saved: " + imageFile.getAbsolutePath(), Toast.LENGTH_LONG).show();
+            });
+            
+        } catch (Exception e) {
+            Log.e(TAG, "Failed to save photo", e);
         }
     }
 }

@@ -32,6 +32,9 @@ public class DetectionOverlayView extends View {
         public RectF bbox;
         public float confidence;
         public float weight; // in kg
+        public float normalizedWidth;  // Bbox width normalized to training resolution
+        public float normalizedHeight; // Bbox height normalized to training resolution
+        public float normalizedArea;   // Bbox area normalized to training resolution
         
         public DetectionResult() {
             // Default constructor
@@ -88,6 +91,20 @@ public class DetectionOverlayView extends View {
     public void setImageSize(int width, int height) {
         this.imageWidth = width;
         this.imageHeight = height;
+    }
+    
+    /**
+     * Get image width for bbox scaling calculations
+     */
+    public int getImageWidth() {
+        return imageWidth;
+    }
+    
+    /**
+     * Get image height for bbox scaling calculations
+     */
+    public int getImageHeight() {
+        return imageHeight;
     }
     
     /**

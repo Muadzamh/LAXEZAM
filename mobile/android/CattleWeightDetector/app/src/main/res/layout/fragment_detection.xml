@@ -9,7 +9,7 @@
     tools:context=".MainActivity">
 
     <!-- ========================================== -->
-    <!-- CAMERA SECTION (45% - TOP) -->
+    <!-- CAMERA SECTION (65% - TOP) -->
     <!-- ========================================== -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cameraSection"
@@ -18,7 +18,7 @@
         android:background="#212121"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/lidarSection"
-        app:layout_constraintHeight_percent="0.45">
+        app:layout_constraintHeight_percent="0.65">
 
         <!-- Camera Preview -->
         <androidx.camera.view.PreviewView
@@ -106,20 +106,39 @@
             android:fontFamily="sans-serif-medium"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
+        
+        <!-- Status Model Loading -->
+        <TextView
+            android:id="@+id/tvModelStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="12dp"
+            android:background="#DDFF9800"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            android:paddingTop="6dp"
+            android:paddingBottom="6dp"
+            android:text="⏳ Loading Models..."
+            android:textColor="#FFFFFF"
+            android:textSize="10sp"
+            android:fontFamily="sans-serif-medium"
+            android:visibility="visible"
+            app:layout_constraintTop_toBottomOf="@id/tvCameraStatus"
+            app:layout_constraintStart_toStartOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <!-- ========================================== -->
-    <!-- LIDAR SECTION (55% - BOTTOM) -->
+    <!-- LIDAR SECTION (35% - BOTTOM) -->
     <!-- ========================================== -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/lidarSection"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:background="#B71C1C"
+        android:background="#80B71C1C"
         app:layout_constraintTop_toBottomOf="@id/cameraSection"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHeight_percent="0.55">
+        app:layout_constraintHeight_percent="0.35">
 
         <!-- Header -->
         <LinearLayout
@@ -274,32 +293,33 @@
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
 
-                <!-- Kekuatan Sinyal (Signal Strength) -->
-                <androidx.cardview.widget.CardView
+                <!-- Signal Strength & Temperature (Horizontal Layout) -->
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    app:cardBackgroundColor="#7B1FA2"
-                    app:cardCornerRadius="12dp"
-                    app:cardElevation="3dp">
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="12dp">
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
+                    <!-- Kekuatan Sinyal (Signal Strength) -->
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical"
-                        android:padding="14dp">
+                        android:layout_weight="1"
+                        android:layout_marginEnd="4dp"
+                        app:cardBackgroundColor="#7B1FA2"
+                        app:cardCornerRadius="8dp"
+                        app:cardElevation="3dp">
 
                         <LinearLayout
-                            android:layout_width="0dp"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
+                            android:orientation="vertical"
+                            android:padding="12dp">
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="📶 Signal Strength"
+                                android:text="📶 Signal"
                                 android:textColor="#E1BEE7"
                                 android:textSize="9sp"
                                 android:fontFamily="sans-serif" />
@@ -310,54 +330,49 @@
                                 android:layout_height="wrap_content"
                                 android:text="--"
                                 android:textColor="#FFFFFF"
-                                android:textSize="20sp"
+                                android:textSize="18sp"
                                 android:fontFamily="sans-serif-light"
                                 android:layout_marginTop="2dp" />
                         </LinearLayout>
+                    </androidx.cardview.widget.CardView>
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="units"
-                            android:textColor="#CE93D8"
-                            android:textSize="11sp"
-                            android:fontFamily="sans-serif-medium" />
-                    </LinearLayout>
-                </androidx.cardview.widget.CardView>
-
-                <!-- Suhu (Temperature) -->
-                <androidx.cardview.widget.CardView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="12dp"
-                    app:cardBackgroundColor="#C62828"
-                    app:cardCornerRadius="8dp"
-                    app:cardElevation="4dp">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
+                    <!-- Suhu (Temperature) -->
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:padding="16dp">
+                        android:layout_weight="1"
+                        android:layout_marginStart="4dp"
+                        app:cardBackgroundColor="#C62828"
+                        app:cardCornerRadius="8dp"
+                        app:cardElevation="3dp">
 
-                        <TextView
-                            android:layout_width="wrap_content"
+                        <LinearLayout
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="🌡️ SUHU CHIP"
-                            android:textColor="#FFCDD2"
-                            android:textSize="11sp" />
+                            android:orientation="vertical"
+                            android:padding="12dp">
 
-                        <TextView
-                            android:id="@+id/tvTemperature"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="--°C"
-                            android:textColor="#FFFFFF"
-                            android:textSize="28sp"
-                            android:textStyle="bold" />
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="🌡️ Chip Temp"
+                                android:textColor="#FFCDD2"
+                                android:textSize="9sp"
+                                android:fontFamily="sans-serif" />
 
-                    </LinearLayout>
-                </androidx.cardview.widget.CardView>
+                            <TextView
+                                android:id="@+id/tvTemperature"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="--°C"
+                                android:textColor="#FFFFFF"
+                                android:textSize="18sp"
+                                android:fontFamily="sans-serif-light"
+                                android:layout_marginTop="2dp" />
+                        </LinearLayout>
+                    </androidx.cardview.widget.CardView>
+
+                </LinearLayout>
 
                 <!-- Timestamp -->
                 <TextView

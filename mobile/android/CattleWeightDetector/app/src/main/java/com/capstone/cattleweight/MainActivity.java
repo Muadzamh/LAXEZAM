@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
     private LidarDataReceiver lidarReceiver;
     
     // Server Configuration - GANTI DENGAN IP KOMPUTER ANDA
-    private static final String SERVER_URL = "http://192.168.1.203:5000"; // TODO: Ubah IP ini!
+    private static final String SERVER_URL = "http://192.168.0.100:5000"; // IP WiFi Server
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {

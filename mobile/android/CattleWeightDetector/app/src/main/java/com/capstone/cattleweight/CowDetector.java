@@ -248,6 +248,11 @@ public class CowDetector {
             
             int numDetections = output[0][0].length; // 8400
             
+            // Debug: Track max confidence across all detections
+            float globalMaxConf = 0;
+            int globalMaxClass = -1;
+            int cowDetectionsFound = 0;
+            
             // Parse detections
             for (int i = 0; i < numDetections; i++) {
                 // Extract bbox (x_center, y_center, width, height)
@@ -267,37 +272,60 @@ public class CowDetector {
                     }
                 }
                 
+                // Track global max for debugging
+                if (maxConf > globalMaxConf) {
+                    globalMaxConf = maxConf;
+                    globalMaxClass = maxClass;
+                }
+                
+                // Track cow detections (even below threshold)
+                if (maxClass == COW_CLASS_INDEX && maxConf > 0.1f) {
+                    cowDetectionsFound++;
+                    if (cowDetectionsFound <= 3) { // Log first 3 only
+                        Log.d(TAG, String.format("Cow candidate #%d: conf=%.3f (threshold=%.2f)", 
+                            cowDetectionsFound, maxConf, CONFIDENCE_THRESHOLD));
+                    }
+                }
+                
                 // Only keep cow detections above threshold
                 if (maxClass == COW_CLASS_INDEX && maxConf >= CONFIDENCE_THRESHOLD) {
-                    // Coordinates are in letterboxed 640x640 space
-                    // Need to:
-                    // 1. Remove letterbox offset
-                    // 2. Scale back to original image size
+                    // YOLO output coordinates are in letterboxed 640x640 space
+                    // Transformation steps:
+                    // 1. Convert center+size to corners (x1,y1,x2,y2)
+                    // 2. Remove letterbox offset to get coordinates in scaled image space
+                    // 3. Scale back to original image dimensions
                     
-                    float left_letterbox = x_center - width / 2;
-                    float top_letterbox = y_center - height / 2;
-                    float right_letterbox = x_center + width / 2;
-                    float bottom_letterbox = y_center + height / 2;
+                    // Step 1: Convert from [x_center, y_center, w, h] to [x1, y1, x2, y2]
+                    float x1_letterbox = x_center - width / 2.0f;
+                    float y1_letterbox = y_center - height / 2.0f;
+                    float x2_letterbox = x_center + width / 2.0f;
+                    float y2_letterbox = y_center + height / 2.0f;
                     
-                    // Remove offset to get coordinates in scaled image space
-                    float left_scaled = left_letterbox - lastOffsetX;
-                    float top_scaled = top_letterbox - lastOffsetY;
-                    float right_scaled = right_letterbox - lastOffsetX;
-                    float bottom_scaled = bottom_letterbox - lastOffsetY;
+                    // Step 2: Remove letterbox padding offset
+                    // Coordinates dikurangi offset untuk mendapatkan posisi di scaled image
+                    float x1_scaled = x1_letterbox - lastOffsetX;
+                    float y1_scaled = y1_letterbox - lastOffsetY;
+                    float x2_scaled = x2_letterbox - lastOffsetX;
+                    float y2_scaled = y2_letterbox - lastOffsetY;
                     
-                    // Scale back to original image size
-                    float left = left_scaled / lastScale;
-                    float top = top_scaled / lastScale;
-                    float right = right_scaled / lastScale;
-                    float bottom = bottom_scaled / lastScale;
+                    // Step 3: Scale back to original image size
+                    // Bagi dengan scale factor untuk kembali ke ukuran asli
+                    float left = x1_scaled / lastScale;
+                    float top = y1_scaled / lastScale;
+                    float right = x2_scaled / lastScale;
+                    float bottom = y2_scaled / lastScale;
                     
                     // Debug coordinate transformation
                     if (i == 0) { // Log first detection only
-                        Log.d(TAG, String.format("Transform: letterbox[%.1f,%.1f,%.1f,%.1f] -> scaled[%.1f,%.1f,%.1f,%.1f] -> final[%.0f,%.0f,%.0f,%.0f]",
-                            left_letterbox, top_letterbox, right_letterbox, bottom_letterbox,
-                            left_scaled, top_scaled, right_scaled, bottom_scaled,
+                        Log.d(TAG, String.format("YOLO raw: center=(%.1f,%.1f) size=(%.1fx%.1f)", 
+                            x_center, y_center, width, height));
+                        Log.d(TAG, String.format("  Letterbox box: [%.1f,%.1f,%.1f,%.1f]",
+                            x1_letterbox, y1_letterbox, x2_letterbox, y2_letterbox));
+                        Log.d(TAG, String.format("  Scaled box: [%.1f,%.1f,%.1f,%.1f]",
+                            x1_scaled, y1_scaled, x2_scaled, y2_scaled));
+                        Log.d(TAG, String.format("  Final box: [%.0f,%.0f,%.0f,%.0f]",
                             left, top, right, bottom));
-                        Log.d(TAG, String.format("  Scale: %.3f, Offset: (%d, %d), Original: %dx%d",
+                        Log.d(TAG, String.format("  Transform params: scale=%.3f, offset=(%d,%d), original=%dx%d",
                             lastScale, lastOffsetX, lastOffsetY, originalWidth, originalHeight));
                     }
                     
@@ -311,6 +339,10 @@ public class CowDetector {
                     detections.add(new Detection(bbox, maxConf, maxClass));
                 }
             }
+            
+            // Debug summary
+            Log.d(TAG, String.format("YOLO parsing summary: globalMaxConf=%.3f (class=%d), cowCandidates=%d, passedThreshold=%d",
+                globalMaxConf, globalMaxClass, cowDetectionsFound, detections.size()));
             
             // Apply NMS (Non-Maximum Suppression)
             return applyNMS(detections, IOU_THRESHOLD);
