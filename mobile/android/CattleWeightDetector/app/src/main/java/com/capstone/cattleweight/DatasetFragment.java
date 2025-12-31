@@ -55,7 +55,7 @@ public class DatasetFragment extends Fragment {
     
     private static final String TAG = "DatasetFragment";
     private static final int CAMERA_PERMISSION_CODE = 101;
-    private static final String SERVER_URL = "http://192.168.0.100:5000"; // IP WiFi Server (unused in USB mode)
+    private static final String SERVER_URL = "http://192.168.1.3:5000"; // IP WiFi Server (unused in USB mode)
     
     // UI Components
     private PreviewView cameraPreview;

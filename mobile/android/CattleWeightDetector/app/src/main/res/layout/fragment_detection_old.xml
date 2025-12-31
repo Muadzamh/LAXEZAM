@@ -9,83 +9,112 @@
     tools:context=".MainActivity">
 
     <!-- ========================================== -->
-    <!-- CAMERA SECTION (70% - LEFT) -->
+    <!-- CAMERA SECTION (45% - TOP) -->
     <!-- ========================================== -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cameraSection"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
         android:background="#212121"
-        android:padding="16dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/lidarSection"
-        app:layout_constraintWidth_percent="0.70">
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/lidarSection"
+        app:layout_constraintHeight_percent="0.45">
 
-        <!-- Camera Preview dengan Frame (4:3 Aspect Ratio) - HANYA CAMERA & DETECTION OVERLAY -->
-        <androidx.cardview.widget.CardView
-            android:id="@+id/cameraFrame"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:cardBackgroundColor="#FFFFFF"
-            app:cardCornerRadius="8dp"
-            app:cardElevation="4dp"
-            app:layout_constraintDimensionRatio="4:3"
+        <!-- Camera Preview -->
+        <androidx.camera.view.PreviewView
+            android:id="@+id/cameraPreview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <!-- Overlay untuk Hasil Deteksi ML Model -->
+        <LinearLayout
+            android:id="@+id/mlResultOverlay"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="12dp"
+            android:background="#DD000000"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
 
-            <FrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
+            <TextView
+                android:id="@+id/tvEstimatedWeight"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Bobot Karkas: -- kg"
+                android:textColor="#FFFFFF"
+                android:textSize="12sp"
+                android:fontFamily="sans-serif-medium"
+                android:drawableStart="@android:drawable/ic_menu_info_details"
+                android:drawablePadding="6dp" />
 
-                <!-- Camera Preview -->
-                <androidx.camera.view.PreviewView
-                    android:id="@+id/cameraPreview"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
+            <TextView
+                android:id="@+id/tvConfidence"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:text="Confidence: --%"
+                android:textColor="#B0BEC5"
+                android:textSize="9sp"
+                android:fontFamily="sans-serif" />
 
-                <!-- Detection Overlay (HANYA INI - kotak hijau YOLO) -->
-                <com.capstone.cattleweight.DetectionOverlayView
-                    android:id="@+id/detectionOverlay"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
+        </LinearLayout>
 
-            </FrameLayout>
-        </androidx.cardview.widget.CardView>
+        <!-- Status Camera -->
+        <TextView
+            android:id="@+id/tvCameraStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="12dp"
+            android:background="#DD000000"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            android:paddingTop="6dp"
+            android:paddingBottom="6dp"
+            android:text="📷 Camera Ready"
+            android:textColor="#4CAF50"
+            android:textSize="9sp"
+            android:fontFamily="sans-serif-medium"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <!-- ========================================== -->
-    <!-- LIDAR SECTION (30% - RIGHT) -->
+    <!-- LIDAR SECTION (55% - BOTTOM) -->
     <!-- ========================================== -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/lidarSection"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:background="#BDBDBD"
-        app:layout_constraintStart_toEndOf="@id/cameraSection"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintWidth_percent="0.30">
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="#B71C1C"
+        app:layout_constraintTop_toBottomOf="@id/cameraSection"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHeight_percent="0.55">
 
         <!-- Header -->
         <LinearLayout
             android:id="@+id/tvLidarHeader"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#616161"
+            android:background="#C62828"
             android:orientation="vertical"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
             app:layout_constraintTop_toTopOf="parent">
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="LIDAR DATA"
+                android:text="REAL-TIME DETECTION"
                 android:textAlignment="center"
                 android:textColor="#FFFFFF"
-                android:textSize="12sp"
+                android:textSize="11sp"
                 android:fontFamily="sans-serif-medium"
                 android:letterSpacing="0.1" />
         </LinearLayout>
@@ -95,10 +124,10 @@
             android:id="@+id/controlBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="12dp"
             android:layout_marginTop="8dp"
-            app:cardBackgroundColor="#757575"
+            app:cardBackgroundColor="#D32F2F"
             app:cardCornerRadius="8dp"
             app:cardElevation="2dp"
             app:layout_constraintTop_toBottomOf="@id/tvLidarHeader">
@@ -127,7 +156,7 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:gravity="center_vertical"
-                    android:background="#616161"
+                    android:background="#E53935"
                     android:paddingStart="12dp"
                     android:paddingEnd="8dp"
                     android:paddingTop="8dp"
@@ -138,7 +167,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="USB Mode"
-                        android:textColor="#E0E0E0"
+                        android:textColor="#FFCDD2"
                         android:textSize="10sp"
                         android:fontFamily="sans-serif"
                         android:layout_marginEnd="8dp" />
@@ -152,7 +181,7 @@
                         android:scaleX="1.3"
                         android:scaleY="1.3"
                         app:thumbTint="#FFFFFF"
-                        app:trackTint="#9E9E9E" />
+                        app:trackTint="#EF9A9A" />
                 </LinearLayout>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
@@ -170,65 +199,12 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <!-- DETECT BUTTON (ONLY PERMANENT CONTROL) -->
-                <Button
-                    android:id="@+id/btnDetect"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="🔍 DETECT WEIGHT"
-                    android:textSize="14sp"
-                    android:textStyle="bold"
-                    android:backgroundTint="#4CAF50"
-                    android:layout_marginBottom="8dp"
-                    android:padding="12dp" />
-
-                <!-- ML RESULT OVERLAY -->
-                <androidx.cardview.widget.CardView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="12dp"
-                    app:cardBackgroundColor="#424242"
-                    app:cardCornerRadius="8dp"
-                    app:cardElevation="2dp">
-
-                    <LinearLayout
-                        android:id="@+id/mlResultOverlay"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:padding="10dp">
-
-                        <TextView
-                            android:id="@+id/tvEstimatedWeight"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Bobot Karkas: -- kg"
-                            android:textColor="#FFFFFF"
-                            android:textSize="12sp"
-                            android:fontFamily="sans-serif-medium"
-                            android:drawableStart="@android:drawable/ic_menu_info_details"
-                            android:drawablePadding="6dp" />
-
-                        <TextView
-                            android:id="@+id/tvConfidence"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="4dp"
-                            android:text="Confidence: --%"
-                            android:textColor="#B0BEC5"
-                            android:textSize="10sp"
-                            android:fontFamily="sans-serif" />
-                    </LinearLayout>
-                </androidx.cardview.widget.CardView>
-
-                <!-- LIDAR DATA SECTION -->
-                
                 <!-- Jarak (Distance) -->
                 <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="8dp"
-                    app:cardBackgroundColor="#757575"
+                    app:cardBackgroundColor="#E53935"
                     app:cardCornerRadius="12dp"
                     app:cardElevation="3dp">
 
@@ -249,7 +225,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="📏 Distance"
-                                android:textColor="#E0E0E0"
+                                android:textColor="#FFCDD2"
                                 android:textSize="9sp"
                                 android:fontFamily="sans-serif" />
 
@@ -268,40 +244,39 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="cm"
-                            android:textColor="#EEEEEE"
+                            android:textColor="#EF9A9A"
                             android:textSize="11sp"
                             android:fontFamily="sans-serif-medium" />
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
 
-                <!-- Signal Strength & Temperature (Horizontal Layout) -->
-                <LinearLayout
+                <!-- Kekuatan Sinyal (Signal Strength) -->
+                <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginBottom="12dp">
+                    android:layout_marginBottom="8dp"
+                    app:cardBackgroundColor="#7B1FA2"
+                    app:cardCornerRadius="12dp"
+                    app:cardElevation="3dp">
 
-                    <!-- Kekuatan Sinyal (Signal Strength) -->
-                    <androidx.cardview.widget.CardView
-                        android:layout_width="0dp"
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:layout_marginEnd="4dp"
-                        app:cardBackgroundColor="#616161"
-                        app:cardCornerRadius="8dp"
-                        app:cardElevation="3dp">
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:padding="14dp">
 
                         <LinearLayout
-                            android:layout_width="match_parent"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:orientation="vertical"
-                            android:padding="12dp">
+                            android:layout_weight="1"
+                            android:orientation="vertical">
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="📶 Signal"
-                                android:textColor="#E0E0E0"
+                                android:text="📶 Signal Strength"
+                                android:textColor="#E1BEE7"
                                 android:textSize="9sp"
                                 android:fontFamily="sans-serif" />
 
@@ -311,49 +286,54 @@
                                 android:layout_height="wrap_content"
                                 android:text="--"
                                 android:textColor="#FFFFFF"
-                                android:textSize="18sp"
+                                android:textSize="20sp"
                                 android:fontFamily="sans-serif-light"
                                 android:layout_marginTop="2dp" />
                         </LinearLayout>
-                    </androidx.cardview.widget.CardView>
 
-                    <!-- Suhu (Temperature) -->
-                    <androidx.cardview.widget.CardView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:layout_marginStart="4dp"
-                        app:cardBackgroundColor="#757575"
-                        app:cardCornerRadius="8dp"
-                        app:cardElevation="3dp">
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
+                        <TextView
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:orientation="vertical"
-                            android:padding="12dp">
+                            android:text="units"
+                            android:textColor="#CE93D8"
+                            android:textSize="11sp"
+                            android:fontFamily="sans-serif-medium" />
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
 
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="🌡️ Chip Temp"
-                                android:textColor="#E0E0E0"
-                                android:textSize="9sp"
-                                android:fontFamily="sans-serif" />
+                <!-- Suhu (Temperature) -->
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp"
+                    app:cardBackgroundColor="#C62828"
+                    app:cardCornerRadius="8dp"
+                    app:cardElevation="4dp">
 
-                            <TextView
-                                android:id="@+id/tvTemperature"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="--°C"
-                                android:textColor="#FFFFFF"
-                                android:textSize="18sp"
-                                android:fontFamily="sans-serif-light"
-                                android:layout_marginTop="2dp" />
-                        </LinearLayout>
-                    </androidx.cardview.widget.CardView>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="16dp">
 
-                </LinearLayout>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="🌡️ SUHU CHIP"
+                            android:textColor="#FFCDD2"
+                            android:textSize="11sp" />
+
+                        <TextView
+                            android:id="@+id/tvTemperature"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="--°C"
+                            android:textColor="#FFFFFF"
+                            android:textSize="28sp"
+                            android:textStyle="bold" />
+
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
 
                 <!-- Timestamp -->
                 <TextView
@@ -362,7 +342,7 @@
                     android:layout_height="wrap_content"
                     android:text="Last update: --"
                     android:textAlignment="center"
-                    android:textColor="#9E9E9E"
+                    android:textColor="#EF9A9A"
                     android:textSize="10sp" />
 
             </LinearLayout>

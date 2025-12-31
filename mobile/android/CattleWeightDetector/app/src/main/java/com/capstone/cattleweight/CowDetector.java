@@ -252,6 +252,7 @@ public class CowDetector {
             float globalMaxConf = 0;
             int globalMaxClass = -1;
             int cowDetectionsFound = 0;
+            int passedThreshold = 0;
             
             // Parse detections
             for (int i = 0; i < numDetections; i++) {
@@ -289,17 +290,28 @@ public class CowDetector {
                 
                 // Only keep cow detections above threshold
                 if (maxClass == COW_CLASS_INDEX && maxConf >= CONFIDENCE_THRESHOLD) {
-                    // YOLO output coordinates are in letterboxed 640x640 space
-                    // Transformation steps:
-                    // 1. Convert center+size to corners (x1,y1,x2,y2)
-                    // 2. Remove letterbox offset to get coordinates in scaled image space
-                    // 3. Scale back to original image dimensions
+                    passedThreshold++;
                     
-                    // Step 1: Convert from [x_center, y_center, w, h] to [x1, y1, x2, y2]
-                    float x1_letterbox = x_center - width / 2.0f;
-                    float y1_letterbox = y_center - height / 2.0f;
-                    float x2_letterbox = x_center + width / 2.0f;
-                    float y2_letterbox = y_center + height / 2.0f;
+                    // YOLO output coordinates are NORMALIZED [0-1]
+                    // Convert to pixel coordinates in 640x640 letterbox space first
+                    float x_center_px = x_center * INPUT_SIZE;
+                    float y_center_px = y_center * INPUT_SIZE;
+                    float width_px = width * INPUT_SIZE;
+                    float height_px = height * INPUT_SIZE;
+                    
+                    // Log raw YOLO values untuk debugging transformasi
+                    if (passedThreshold <= 2) { // Log 2 detections pertama
+                        Log.d(TAG, String.format(">>> RAW YOLO [%d]: normalized=(%.2f,%.2f) size=(%.2fx%.2f)", 
+                            i, x_center, y_center, width, height));
+                        Log.d(TAG, String.format(">>> In pixels: center=(%.1f,%.1f) size=(%.1fx%.1f)", 
+                            x_center_px, y_center_px, width_px, height_px));
+                    }
+                    
+                    // Step 1: Convert from [x_center, y_center, w, h] to [x1, y1, x2, y2] in letterbox space
+                    float x1_letterbox = x_center_px - width_px / 2.0f;
+                    float y1_letterbox = y_center_px - height_px / 2.0f;
+                    float x2_letterbox = x_center_px + width_px / 2.0f;
+                    float y2_letterbox = y_center_px + height_px / 2.0f;
                     
                     // Step 2: Remove letterbox padding offset
                     // Coordinates dikurangi offset untuk mendapatkan posisi di scaled image
@@ -316,17 +328,15 @@ public class CowDetector {
                     float bottom = y2_scaled / lastScale;
                     
                     // Debug coordinate transformation
-                    if (i == 0) { // Log first detection only
-                        Log.d(TAG, String.format("YOLO raw: center=(%.1f,%.1f) size=(%.1fx%.1f)", 
-                            x_center, y_center, width, height));
-                        Log.d(TAG, String.format("  Letterbox box: [%.1f,%.1f,%.1f,%.1f]",
+                    if (passedThreshold <= 2) { // Log 2 detections pertama
+                        Log.d(TAG, String.format(">>> TRANSFORM [%d]: lastScale=%.4f, lastOffset=(%d,%d)", 
+                            i, lastScale, lastOffsetX, lastOffsetY));
+                        Log.d(TAG, String.format(">>> Letterbox corners: (%.2f,%.2f)-(%.2f,%.2f)", 
                             x1_letterbox, y1_letterbox, x2_letterbox, y2_letterbox));
-                        Log.d(TAG, String.format("  Scaled box: [%.1f,%.1f,%.1f,%.1f]",
+                        Log.d(TAG, String.format(">>> After offset removal: (%.2f,%.2f)-(%.2f,%.2f)", 
                             x1_scaled, y1_scaled, x2_scaled, y2_scaled));
-                        Log.d(TAG, String.format("  Final box: [%.0f,%.0f,%.0f,%.0f]",
+                        Log.d(TAG, String.format(">>> Final (original space): (%.2f,%.2f)-(%.2f,%.2f)", 
                             left, top, right, bottom));
-                        Log.d(TAG, String.format("  Transform params: scale=%.3f, offset=(%d,%d), original=%dx%d",
-                            lastScale, lastOffsetX, lastOffsetY, originalWidth, originalHeight));
                     }
                     
                     // Clamp to image bounds
@@ -342,7 +352,7 @@ public class CowDetector {
             
             // Debug summary
             Log.d(TAG, String.format("YOLO parsing summary: globalMaxConf=%.3f (class=%d), cowCandidates=%d, passedThreshold=%d",
-                globalMaxConf, globalMaxClass, cowDetectionsFound, detections.size()));
+                globalMaxConf, globalMaxClass, cowDetectionsFound, passedThreshold));
             
             // Apply NMS (Non-Maximum Suppression)
             return applyNMS(detections, IOU_THRESHOLD);

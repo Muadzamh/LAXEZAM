@@ -19,6 +19,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SwitchCompat;
@@ -64,14 +65,15 @@ public class DetectionFragment extends Fragment {
     private static final String TAG = "DetectionFragment";
     private static final int CAMERA_PERMISSION_CODE = 100;
     private static final int STORAGE_PERMISSION_CODE = 101;
-    private static final String SERVER_URL = "http://192.168.0.100:5000"; // IP WiFi Server (unused in USB mode)
+    private static final String SERVER_URL = "http://192.168.1.3:5000"; // IP WiFi Server (unused in USB mode)
     
     // UI Components
     private PreviewView cameraPreview;
-    private TextView tvCameraStatus, tvModelStatus, tvDistance, tvSignalStrength, tvTemperature;
+    private TextView tvDistance, tvSignalStrength, tvTemperature;
     private TextView tvConnectionStatus, tvTimestamp, tvEstimatedWeight, tvConfidence;
     private Button btnDetect;
     private DetectionOverlayView detectionOverlay;
+    private AlertDialog loadingDialog;
     
     // Camera
     private Camera camera;
@@ -133,8 +135,6 @@ public class DetectionFragment extends Fragment {
             cameraPreview = view.findViewById(R.id.cameraPreview);
             detectionOverlay = view.findViewById(R.id.detectionOverlay);
             btnDetect = view.findViewById(R.id.btnDetect);
-            tvCameraStatus = view.findViewById(R.id.tvCameraStatus);
-            tvModelStatus = view.findViewById(R.id.tvModelStatus);
             tvDistance = view.findViewById(R.id.tvDistance);
             tvSignalStrength = view.findViewById(R.id.tvSignalStrength);
             tvTemperature = view.findViewById(R.id.tvTemperature);
@@ -225,13 +225,11 @@ public class DetectionFragment extends Fragment {
                 camera = cameraProvider.bindToLifecycle(
                         getViewLifecycleOwner(), cameraSelector, preview, imageCapture, imageAnalysis);
                 
-                tvCameraStatus.setText("📷 Camera Active");
-                tvCameraStatus.setTextColor(0xFF4CAF50);
+                Log.d(TAG, "📷 Camera Active");
                 
             } catch (Exception e) {
                 Log.e(TAG, "Camera initialization failed", e);
-                tvCameraStatus.setText("📷 Camera Error");
-                tvCameraStatus.setTextColor(0xFFF44336);
+                Toast.makeText(requireContext(), "❌ Camera Error", Toast.LENGTH_SHORT).show();
             }
         }, ContextCompat.getMainExecutor(requireContext()));
     }
@@ -335,41 +333,68 @@ public class DetectionFragment extends Fragment {
         Log.d(TAG, "=== initializeMLModels() CALLED ===");
         Log.d(TAG, "cameraExecutor: " + cameraExecutor);
         
-        // Show loading indicator
+        // Show loading dialog
         new Handler(Looper.getMainLooper()).post(() -> {
-            if (tvModelStatus != null) {
-                tvModelStatus.setVisibility(View.VISIBLE);
-                tvModelStatus.setText("⏳ Loading YOLO model...");
-                tvModelStatus.setBackgroundColor(0xDDFF9800); // Orange
-            }
+            loadingDialog = new AlertDialog.Builder(requireContext())
+                    .setTitle("⏳ Loading Models")
+                    .setMessage("Copying models from APK...")
+                    .setCancelable(false)
+                    .create();
+            loadingDialog.show();
         });
         
         // Initialize in background thread
         cameraExecutor.execute(() -> {
             Log.d(TAG, "=== Background thread STARTED ===");
             try {
-                // Use internal app storage (no permission needed)
-                String yoloPath = requireContext().getFilesDir() + "/models/yolov8n.onnx";
-                String weightPath = requireContext().getFilesDir() + "/models/bbox_weight_model.onnx";
+                // Copy models from assets to internal storage first
+                java.io.File modelsDir = new java.io.File(requireContext().getFilesDir(), "models");
+                if (!modelsDir.exists()) {
+                    modelsDir.mkdirs();
+                    Log.d(TAG, "Created models directory: " + modelsDir.getAbsolutePath());
+                }
+                
+                String yoloPath = new java.io.File(modelsDir, "yolov8n.onnx").getAbsolutePath();
+                String weightPath = new java.io.File(modelsDir, "bbox_weight_model.onnx").getAbsolutePath();
+                
+                // Copy YOLO model from assets if not exists
+                java.io.File yoloFile = new java.io.File(yoloPath);
+                if (!yoloFile.exists()) {
+                    Log.d(TAG, "Copying yolov8n.onnx from assets...");
+                    copyAssetToFile("yolov8n.onnx", yoloPath);
+                    Log.d(TAG, "✅ YOLO model copied");
+                } else {
+                    Log.d(TAG, "YOLO model already exists: " + yoloPath);
+                }
+                
+                // Copy weight model from assets if not exists
+                java.io.File weightFile = new java.io.File(weightPath);
+                if (!weightFile.exists()) {
+                    Log.d(TAG, "Copying bbox_weight_model.onnx from assets...");
+                    copyAssetToFile("bbox_weight_model.onnx", weightPath);
+                    Log.d(TAG, "✅ Weight model copied");
+                } else {
+                    Log.d(TAG, "Weight model already exists: " + weightPath);
+                }
                 
                 Log.d(TAG, "Creating CowDetector...");
                 cowDetector = new CowDetector(requireContext());
                 Log.d(TAG, "CowDetector created, initializing from: " + yoloPath);
                 
-                // Update UI: Loading YOLO
+                // Update dialog: Loading YOLO
                 new Handler(Looper.getMainLooper()).post(() -> {
-                    if (tvModelStatus != null) {
-                        tvModelStatus.setText("⏳ Loading YOLO (1/2)...");
+                    if (loadingDialog != null && loadingDialog.isShowing()) {
+                        loadingDialog.setMessage("Loading YOLO model (1/2)...");
                     }
                 });
                 
                 boolean yoloLoaded = cowDetector.initialize(yoloPath);
                 Log.d(TAG, "YOLO loaded: " + yoloLoaded);
                 
-                // Update UI: Loading Weight Model
+                // Update dialog: Loading Weight Model
                 new Handler(Looper.getMainLooper()).post(() -> {
-                    if (tvModelStatus != null) {
-                        tvModelStatus.setText("⏳ Loading Weight Model (2/2)...");
+                    if (loadingDialog != null && loadingDialog.isShowing()) {
+                        loadingDialog.setMessage("Loading Weight Model (2/2)...");
                     }
                 });
                 
@@ -385,65 +410,95 @@ public class DetectionFragment extends Fragment {
                 new Handler(Looper.getMainLooper()).post(() -> {
                     if (modelsInitialized) {
                         Log.i(TAG, "✅ ML Models loaded successfully");
-                        if (tvModelStatus != null) {
-                            tvModelStatus.setText("✅ Models Ready");
-                            tvModelStatus.setBackgroundColor(0xDD4CAF50); // Green
-                            // Hide after 3 seconds
-                            new Handler(Looper.getMainLooper()).postDelayed(() -> {
-                                if (tvModelStatus != null) {
-                                    tvModelStatus.setVisibility(View.GONE);
-                                }
-                            }, 3000);
+                        // Dismiss loading dialog
+                        if (loadingDialog != null && loadingDialog.isShowing()) {
+                            loadingDialog.dismiss();
                         }
-                        Toast.makeText(requireContext(), "✅ Models loaded successfully", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(requireContext(), "✅ Models Ready!", Toast.LENGTH_SHORT).show();
                     } else {
                         Log.e(TAG, "❌ Failed to load models");
-                        if (tvModelStatus != null) {
-                            tvModelStatus.setText("❌ Model Failed");
-                            tvModelStatus.setBackgroundColor(0xDDF44336); // Red
+                        // Update dialog to error
+                        if (loadingDialog != null && loadingDialog.isShowing()) {
+                            loadingDialog.dismiss();
                         }
+                        new AlertDialog.Builder(requireContext())
+                                .setTitle("❌ Model Error")
+                                .setMessage("Failed to load ML models")
+                                .setPositiveButton("OK", null)
+                                .show();
                         btnDetect.setText("❌ Model Error");
                         btnDetect.setEnabled(false);
-                        tvCameraStatus.setText("❌ Model Loading Failed");
-                        Toast.makeText(requireContext(), "❌ Failed to load models", Toast.LENGTH_LONG).show();
                     }
                 });
                 
             } catch (Exception e) {
                 Log.e(TAG, "=== EXCEPTION in model initialization ===", e);
                 new Handler(Looper.getMainLooper()).post(() -> {
-                    if (tvModelStatus != null) {
-                        tvModelStatus.setText("❌ Error: " + e.getMessage());
-                        tvModelStatus.setBackgroundColor(0xDDF44336); // Red
+                    if (loadingDialog != null && loadingDialog.isShowing()) {
+                        loadingDialog.dismiss();
                     }
+                    new AlertDialog.Builder(requireContext())
+                            .setTitle("❌ Model Error")
+                            .setMessage("Error: " + e.getMessage())
+                            .setPositiveButton("OK", null)
+                            .show();
                     btnDetect.setText("❌ Model Error");
                     btnDetect.setEnabled(false);
-                    Toast.makeText(requireContext(), "Model error: " + e.getMessage(), Toast.LENGTH_LONG).show();
                 });
             }
         });
     }
     
+    /**
+     * Copy file from assets to internal storage
+     */
+    private void copyAssetToFile(String assetFileName, String destFilePath) throws java.io.IOException {
+        java.io.InputStream in = requireContext().getAssets().open(assetFileName);
+        java.io.OutputStream out = new java.io.FileOutputStream(destFilePath);
+        
+        byte[] buffer = new byte[8192];
+        int read;
+        while ((read = in.read(buffer)) != -1) {
+            out.write(buffer, 0, read);
+        }
+        
+        in.close();
+        out.flush();
+        out.close();
+        
+        Log.d(TAG, "✅ Copied " + assetFileName + " to " + destFilePath);
+    }
+    
     private void analyzeImage(@NonNull ImageProxy imageProxy) {
+        Log.d(TAG, ">>> analyzeImage() CALLED - modelsInit=" + modelsInitialized + " isDetecting=" + isDetecting);
+        
         // Skip if models not ready or already detecting
         if (!modelsInitialized || isDetecting) {
+            Log.d(TAG, ">>> SKIPPED - models not ready or detecting");
             imageProxy.close();
             return;
         }
+        
+        Log.d(TAG, ">>> Processing frame...");
         
         try {
             // Convert ImageProxy to Bitmap
             Bitmap bitmap = imageProxyToBitmap(imageProxy);
             if (bitmap == null) {
+                Log.e(TAG, ">>> Bitmap is NULL");
                 imageProxy.close();
                 return;
             }
+            
+            Log.d(TAG, String.format(">>> Bitmap OK: %dx%d", bitmap.getWidth(), bitmap.getHeight()));
             
             // Set image size for overlay coordinate scaling
             detectionOverlay.setImageSize(bitmap.getWidth(), bitmap.getHeight());
             
             // Run YOLO detection (bbox will be in original image coordinates)
+            Log.d(TAG, ">>> Running YOLO detection...");
             List<CowDetector.Detection> detections = cowDetector.detectCows(bitmap);
+            Log.d(TAG, String.format(">>> YOLO result: %d detections", detections.size()));
             
             // Update detection state
             synchronized (detectionLock) {
