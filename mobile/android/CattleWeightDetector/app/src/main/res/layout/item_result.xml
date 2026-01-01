@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="4dp"
+    app:cardBackgroundColor="#1E1E1E"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="4dp">
+    
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="8dp"
+        android:gravity="center_vertical">
+        
+        <!-- Thumbnail Image -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="100dp"
+            android:layout_height="75dp"
+            app:cardCornerRadius="6dp"
+            app:cardElevation="2dp">
+            
+            <ImageView
+                android:id="@+id/imgThumbnail"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:background="#333333"
+                android:contentDescription="Thumbnail hasil deteksi" />
+        </androidx.cardview.widget.CardView>
+        
+        <!-- Info Text -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="8dp">
+            
+            <!-- Weight -->
+            <TextView
+                android:id="@+id/txtWeight"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Bobot: - kg"
+                android:textColor="#FFFFFF"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+            
+            <!-- Distance -->
+            <TextView
+                android:id="@+id/txtDistance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Jarak: - cm"
+                android:textColor="#AAAAAA"
+                android:textSize="14sp"
+                android:layout_marginTop="2dp" />
+            
+            <!-- BBox Size -->
+            <TextView
+                android:id="@+id/txtBbox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="BBox: - x - px"
+                android:textColor="#AAAAAA"
+                android:textSize="14sp"
+                android:layout_marginTop="2dp" />
+            
+            <!-- Filename / Timestamp -->
+            <TextView
+                android:id="@+id/txtFileName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="COW_20240101_120000.jpg"
+                android:textColor="#666666"
+                android:textSize="11sp"
+                android:layout_marginTop="4dp" />
+        </LinearLayout>
+        
+        <!-- Delete Button -->
+        <ImageButton
+            android:id="@+id/btnDelete"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@android:drawable/ic_menu_delete"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Hapus hasil"
+            android:padding="8dp"
+            app:tint="#FF5555" />
+        
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

@@ -47,6 +47,8 @@ public class MainActivityNew extends AppCompatActivity {
                     selectedFragment = new DetectionFragment();
                 } else if (itemId == R.id.navigation_dataset) {
                     selectedFragment = new DatasetFragment();
+                } else if (itemId == R.id.navigation_results) {
+                    selectedFragment = new ResultsFragment();
                 }
                 
                 if (selectedFragment != null) {

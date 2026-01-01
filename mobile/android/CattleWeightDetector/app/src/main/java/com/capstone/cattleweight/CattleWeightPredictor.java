@@ -32,6 +32,10 @@ public class CattleWeightPredictor {
     private OrtSession ortSession;
     private final Context context;
     
+    // Thread safety for release during inference
+    private volatile boolean isReleased = false;
+    private final Object sessionLock = new Object();
+
     public static class WeightResult {
         public float weight; // Predicted weight in kg
         public float confidence; // Confidence score (0-1)
@@ -116,13 +120,20 @@ public class CattleWeightPredictor {
     public WeightResult predictWeight(Bitmap originalImage, CowDetector.Detection detection,
                                      int previewWidth, int previewHeight,
                                      float lidarDistanceMeters) {
-        if (ortSession == null) {
-            Log.w(TAG, "Model not initialized");
+        // Check if already released
+        if (isReleased) {
+            Log.w(TAG, "Predictor already released, skipping inference");
             return new WeightResult(0, 0, null);
         }
         
-        try {
-            long startTime = System.currentTimeMillis();
+        synchronized (sessionLock) {
+            if (ortSession == null || isReleased) {
+                Log.w(TAG, "Model not initialized or released");
+                return new WeightResult(0, 0, null);
+            }
+            
+            try {
+                long startTime = System.currentTimeMillis();
             
             // CRITICAL: Detection bbox is in PREVIEW coordinates, but originalImage is CAPTURED resolution
             // We must scale bbox to captured resolution first!
@@ -241,10 +252,11 @@ public class CattleWeightPredictor {
             return new WeightResult(predictedWeight, confidence, scaledBbox,
                     normalizedWidth, normalizedHeight, normalizedAreaPx);
             
-        } catch (Exception e) {
-            Log.e(TAG, "Weight prediction failed", e);
-            return new WeightResult(0, 0, null);
-        }
+            } catch (Exception e) {
+                Log.e(TAG, "Weight prediction failed", e);
+                return new WeightResult(0, 0, null);
+            }
+        } // end synchronized
     }
     
     /**
@@ -310,14 +322,19 @@ public class CattleWeightPredictor {
     }
     
     public void release() {
-        try {
-            if (ortSession != null) {
-                ortSession.close();
-                ortSession = null;
+        // Set flag first to stop any ongoing/new inference
+        isReleased = true;
+        
+        synchronized (sessionLock) {
+            try {
+                if (ortSession != null) {
+                    ortSession.close();
+                    ortSession = null;
+                }
+                Log.d(TAG, "Weight Predictor released");
+            } catch (Exception e) {
+                Log.e(TAG, "Error releasing predictor", e);
             }
-            Log.d(TAG, "Weight Predictor released");
-        } catch (Exception e) {
-            Log.e(TAG, "Error releasing predictor", e);
         }
     }
 }

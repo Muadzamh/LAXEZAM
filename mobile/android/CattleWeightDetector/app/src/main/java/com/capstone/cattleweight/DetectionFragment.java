@@ -92,8 +92,7 @@ public class DetectionFragment extends Fragment {
     // LiDAR
     private LidarDataReceiver lidarReceiver;
     private UsbSerialLidarReader usbLidarReader;
-    private SwitchCompat switchLidarMode;
-    private boolean isUsbMode = false;
+    // LiDAR - USB Mode Only (no toggle)
     private float currentLidarDistance = 0f; // in cm
     
     @Nullable
@@ -150,11 +149,7 @@ public class DetectionFragment extends Fragment {
             btnDetect.setText("⏳ Waiting for cow...");
             btnDetect.setOnClickListener(v -> performWeightPrediction());
             
-            switchLidarMode = view.findViewById(R.id.switchLidarMode);
-            switchLidarMode.setOnCheckedChangeListener((buttonView, isChecked) -> {
-                isUsbMode = isChecked;
-                switchLidarMode();
-            });
+            // USB LiDAR mode only - no toggle needed
             
         } catch (Exception e) {
             Log.e(TAG, "EXCEPTION in initializeViews!", e);
@@ -235,58 +230,8 @@ public class DetectionFragment extends Fragment {
     }
     
     private void initializeLidarReceiver() {
-        if (isUsbMode) {
-            return; // Skip WiFi initialization in USB mode
-        }
-        
-        lidarReceiver = new LidarDataReceiver(SERVER_URL, new LidarDataReceiver.LidarDataCallback() {
-            @Override
-            public void onDataReceived(LidarData data) {
-                new Handler(Looper.getMainLooper()).post(() -> updateLidarUI(data));
-            }
-            
-            @Override
-            public void onConnectionStatusChanged(boolean connected) {
-                new Handler(Looper.getMainLooper()).post(() -> {
-                    if (connected) {
-                        tvConnectionStatus.setText("🟢 Connected to LiDAR Server");
-                        tvConnectionStatus.setTextColor(0xFF4CAF50);
-                    } else {
-                        tvConnectionStatus.setText("🔴 Disconnected");
-                        tvConnectionStatus.setTextColor(0xFFF44336);
-                    }
-                });
-            }
-            
-            @Override
-            public void onError(String error) {
-                new Handler(Looper.getMainLooper()).post(() -> {
-                    tvConnectionStatus.setText("⚠️ Error: " + error);
-                    tvConnectionStatus.setTextColor(0xFFFF9800);
-                });
-            }
-        });
-        
-        lidarReceiver.startReceiving();
-    }
-    
-    private void switchLidarMode() {
-        // Stop current mode
-        if (lidarReceiver != null) {
-            lidarReceiver.stopReceiving();
-            lidarReceiver = null;
-        }
-        if (usbLidarReader != null) {
-            usbLidarReader.stopReading();
-            usbLidarReader = null;
-        }
-        
-        // Start new mode
-        if (isUsbMode) {
-            initializeUsbLidar();
-        } else {
-            initializeLidarReceiver();
-        }
+        // Always use USB mode - initialize USB LiDAR directly
+        initializeUsbLidar();
     }
     
     private void initializeUsbLidar() {

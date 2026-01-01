@@ -9,7 +9,7 @@
     tools:context=".MainActivity">
 
     <!-- ========================================== -->
-    <!-- CAMERA SECTION (70% - LEFT) -->
+    <!-- CAMERA SECTION (62% - LEFT) -->
     <!-- ========================================== -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cameraSection"
@@ -18,8 +18,8 @@
         android:background="#212121"
         android:padding="16dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/lidarSection"
-        app:layout_constraintWidth_percent="0.70">
+        app:layout_constraintEnd_toStartOf="@id/btnDetect"
+        app:layout_constraintWidth_percent="0.62">
 
         <!-- Camera Preview dengan Frame (4:3 Aspect Ratio) - HANYA CAMERA & DETECTION OVERLAY -->
         <androidx.cardview.widget.CardView
@@ -57,6 +57,29 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <!-- ========================================== -->
+    <!-- DETECT BUTTON (8% - CENTER) -->
+    <!-- Tinggi sama dengan parent untuk area tap besar -->
+    <!-- ========================================== -->
+    <Button
+        android:id="@+id/btnDetect"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:text="🔍\n\nD\nE\nT\nE\nC\nT"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        android:textColor="#FFFFFF"
+        android:backgroundTint="#4CAF50"
+        android:elevation="12dp"
+        android:gravity="center"
+        android:paddingTop="16dp"
+        android:paddingBottom="16dp"
+        app:layout_constraintWidth_percent="0.08"
+        app:layout_constraintStart_toEndOf="@id/cameraSection"
+        app:layout_constraintEnd_toStartOf="@id/lidarSection"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+    <!-- ========================================== -->
     <!-- LIDAR SECTION (30% - RIGHT) -->
     <!-- ========================================== -->
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -64,7 +87,7 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:background="#BDBDBD"
-        app:layout_constraintStart_toEndOf="@id/cameraSection"
+        app:layout_constraintStart_toEndOf="@id/btnDetect"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintWidth_percent="0.30">
 
@@ -110,50 +133,16 @@
                 android:gravity="center_vertical"
                 android:padding="12dp">
 
-                <!-- Connection Status -->
+                <!-- Connection Status (USB Only) -->
                 <TextView
                     android:id="@+id/tvConnectionStatus"
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="🔴 Disconnected"
+                    android:text="🔴 USB Disconnected"
                     android:textColor="#F44336"
-                    android:textSize="10sp"
+                    android:textSize="11sp"
                     android:fontFamily="sans-serif-medium" />
 
-                <!-- LiDAR Mode Switch - BIGGER SIZE -->
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:background="#616161"
-                    android:paddingStart="12dp"
-                    android:paddingEnd="8dp"
-                    android:paddingTop="8dp"
-                    android:paddingBottom="8dp"
-                    android:layout_marginStart="8dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="USB Mode"
-                        android:textColor="#E0E0E0"
-                        android:textSize="10sp"
-                        android:fontFamily="sans-serif"
-                        android:layout_marginEnd="8dp" />
-
-                    <androidx.appcompat.widget.SwitchCompat
-                        android:id="@+id/switchLidarMode"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:minWidth="56dp"
-                        android:minHeight="40dp"
-                        android:scaleX="1.3"
-                        android:scaleY="1.3"
-                        app:thumbTint="#FFFFFF"
-                        app:trackTint="#9E9E9E" />
-                </LinearLayout>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
@@ -169,18 +158,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
-
-                <!-- DETECT BUTTON (ONLY PERMANENT CONTROL) -->
-                <Button
-                    android:id="@+id/btnDetect"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="🔍 DETECT WEIGHT"
-                    android:textSize="14sp"
-                    android:textStyle="bold"
-                    android:backgroundTint="#4CAF50"
-                    android:layout_marginBottom="8dp"
-                    android:padding="12dp" />
 
                 <!-- ML RESULT OVERLAY -->
                 <androidx.cardview.widget.CardView

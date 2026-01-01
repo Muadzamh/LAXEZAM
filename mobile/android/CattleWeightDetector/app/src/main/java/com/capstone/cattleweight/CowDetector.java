@@ -35,6 +35,10 @@ public class CowDetector {
     private OrtSession ortSession;
     private final Context context;
     
+    // Thread safety for release during inference
+    private volatile boolean isReleased = false;
+    private final Object sessionLock = new Object();
+    
     // Letterbox preprocessing info (for reverse coordinate transformation)
     private float lastScale = 1.0f;
     private int lastOffsetX = 0;
@@ -110,30 +114,44 @@ public class CowDetector {
      * @return List of cow detections (bounding boxes)
      */
     public List<Detection> detectCows(Bitmap bitmap) {
-        if (ortSession == null) {
-            Log.w(TAG, "Model not initialized");
+        // Check if already released
+        if (isReleased) {
+            Log.w(TAG, "Detector already released, skipping inference");
             return Collections.emptyList();
         }
         
-        try {
-            long startTime = System.currentTimeMillis();
+        synchronized (sessionLock) {
+            if (ortSession == null || isReleased) {
+                Log.w(TAG, "Model not initialized or released");
+                return Collections.emptyList();
+            }
             
-            // Preprocess image
-            float[] inputData = preprocessImage(bitmap);
-            
-            // Create input tensor
-            long[] inputShape = {1, 3, INPUT_SIZE, INPUT_SIZE};
-            OnnxTensor inputTensor = OnnxTensor.createTensor(
-                    ortEnvironment, 
-                    FloatBuffer.wrap(inputData), 
-                    inputShape
-            );
-            
-            // Run inference
-            Map<String, OnnxTensor> inputs = new HashMap<>();
-            inputs.put("images", inputTensor); // YOLOv8 input name
-            
-            OrtSession.Result results = ortSession.run(inputs);
+            try {
+                long startTime = System.currentTimeMillis();
+                
+                // Preprocess image
+                float[] inputData = preprocessImage(bitmap);
+                
+                // Create input tensor
+                long[] inputShape = {1, 3, INPUT_SIZE, INPUT_SIZE};
+                OnnxTensor inputTensor = OnnxTensor.createTensor(
+                        ortEnvironment, 
+                        FloatBuffer.wrap(inputData), 
+                        inputShape
+                );
+                
+                // Run inference
+                Map<String, OnnxTensor> inputs = new HashMap<>();
+                inputs.put("images", inputTensor); // YOLOv8 input name
+                
+                // Double-check before running
+                if (isReleased || ortSession == null) {
+                    inputTensor.close();
+                    Log.w(TAG, "Session released during inference setup");
+                    return Collections.emptyList();
+                }
+                
+                OrtSession.Result results = ortSession.run(inputs);
             
             // Parse output
             List<Detection> detections = parseYoloOutput(results, bitmap.getWidth(), bitmap.getHeight());
@@ -167,10 +185,11 @@ public class CowDetector {
             
             return cowDetections;
             
-        } catch (Exception e) {
-            Log.e(TAG, "Detection failed", e);
-            return Collections.emptyList();
-        }
+            } catch (Exception e) {
+                Log.e(TAG, "Detection failed", e);
+                return Collections.emptyList();
+            }
+        } // end synchronized
     }
     
     /**
@@ -412,14 +431,19 @@ public class CowDetector {
     }
     
     public void release() {
-        try {
-            if (ortSession != null) {
-                ortSession.close();
-                ortSession = null;
+        // Set flag first to stop any ongoing/new inference
+        isReleased = true;
+        
+        synchronized (sessionLock) {
+            try {
+                if (ortSession != null) {
+                    ortSession.close();
+                    ortSession = null;
+                }
+                Log.d(TAG, "YOLO detector released");
+            } catch (Exception e) {
+                Log.e(TAG, "Error releasing detector", e);
             }
-            Log.d(TAG, "YOLO detector released");
-        } catch (Exception e) {
-            Log.e(TAG, "Error releasing detector", e);
         }
     }
 }

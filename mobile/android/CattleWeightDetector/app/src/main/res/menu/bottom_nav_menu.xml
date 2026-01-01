@@ -9,4 +9,9 @@
         android:id="@+id/navigation_dataset"
         android:icon="@android:drawable/ic_menu_camera"
         android:title="DATASET" />
+    
+    <item
+        android:id="@+id/navigation_results"
+        android:icon="@android:drawable/ic_menu_agenda"
+        android:title="HASIL" />
 </menu>
