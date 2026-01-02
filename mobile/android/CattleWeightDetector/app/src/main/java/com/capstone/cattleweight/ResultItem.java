@@ -8,7 +8,8 @@ import java.io.File;
 public class ResultItem {
     private File imageFile;
     private File metadataFile;
-    private String weight;
+    private String weight;          // Berat Badan
+    private String carcassWeight;   // Berat Karkas (range)
     private String distance;
     private String bboxWidth;
     private String bboxHeight;
@@ -17,6 +18,7 @@ public class ResultItem {
     
     public ResultItem() {
         this.weight = "-";
+        this.carcassWeight = "-";
         this.distance = "-";
         this.bboxWidth = "-";
         this.bboxHeight = "-";
@@ -45,6 +47,14 @@ public class ResultItem {
     
     public void setWeight(String weight) {
         this.weight = weight;
+    }
+    
+    public String getCarcassWeight() {
+        return carcassWeight;
+    }
+    
+    public void setCarcassWeight(String carcassWeight) {
+        this.carcassWeight = carcassWeight;
     }
     
     public String getDistance() {

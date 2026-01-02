@@ -60,6 +60,10 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import android.view.TextureView;
+import android.graphics.SurfaceTexture;
+import androidx.appcompat.widget.SwitchCompat;
+
 public class DetectionFragment extends Fragment {
     
     private static final String TAG = "DetectionFragment";
@@ -69,11 +73,14 @@ public class DetectionFragment extends Fragment {
     
     // UI Components
     private PreviewView cameraPreview;
+    private TextureView uvcCameraView;
+    private SwitchCompat switchCameraMode;
     private TextView tvDistance, tvSignalStrength, tvTemperature;
-    private TextView tvConnectionStatus, tvTimestamp, tvEstimatedWeight, tvConfidence;
+    private TextView tvConnectionStatus, tvTimestamp, tvEstimatedWeight, tvCarcassWeight, tvConfidence;
     private Button btnDetect;
     private DetectionOverlayView detectionOverlay;
     private AlertDialog loadingDialog;
+    private AlertDialog processingDialog; // Dialog for weight prediction processing
     
     // Camera
     private Camera camera;
@@ -81,11 +88,19 @@ public class DetectionFragment extends Fragment {
     private ImageAnalysis imageAnalysis;
     private ExecutorService cameraExecutor;
     
+    // USB Camera (GroundChat)
+    private UvcCameraManager uvcCameraManager;
+    private boolean isUsingUsbCamera = false;
+    private Bitmap lastUvcFrame = null;
+    private final Object uvcFrameLock = new Object();
+    
     // ML Models
     private CowDetector cowDetector;
     private CattleWeightPredictor weightPredictor;
     private boolean modelsInitialized = false;
     private boolean isDetecting = false;
+    private volatile boolean isPredicting = false; // Flag to pause detection loop during prediction
+    private ExecutorService predictionExecutor; // Separate executor for weight prediction
     private List<CowDetector.Detection> latestDetections = new ArrayList<>();
     private final Object detectionLock = new Object();
     
@@ -106,8 +121,9 @@ public class DetectionFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         
-        // Initialize executor FIRST before initializeViews (needed for ML model loading)
+        // Initialize executors FIRST before initializeViews (needed for ML model loading)
         cameraExecutor = Executors.newSingleThreadExecutor();
+        predictionExecutor = Executors.newSingleThreadExecutor(); // Separate executor for weight prediction
         
         initializeViews(view);
         
@@ -132,6 +148,8 @@ public class DetectionFragment extends Fragment {
         Log.d(TAG, "=== initializeViews START ===");
         try {
             cameraPreview = view.findViewById(R.id.cameraPreview);
+            uvcCameraView = view.findViewById(R.id.uvcCameraView);
+            switchCameraMode = view.findViewById(R.id.switchCameraMode);
             detectionOverlay = view.findViewById(R.id.detectionOverlay);
             btnDetect = view.findViewById(R.id.btnDetect);
             tvDistance = view.findViewById(R.id.tvDistance);
@@ -140,6 +158,7 @@ public class DetectionFragment extends Fragment {
             tvConnectionStatus = view.findViewById(R.id.tvConnectionStatus);
             tvTimestamp = view.findViewById(R.id.tvTimestamp);
             tvEstimatedWeight = view.findViewById(R.id.tvEstimatedWeight);
+            tvCarcassWeight = view.findViewById(R.id.tvCarcassWeight);
             tvConfidence = view.findViewById(R.id.tvConfidence);
             
             Log.d(TAG, "Views found. Setting up button...");
@@ -149,7 +168,13 @@ public class DetectionFragment extends Fragment {
             btnDetect.setText("⏳ Waiting for cow...");
             btnDetect.setOnClickListener(v -> performWeightPrediction());
             
-            // USB LiDAR mode only - no toggle needed
+            // Camera switch listener
+            switchCameraMode.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                switchCameraSource(isChecked);
+            });
+            
+            // Initialize UVC Camera Manager
+            initializeUvcCamera();
             
         } catch (Exception e) {
             Log.e(TAG, "EXCEPTION in initializeViews!", e);
@@ -274,6 +299,214 @@ public class DetectionFragment extends Fragment {
         tvTimestamp.setText("Last update: " + data.getFormattedTimestamp());
     }
     
+    // ========================================
+    // USB CAMERA (GroundChat) METHODS
+    // ========================================
+    
+    private void initializeUvcCamera() {
+        Log.d(TAG, "Initializing UVC Camera Manager...");
+        
+        if (uvcCameraManager == null) {
+            uvcCameraManager = new UvcCameraManager(requireContext());
+            
+            // Initialize USB monitor with callback
+            uvcCameraManager.initialize(new UvcCameraManager.UvcCameraCallback() {
+                @Override
+                public void onCameraConnected() {
+                    Log.d(TAG, "✅ UVC Camera Connected");
+                    new Handler(Looper.getMainLooper()).post(() -> {
+                        Toast.makeText(requireContext(), "📷 USB Camera Connected", Toast.LENGTH_SHORT).show();
+                    });
+                }
+                
+                @Override
+                public void onCameraDisconnected() {
+                    Log.d(TAG, "❌ UVC Camera Disconnected");
+                    new Handler(Looper.getMainLooper()).post(() -> {
+                        // Switch back to built-in camera if USB disconnected
+                        if (isUsingUsbCamera && switchCameraMode != null) {
+                            switchCameraMode.setChecked(false);
+                            Toast.makeText(requireContext(), "📷 USB Camera Disconnected - Switched to built-in", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+                
+                @Override
+                public void onCameraError(String error) {
+                    Log.e(TAG, "UVC Camera Error: " + error);
+                    new Handler(Looper.getMainLooper()).post(() -> {
+                        if (isUsingUsbCamera && switchCameraMode != null) {
+                            switchCameraMode.setChecked(false);
+                        }
+                        Toast.makeText(requireContext(), "❌ USB Camera Error: " + error, Toast.LENGTH_SHORT).show();
+                    });
+                }
+                
+                @Override
+                public void onPreviewStarted() {
+                    Log.d(TAG, "USB Camera preview started");
+                    new Handler(Looper.getMainLooper()).post(() -> {
+                        Toast.makeText(requireContext(), "✅ USB Camera preview started", Toast.LENGTH_SHORT).show();
+                        // Start YOLO detection loop for USB camera
+                        startUvcDetectionLoop();
+                    });
+                }
+            });
+            
+            // Set preview texture
+            uvcCameraManager.setPreviewTexture(uvcCameraView);
+        }
+    }
+    
+    private void startUvcDetectionLoop() {
+        // Run YOLO detection periodically on USB camera frames
+        cameraExecutor.execute(() -> {
+            while (isUsingUsbCamera && !Thread.currentThread().isInterrupted()) {
+                // Skip detection if weight prediction is in progress
+                if (isPredicting) {
+                    try {
+                        Thread.sleep(50);
+                    } catch (InterruptedException e) {
+                        break;
+                    }
+                    continue;
+                }
+                
+                if (modelsInitialized && !isDetecting && uvcCameraView != null) {
+                    try {
+                        // Get frame from TextureView
+                        Bitmap frame = uvcCameraView.getBitmap();
+                        if (frame != null) {
+                            // Store for capture
+                            synchronized (uvcFrameLock) {
+                                if (lastUvcFrame != null && !lastUvcFrame.isRecycled()) {
+                                    lastUvcFrame.recycle();
+                                }
+                                lastUvcFrame = frame.copy(frame.getConfig(), true);
+                            }
+                            
+                            // Run YOLO detection
+                            runYoloDetectionOnBitmap(frame);
+                            frame.recycle();
+                        }
+                    } catch (Exception e) {
+                        Log.e(TAG, "Error in UVC detection loop", e);
+                    }
+                }
+                
+                // Sleep to limit frame rate (~10 fps for detection)
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    break;
+                }
+            }
+        });
+    }
+    
+    private void switchCameraSource(boolean useUsbCamera) {
+        Log.d(TAG, "Switching camera source: USB=" + useUsbCamera);
+        isUsingUsbCamera = useUsbCamera;
+        
+        if (useUsbCamera) {
+            // Switch to USB Camera (GroundChat)
+            cameraPreview.setVisibility(View.GONE);
+            uvcCameraView.setVisibility(View.VISIBLE);
+            
+            // Stop built-in camera
+            try {
+                ProcessCameraProvider cameraProvider = ProcessCameraProvider.getInstance(requireContext()).get();
+                cameraProvider.unbindAll();
+                Log.d(TAG, "Built-in camera stopped");
+            } catch (Exception e) {
+                Log.e(TAG, "Error stopping built-in camera", e);
+            }
+            
+            // Start USB camera
+            if (uvcCameraManager != null) {
+                uvcCameraManager.requestCameraPermission();
+                Log.d(TAG, "USB camera permission requested");
+            }
+            
+            Toast.makeText(requireContext(), "📷 Switching to USB Camera...", Toast.LENGTH_SHORT).show();
+            
+        } else {
+            // Switch to Built-in Camera
+            uvcCameraView.setVisibility(View.GONE);
+            cameraPreview.setVisibility(View.VISIBLE);
+            
+            // Stop USB camera
+            if (uvcCameraManager != null) {
+                uvcCameraManager.closeCamera();
+                Log.d(TAG, "USB camera closed");
+            }
+            
+            // Restart built-in camera
+            startCamera();
+            Log.d(TAG, "Built-in camera restarted");
+            
+            Toast.makeText(requireContext(), "📷 Switched to Built-in Camera", Toast.LENGTH_SHORT).show();
+        }
+        
+        // Clear detection overlay when switching
+        if (detectionOverlay != null) {
+            detectionOverlay.clearDetections();
+        }
+    }
+    
+    private void runYoloDetectionOnBitmap(Bitmap bitmap) {
+        if (cowDetector == null || bitmap == null) return;
+        
+        isDetecting = true;
+        
+        // Save bitmap dimensions for overlay scaling
+        final int bitmapWidth = bitmap.getWidth();
+        final int bitmapHeight = bitmap.getHeight();
+        
+        try {
+            List<CowDetector.Detection> detections = cowDetector.detectCows(bitmap);
+            
+            synchronized (detectionLock) {
+                latestDetections = detections;
+            }
+            
+            new Handler(Looper.getMainLooper()).post(() -> {
+                // Update overlay - convert to DetectionResult
+                if (detectionOverlay != null) {
+                    // IMPORTANT: Set image size for proper coordinate scaling
+                    // This ensures bbox from CowDetector (in original image space) 
+                    // scales correctly to overlay view size
+                    detectionOverlay.setImageSize(bitmapWidth, bitmapHeight);
+                    
+                    List<DetectionOverlayView.DetectionResult> results = new ArrayList<>();
+                    for (CowDetector.Detection det : detections) {
+                        DetectionOverlayView.DetectionResult result = new DetectionOverlayView.DetectionResult();
+                        result.bbox = det.bbox;
+                        result.confidence = det.confidence;
+                        result.weight = 0; // Not predicted yet
+                        results.add(result);
+                    }
+                    detectionOverlay.setDetections(results);
+                }
+                
+                // Update button state
+                boolean hasCow = detections != null && !detections.isEmpty();
+                btnDetect.setEnabled(hasCow && modelsInitialized);
+                if (hasCow) {
+                    btnDetect.setText("🔍\n\nD\nE\nT\nE\nC\nT");
+                } else {
+                    btnDetect.setText("⏳ Waiting for cow...");
+                }
+                
+                isDetecting = false;
+            });
+            
+        } catch (Exception e) {
+            Log.e(TAG, "YOLO detection on UVC frame failed", e);
+            isDetecting = false;
+        }
+    }
+
     private void initializeMLModels() {
         Log.d(TAG, "=== initializeMLModels() CALLED ===");
         Log.d(TAG, "cameraExecutor: " + cameraExecutor);
@@ -518,89 +751,159 @@ public class DetectionFragment extends Fragment {
             detectionsToPredict = new ArrayList<>(latestDetections);
         }
         
-        // Prevent concurrent predictions
-        if (isDetecting) {
+        // Prevent concurrent predictions - use isPredicting flag (not isDetecting)
+        if (isPredicting) {
+            Log.d(TAG, "Already predicting, ignoring click");
             return;
         }
         
-        isDetecting = true;
+        isPredicting = true;
         btnDetect.setEnabled(false);
-        btnDetect.setText("⏳ Processing...");
+        btnDetect.setText("⏳\n\nP\nR\nO\nC\nE\nS\nS");
         
-        // Capture high-quality image for weight prediction
-        imageCapture.takePicture(cameraExecutor, new ImageCapture.OnImageCapturedCallback() {
-            @Override
-            public void onCaptureSuccess(@NonNull ImageProxy imageProxy) {
-                try {
-                    Bitmap bitmap = imageProxyToBitmap(imageProxy);
-                    if (bitmap == null) {
-                        showError("Failed to capture image");
-                        resetDetectionState();
-                        return;
-                    }
-                    
-                    Log.d(TAG, String.format("Captured image: %dx%d, using %d detections from preview", 
-                        bitmap.getWidth(), bitmap.getHeight(), detectionsToPredict.size()));
-                    
-                    // Predict weight for each detected cow (from preview detections)
-                    List<DetectionOverlayView.DetectionResult> results = new ArrayList<>();
-                    for (CowDetector.Detection detection : detectionsToPredict) {
-                        try {
-                            // Pass preview dimensions untuk bbox scaling
-                            int previewWidth = detectionOverlay.getImageWidth();
-                            int previewHeight = detectionOverlay.getImageHeight();
-                            
-                            CattleWeightPredictor.WeightResult weightResult = 
-                                    weightPredictor.predictWeight(bitmap, detection, 
-                                            previewWidth, previewHeight, distanceMeters);
-                            
-                            DetectionOverlayView.DetectionResult result = 
-                                    new DetectionOverlayView.DetectionResult();
-                            result.bbox = weightResult.scaledBbox;  // Use scaled bbox for accurate drawing
-                            result.confidence = detection.confidence;
-                            result.weight = weightResult.weight;
-                            result.normalizedWidth = weightResult.normalizedWidth;
-                            result.normalizedHeight = weightResult.normalizedHeight;
-                            result.normalizedArea = weightResult.normalizedArea;
-                            results.add(result);
-                            
-                        } catch (Exception e) {
-                            Log.e(TAG, "Weight prediction error for detection", e);
-                        }
-                    }
-                    
-                    // Update UI with results
-                    new Handler(Looper.getMainLooper()).post(() -> {
-                        detectionOverlay.setDetections(results);
-                        
-                        if (!results.isEmpty()) {
-                            DetectionOverlayView.DetectionResult firstResult = results.get(0);
-                            tvEstimatedWeight.setText(String.format("%.1f kg", firstResult.weight));
-                            tvConfidence.setText(String.format("%.0f%%", firstResult.confidence * 100));
-                            
-                            // Save photo with detection overlay and metadata
-                            saveDetectionPhoto(bitmap, firstResult, distanceMeters);
-                        }
-                        
-                        resetDetectionState();
-                    });
-                    
-                } catch (Exception e) {
-                    Log.e(TAG, "Error in weight prediction", e);
-                    showError("Prediction error: " + e.getMessage());
-                    resetDetectionState();
-                } finally {
-                    imageProxy.close();
+        // Show processing dialog
+        new Handler(Looper.getMainLooper()).post(() -> {
+            if (processingDialog != null && processingDialog.isShowing()) {
+                processingDialog.dismiss();
+            }
+            String cameraType = isUsingUsbCamera ? "GroundChat USB camera" : "built-in camera";
+            processingDialog = new AlertDialog.Builder(requireContext())
+                    .setTitle("⏳ Processing...")
+                    .setMessage("Calculating weight from " + cameraType + "...")
+                    .setCancelable(false)
+                    .create();
+            processingDialog.show();
+        });
+        
+        Log.d(TAG, "=== performWeightPrediction START ===");
+        Log.d(TAG, "isUsingUsbCamera: " + isUsingUsbCamera);
+        Log.d(TAG, "LiDAR distance: " + currentLidarDistance + " cm");
+        Log.d(TAG, "Detections to predict: " + detectionsToPredict.size());
+        
+        // Handle USB Camera vs Built-in Camera
+        if (isUsingUsbCamera) {
+            Log.d(TAG, "Using USB Camera path...");
+            // Use last frame from USB camera
+            Bitmap uvcBitmap = null;
+            synchronized (uvcFrameLock) {
+                if (lastUvcFrame != null && !lastUvcFrame.isRecycled()) {
+                    uvcBitmap = lastUvcFrame.copy(lastUvcFrame.getConfig(), true);
+                    Log.d(TAG, "Got UVC frame: " + uvcBitmap.getWidth() + "x" + uvcBitmap.getHeight());
+                } else {
+                    Log.e(TAG, "lastUvcFrame is null or recycled!");
                 }
             }
             
-            @Override
-            public void onError(@NonNull androidx.camera.core.ImageCaptureException exception) {
-                Log.e(TAG, "Image capture failed", exception);
-                showError("Capture failed");
+            if (uvcBitmap == null) {
+                showError("No frame from USB camera");
                 resetDetectionState();
+                return;
             }
-        });
+            
+            final Bitmap bitmap = uvcBitmap;
+            
+            // Use separate executor for prediction (cameraExecutor is busy with detection loop)
+            predictionExecutor.execute(() -> {
+                Log.d(TAG, "Calling processWeightPrediction for USB camera...");
+                processWeightPrediction(bitmap, detectionsToPredict);
+                // Note: resetDetectionState() is called inside processWeightPrediction
+            });
+            
+        } else {
+            // Use ImageCapture for built-in camera
+            imageCapture.takePicture(cameraExecutor, new ImageCapture.OnImageCapturedCallback() {
+                @Override
+                public void onCaptureSuccess(@NonNull ImageProxy imageProxy) {
+                    try {
+                        Bitmap bitmap = imageProxyToBitmap(imageProxy);
+                        if (bitmap == null) {
+                            showError("Failed to capture image");
+                            resetDetectionState();
+                            return;
+                        }
+                        
+                        processWeightPrediction(bitmap, detectionsToPredict);
+                        
+                    } finally {
+                        imageProxy.close();
+                    }
+                }
+                
+                @Override
+                public void onError(@NonNull androidx.camera.core.ImageCaptureException exception) {
+                    Log.e(TAG, "Image capture failed", exception);
+                    showError("Image capture failed");
+                    resetDetectionState();
+                }
+            });
+        }
+    }
+    
+    private void processWeightPrediction(Bitmap bitmap, List<CowDetector.Detection> detectionsToPredict) {
+        Log.d(TAG, String.format("Processing image: %dx%d, using %d detections", 
+            bitmap.getWidth(), bitmap.getHeight(), detectionsToPredict.size()));
+        
+        try {
+            // Get distance in meters
+            float distanceMeters = currentLidarDistance / 100f;
+            
+            // Predict weight for each detected cow
+            List<DetectionOverlayView.DetectionResult> results = new ArrayList<>();
+            for (CowDetector.Detection detection : detectionsToPredict) {
+                try {
+                    // Pass preview dimensions untuk bbox scaling
+                    int previewWidth = detectionOverlay.getImageWidth();
+                    int previewHeight = detectionOverlay.getImageHeight();
+                    
+                    CattleWeightPredictor.WeightResult weightResult = 
+                            weightPredictor.predictWeight(bitmap, detection, 
+                                    previewWidth, previewHeight, distanceMeters);
+                    
+                    DetectionOverlayView.DetectionResult result = 
+                            new DetectionOverlayView.DetectionResult();
+                    result.bbox = weightResult.scaledBbox;
+                    result.confidence = detection.confidence;
+                    result.weight = weightResult.weight;
+                    result.normalizedWidth = weightResult.normalizedWidth;
+                    result.normalizedHeight = weightResult.normalizedHeight;
+                    result.normalizedArea = weightResult.normalizedArea;
+                    results.add(result);
+                    
+                } catch (Exception e) {
+                    Log.e(TAG, "Weight prediction error for detection", e);
+                }
+            }
+            
+            // Update UI with results
+            new Handler(Looper.getMainLooper()).post(() -> {
+                detectionOverlay.setDetections(results);
+                
+                if (!results.isEmpty()) {
+                    DetectionOverlayView.DetectionResult firstResult = results.get(0);
+                    
+                    // Berat Badan (from model)
+                    float bodyWeight = firstResult.weight;
+                    tvEstimatedWeight.setText(String.format("Berat Badan: %.1f kg", bodyWeight));
+                    
+                    // Berat Karkas (50% - 60% range)
+                    float carcassMin = bodyWeight * 0.50f;
+                    float carcassMax = bodyWeight * 0.60f;
+                    tvCarcassWeight.setText(String.format("Berat Karkas: %.1f - %.1f kg", carcassMin, carcassMax));
+                    
+                    tvConfidence.setText(String.format("Confidence: %.0f%%", firstResult.confidence * 100));
+                    
+                    // Save photo with detection overlay and metadata
+                    saveDetectionPhoto(bitmap, firstResult, distanceMeters);
+                }
+                
+                resetDetectionState();
+            });
+            
+        } catch (Exception e) {
+            Log.e(TAG, "Error in weight prediction", e);
+            showError("Prediction error: " + e.getMessage());
+            resetDetectionState();
+        }
     }
     
     private Bitmap imageProxyToBitmap(@NonNull ImageProxy imageProxy) {
@@ -718,11 +1021,18 @@ public class DetectionFragment extends Fragment {
     private void resetDetectionState() {
         new Handler(Looper.getMainLooper()).post(() -> {
             isDetecting = false;
+            isPredicting = false;
+            
+            // Dismiss processing dialog
+            if (processingDialog != null && processingDialog.isShowing()) {
+                processingDialog.dismiss();
+                processingDialog = null;
+            }
             
             synchronized (detectionLock) {
                 if (!latestDetections.isEmpty()) {
                     btnDetect.setEnabled(true);
-                    btnDetect.setText("🔍 DETECT WEIGHT");
+                    btnDetect.setText("🔍\n\nD\nE\nT\nE\nC\nT");
                 } else {
                     btnDetect.setEnabled(false);
                     btnDetect.setText("⏳ Waiting for cow...");
@@ -735,12 +1045,28 @@ public class DetectionFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         
+        // Stop UVC detection loop
+        isUsingUsbCamera = false;
+        
         // Release ML models
         if (cowDetector != null) {
             cowDetector.release();
         }
         if (weightPredictor != null) {
             weightPredictor.release();
+        }
+        
+        // Release USB camera
+        if (uvcCameraManager != null) {
+            uvcCameraManager.closeCamera();
+        }
+        
+        // Release last UVC frame
+        synchronized (uvcFrameLock) {
+            if (lastUvcFrame != null && !lastUvcFrame.isRecycled()) {
+                lastUvcFrame.recycle();
+                lastUvcFrame = null;
+            }
         }
         
         if (lidarReceiver != null) {
@@ -751,6 +1077,9 @@ public class DetectionFragment extends Fragment {
         }
         if (cameraExecutor != null) {
             cameraExecutor.shutdown();
+        }
+        if (predictionExecutor != null) {
+            predictionExecutor.shutdown();
         }
     }
     
@@ -850,6 +1179,10 @@ public class DetectionFragment extends Fragment {
             writer.write("Timestamp: " + new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss", java.util.Locale.getDefault()).format(new java.util.Date()) + "\\n");
             writer.write("\\n--- DETECTION INFO ---\\n");
             writer.write(String.format("Predicted Weight: %.2f kg\\n", result.weight));
+            // Carcass weight calculation (50% - 60% range)
+            float carcassMin = result.weight * 0.50f;
+            float carcassMax = result.weight * 0.60f;
+            writer.write(String.format("Carcass Weight: %.2f - %.2f kg (50%% - 60%%)\\n", carcassMin, carcassMax));
             writer.write(String.format("Confidence: %.1f%%\\n", result.confidence * 100));
             writer.write(String.format("Distance (LiDAR): %.2f meters (%.0f cm)\\n", distance, distance * 100));
             writer.write("\\n--- BOUNDING BOX (in saved image) ---\\n");

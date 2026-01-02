@@ -39,11 +39,18 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <!-- Camera Preview -->
+                <!-- Camera Preview (Built-in) -->
                 <androidx.camera.view.PreviewView
                     android:id="@+id/cameraPreview"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" />
+
+                <!-- USB Camera Preview (GroundChat) -->
+                <TextureView
+                    android:id="@+id/uvcCameraView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:visibility="gone" />
 
                 <!-- Detection Overlay (HANYA INI - kotak hijau YOLO) -->
                 <com.capstone.cattleweight.DetectionOverlayView
@@ -129,9 +136,32 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:padding="12dp">
+                android:orientation="vertical"
+                android:padding="8dp">
+
+                <!-- Camera Switch Row -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="8dp">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="📷 USB Cam"
+                        android:textColor="#FFFFFF"
+                        android:textSize="11sp" />
+
+                    <androidx.appcompat.widget.SwitchCompat
+                        android:id="@+id/switchCameraMode"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:thumbTint="#4CAF50"
+                        app:trackTint="#888888" />
+                </LinearLayout>
 
                 <!-- Connection Status (USB Only) -->
                 <TextView
@@ -175,11 +205,23 @@
                         android:orientation="vertical"
                         android:padding="10dp">
 
+                        <!-- Berat Badan (dari model) -->
                         <TextView
                             android:id="@+id/tvEstimatedWeight"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Bobot Karkas: -- kg"
+                            android:text="Berat Badan: -- kg"
+                            android:textColor="#B0BEC5"
+                            android:textSize="10sp"
+                            android:fontFamily="sans-serif" />
+
+                        <!-- Berat Karkas (range 50-60%) -->
+                        <TextView
+                            android:id="@+id/tvCarcassWeight"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:text="Berat Karkas: -- kg"
                             android:textColor="#FFFFFF"
                             android:textSize="12sp"
                             android:fontFamily="sans-serif-medium"

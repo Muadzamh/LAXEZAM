@@ -74,7 +74,8 @@ public class ResultsAdapter extends RecyclerView.Adapter<ResultsAdapter.ResultVi
         }
         
         // Set text data
-        holder.txtWeight.setText("Bobot: " + item.getWeight() + " kg");
+        holder.txtCarcassWeight.setText("Karkas: " + item.getCarcassWeight());
+        holder.txtWeight.setText("Berat Badan: " + item.getWeight() + " kg");
         holder.txtDistance.setText("Jarak: " + item.getDistance() + " cm");
         holder.txtBbox.setText("BBox: " + item.getBboxSize());
         holder.txtFileName.setText(item.getFileName());
@@ -113,6 +114,7 @@ public class ResultsAdapter extends RecyclerView.Adapter<ResultsAdapter.ResultVi
     
     static class ResultViewHolder extends RecyclerView.ViewHolder {
         ImageView imgThumbnail;
+        TextView txtCarcassWeight;
         TextView txtWeight;
         TextView txtDistance;
         TextView txtBbox;
@@ -122,6 +124,7 @@ public class ResultsAdapter extends RecyclerView.Adapter<ResultsAdapter.ResultVi
         public ResultViewHolder(@NonNull View itemView) {
             super(itemView);
             imgThumbnail = itemView.findViewById(R.id.imgThumbnail);
+            txtCarcassWeight = itemView.findViewById(R.id.txtCarcassWeight);
             txtWeight = itemView.findViewById(R.id.txtWeight);
             txtDistance = itemView.findViewById(R.id.txtDistance);
             txtBbox = itemView.findViewById(R.id.txtBbox);

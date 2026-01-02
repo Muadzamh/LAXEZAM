@@ -41,15 +41,25 @@
             android:layout_marginStart="12dp"
             android:layout_marginEnd="8dp">
             
-            <!-- Weight -->
+            <!-- Carcass Weight (main result) -->
+            <TextView
+                android:id="@+id/txtCarcassWeight"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Karkas: - kg"
+                android:textColor="#4CAF50"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+            
+            <!-- Body Weight (from model) -->
             <TextView
                 android:id="@+id/txtWeight"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Bobot: - kg"
-                android:textColor="#FFFFFF"
-                android:textSize="16sp"
-                android:textStyle="bold" />
+                android:text="Berat Badan: - kg"
+                android:textColor="#AAAAAA"
+                android:textSize="12sp"
+                android:layout_marginTop="2dp" />
             
             <!-- Distance -->
             <TextView
@@ -57,8 +67,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Jarak: - cm"
-                android:textColor="#AAAAAA"
-                android:textSize="14sp"
+                android:textColor="#888888"
+                android:textSize="11sp"
                 android:layout_marginTop="2dp" />
             
             <!-- BBox Size -->
@@ -67,8 +77,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="BBox: - x - px"
-                android:textColor="#AAAAAA"
-                android:textSize="14sp"
+                android:textColor="#888888"
+                android:textSize="11sp"
                 android:layout_marginTop="2dp" />
             
             <!-- Filename / Timestamp -->
@@ -78,7 +88,7 @@
                 android:layout_height="wrap_content"
                 android:text="COW_20240101_120000.jpg"
                 android:textColor="#666666"
-                android:textSize="11sp"
+                android:textSize="10sp"
                 android:layout_marginTop="4dp" />
         </LinearLayout>
         

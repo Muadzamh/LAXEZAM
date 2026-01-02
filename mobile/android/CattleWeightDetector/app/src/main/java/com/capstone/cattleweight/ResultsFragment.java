@@ -148,15 +148,23 @@ public class ResultsFragment extends Fragment {
             
             // Patterns to match metadata lines
             Pattern weightPattern = Pattern.compile("Predicted Weight:\\s*([\\d.]+)\\s*kg");
+            Pattern carcassPattern = Pattern.compile("Carcass Weight:\\s*([\\d.]+ - [\\d.]+)\\s*kg");
             Pattern distancePattern = Pattern.compile("Distance \\(LiDAR\\):\\s*[\\d.]+\\s*meters\\s*\\(([\\d.]+)\\s*cm\\)");
-            Pattern widthPattern = Pattern.compile("^Width:\\s*([\\d.]+)\\s*px");
-            Pattern heightPattern = Pattern.compile("^Height:\\s*([\\d.]+)\\s*px");
+            // Use Normalized Width/Height for accurate model input representation
+            Pattern normalizedWidthPattern = Pattern.compile("Normalized Width:\\s*([\\d.]+)\\s*px");
+            Pattern normalizedHeightPattern = Pattern.compile("Normalized Height:\\s*([\\d.]+)\\s*px");
             
             while ((line = reader.readLine()) != null) {
-                // Parse weight
+                // Parse weight (body weight from model)
                 Matcher weightMatcher = weightPattern.matcher(line);
                 if (weightMatcher.find()) {
                     item.setWeight(weightMatcher.group(1));
+                }
+                
+                // Parse carcass weight (range 50-60%)
+                Matcher carcassMatcher = carcassPattern.matcher(line);
+                if (carcassMatcher.find()) {
+                    item.setCarcassWeight(carcassMatcher.group(1) + " kg");
                 }
                 
                 // Parse distance
@@ -165,26 +173,40 @@ public class ResultsFragment extends Fragment {
                     item.setDistance(distanceMatcher.group(1));
                 }
                 
-                // Parse width (only first occurrence, which is actual bbox)
+                // Parse normalized width
                 if (item.getBboxWidth().equals("-")) {
-                    Matcher widthMatcher = widthPattern.matcher(line);
+                    Matcher widthMatcher = normalizedWidthPattern.matcher(line);
                     if (widthMatcher.find()) {
                         item.setBboxWidth(widthMatcher.group(1));
                     }
                 }
                 
-                // Parse height (only first occurrence, which is actual bbox)
+                // Parse normalized height
                 if (item.getBboxHeight().equals("-")) {
-                    Matcher heightMatcher = heightPattern.matcher(line);
+                    Matcher heightMatcher = normalizedHeightPattern.matcher(line);
                     if (heightMatcher.find()) {
                         item.setBboxHeight(heightMatcher.group(1));
                     }
                 }
             }
             
+            // Calculate carcass weight from body weight if not found in metadata (for old data)
+            if (item.getCarcassWeight().equals("-") && !item.getWeight().equals("-")) {
+                try {
+                    float bodyWeight = Float.parseFloat(item.getWeight());
+                    float carcassMin = bodyWeight * 0.50f;
+                    float carcassMax = bodyWeight * 0.60f;
+                    item.setCarcassWeight(String.format("%.1f - %.1f kg", carcassMin, carcassMax));
+                } catch (NumberFormatException e) {
+                    // Ignore parsing error
+                }
+            }
+            
             Log.d(TAG, "Parsed metadata for " + metadataFile.getName() + 
                   " - Weight: " + item.getWeight() + 
-                  ", Distance: " + item.getDistance());
+                  ", Carcass: " + item.getCarcassWeight() +
+                  ", Distance: " + item.getDistance() +
+                  ", BBox: " + item.getBboxWidth() + "x" + item.getBboxHeight());
             
         } catch (Exception e) {
             Log.e(TAG, "Error parsing metadata: " + metadataFile.getName(), e);

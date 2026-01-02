@@ -39,7 +39,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import android.widget.Button;
 import com.google.common.util.concurrent.ListenableFuture;
 
 import java.io.ByteArrayOutputStream;
@@ -60,8 +60,7 @@ public class DatasetFragment extends Fragment {
     // UI Components
     private PreviewView cameraPreview;
     private TextureView uvcCameraView;
-    private FloatingActionButton btnCapture;
-    private SwitchCompat switchLidarMode;
+    private Button btnCapture;
     private SwitchCompat switchCameraMode;
     private TextView tvCameraStatus, tvSaveStatus, tvDistance, tvSignalStrength, tvTemperature;
     private TextView tvConnectionStatus, tvTimestamp, tvDatasetCount;
@@ -78,12 +77,9 @@ public class DatasetFragment extends Fragment {
     private UvcCameraManager uvcCameraManager;
     private boolean isUsingUsbCamera = false;
     
-    // LiDAR - WiFi mode
-    private LidarDataReceiver lidarReceiver;
-    // LiDAR - USB mode
+    // LiDAR - USB mode only
     private UsbSerialLidarReader usbLidarReader;
     private LidarData currentLidarData;
-    private boolean isUsbMode = false;
     
     // Database
     private CattleDatasetDatabase database;
@@ -125,7 +121,6 @@ public class DatasetFragment extends Fragment {
         cameraPreview = view.findViewById(R.id.cameraPreview);
         uvcCameraView = view.findViewById(R.id.uvcCameraView);
         btnCapture = view.findViewById(R.id.btnCapture);
-        switchLidarMode = view.findViewById(R.id.switchLidarMode);
         switchCameraMode = view.findViewById(R.id.switchCameraMode);
         tvCameraStatus = view.findViewById(R.id.tvCameraStatus);
         tvSaveStatus = view.findViewById(R.id.tvSaveStatus);
@@ -135,12 +130,6 @@ public class DatasetFragment extends Fragment {
         tvConnectionStatus = view.findViewById(R.id.tvConnectionStatus);
         tvTimestamp = view.findViewById(R.id.tvTimestamp);
         tvDatasetCount = view.findViewById(R.id.tvDatasetCount);
-        
-        // Set switch listener
-        switchLidarMode.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            isUsbMode = isChecked;
-            switchLidarMode();
-        });
         
         // Camera switch listener - switch between built-in and USB camera
         if (switchCameraMode != null) {
@@ -204,7 +193,7 @@ public class DatasetFragment extends Fragment {
             
             imageCapture = new ImageCapture.Builder()
                     .setCaptureMode(ImageCapture.CAPTURE_MODE_MINIMIZE_LATENCY)
-                    .setTargetResolution(new android.util.Size(960, 1280))
+                    .setTargetResolution(new android.util.Size(1080, 1440))
                     .build();
             
             cameraProvider.unbindAll();
@@ -368,73 +357,56 @@ public class DatasetFragment extends Fragment {
      * Switch between built-in camera (CameraX) and USB camera (UVC)
      */
     private void switchCameraSource() {
+        Log.d(TAG, "Switching camera source: USB=" + isUsingUsbCamera);
+        
         if (isUsingUsbCamera) {
-            // Switch to USB camera
-            Log.d(TAG, "Switching to USB camera...");
-            
-            // CRITICAL FIX: Switch UI FIRST before requesting permission
-            // This ensures TextureView is ready when camera opens
-            cameraPreview.setVisibility(View.GONE);
-            uvcCameraView.setVisibility(View.VISIBLE);
-            tvCameraStatus.setText("📷 Connecting to USB Camera...");
-            tvCameraStatus.setTextColor(0xFFFFC107); // Orange color for loading
-            
-            // Stop built-in camera first
-            if (camera != null) {
-                try {
-                    ProcessCameraProvider cameraProvider = ProcessCameraProvider.getInstance(requireContext()).get();
-                    cameraProvider.unbindAll();
-                    Log.d(TAG, "Built-in camera stopped");
-                } catch (Exception e) {
-                    Log.e(TAG, "Error stopping built-in camera", e);
-                }
+            // Switch to USB Camera (GroundChat)
+            if (cameraPreview != null) cameraPreview.setVisibility(View.GONE);
+            if (uvcCameraView != null) uvcCameraView.setVisibility(View.VISIBLE);
+            if (tvCameraStatus != null) {
+                tvCameraStatus.setText("📷 Connecting to USB Camera...");
+                tvCameraStatus.setTextColor(0xFFFFC107); // Orange color for loading
             }
             
+            // Stop built-in camera
+            try {
+                ProcessCameraProvider cameraProvider = ProcessCameraProvider.getInstance(requireContext()).get();
+                cameraProvider.unbindAll();
+                Log.d(TAG, "Built-in camera stopped");
+            } catch (Exception e) {
+                Log.e(TAG, "Error stopping built-in camera", e);
+            }
+            
+            // Start USB camera - same as DetectionFragment (no isConnected check)
             if (uvcCameraManager != null) {
-                // Request permission (will trigger onConnect callback)
                 uvcCameraManager.requestCameraPermission();
-            } else {
-                // No manager, switch back
-                switchCameraMode.setChecked(false);
-                cameraPreview.setVisibility(View.VISIBLE);
-                uvcCameraView.setVisibility(View.GONE);
-                Toast.makeText(requireContext(), "Camera manager not initialized", Toast.LENGTH_SHORT).show();
+                Log.d(TAG, "USB camera permission requested");
             }
+            
+            Toast.makeText(requireContext(), "📷 Switching to USB Camera...", Toast.LENGTH_SHORT).show();
+            
         } else {
-            // Switch to built-in camera
-            Log.d(TAG, "Switching to built-in camera...");
+            // Switch to Built-in Camera
+            if (uvcCameraView != null) uvcCameraView.setVisibility(View.GONE);
+            if (cameraPreview != null) cameraPreview.setVisibility(View.VISIBLE);
             
-            cameraPreview.setVisibility(View.VISIBLE);
-            uvcCameraView.setVisibility(View.GONE);
-            
-            // CRITICAL FIX: Close USB camera completely (not just stop preview)
+            // Stop USB camera
             if (uvcCameraManager != null) {
                 uvcCameraManager.closeCamera();
                 Log.d(TAG, "USB camera closed");
             }
             
-            // Restart CameraX
+            // Restart built-in camera
             startCamera();
+            Log.d(TAG, "Built-in camera restarted");
+            
+            Toast.makeText(requireContext(), "📷 Switched to Built-in Camera", Toast.LENGTH_SHORT).show();
         }
     }
     
-    private void switchLidarMode() {
-        // Stop current mode
-        if (lidarReceiver != null) {
-            lidarReceiver.stopReceiving();
-            lidarReceiver = null;
-        }
-        if (usbLidarReader != null) {
-            usbLidarReader.stopReading();
-            usbLidarReader = null;
-        }
-        
-        // Start new mode
-        if (isUsbMode) {
-            initializeUsbLidar();
-        } else {
-            initializeLidarReceiver();
-        }
+    private void initializeLidarReceiver() {
+        // Always use USB mode - initialize USB LiDAR directly
+        initializeUsbLidar();
     }
     
     private void initializeUsbLidar() {
@@ -449,7 +421,7 @@ public class DatasetFragment extends Fragment {
             public void onConnectionStatusChanged(boolean connected) {
                 new Handler(Looper.getMainLooper()).post(() -> {
                     if (connected) {
-                        tvConnectionStatus.setText("🟢 Connected via USB");
+                        tvConnectionStatus.setText("🟢 USB LiDAR Connected");
                         tvConnectionStatus.setTextColor(0xFF4CAF50);
                     } else {
                         tvConnectionStatus.setText("🔴 USB Disconnected");
@@ -468,39 +440,6 @@ public class DatasetFragment extends Fragment {
         });
         
         usbLidarReader.startReading();
-    }
-    
-    private void initializeLidarReceiver() {
-        lidarReceiver = new LidarDataReceiver(SERVER_URL, new LidarDataReceiver.LidarDataCallback() {
-            @Override
-            public void onDataReceived(LidarData data) {
-                currentLidarData = data;
-                new Handler(Looper.getMainLooper()).post(() -> updateLidarUI(data));
-            }
-            
-            @Override
-            public void onConnectionStatusChanged(boolean connected) {
-                new Handler(Looper.getMainLooper()).post(() -> {
-                    if (connected) {
-                        tvConnectionStatus.setText("🟢 Connected to LiDAR Server");
-                        tvConnectionStatus.setTextColor(0xFF4CAF50);
-                    } else {
-                        tvConnectionStatus.setText("🔴 Disconnected");
-                        tvConnectionStatus.setTextColor(0xFFF44336);
-                    }
-                });
-            }
-            
-            @Override
-            public void onError(String error) {
-                new Handler(Looper.getMainLooper()).post(() -> {
-                    tvConnectionStatus.setText("⚠️ Error: " + error);
-                    tvConnectionStatus.setTextColor(0xFFFF9800);
-                });
-            }
-        });
-        
-        lidarReceiver.startReceiving();
     }
     
     private void updateLidarUI(LidarData data) {
@@ -828,11 +767,7 @@ public class DatasetFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        // Stop LiDAR receivers FIRST before cleaning up resources
-        if (lidarReceiver != null) {
-            lidarReceiver.stopReceiving();
-            lidarReceiver = null;
-        }
+        // Stop USB LiDAR reader FIRST before cleaning up resources
         if (usbLidarReader != null) {
             usbLidarReader.stopReading();
             usbLidarReader = null;
